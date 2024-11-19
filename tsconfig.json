@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    /* Type Checking */
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+
+    "exactOptionalPropertyTypes": false,
+    "noFallthroughCasesInSwitch": false,
+
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+
+    /* Modules */
+    "allowArbitraryExtensions": false,
+    "allowImportingTsExtensions": false,
+    "allowUmdGlobalAccess": false,
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
+    "paths": {
+      "@APP/*": ["./src/*"],
+      "@TEST/*": ["./src/test/*"]
+    },
+    "resolveJsonModule": true,
+
+    /* Emit */
+    "declaration": true,
+    "newLine": "lf",
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "stripInternal": true,
+
+    /* JavaScript Support */
+    "allowJs": false,
+
+    /* Interop Constraints */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false,
+
+    /* Language and Environment */
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+
+    /* Projects */
+    "incremental": false,
+
+    /* Output Formatting */
+    "noErrorTruncation": true,
+    "pretty": true,
+
+    /* Completeness */
+    "skipLibCheck": true
+  }
+}
