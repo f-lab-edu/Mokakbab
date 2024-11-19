@@ -1,7 +1,7 @@
 ---
 name: issue_feature_request
 about: this is issue template new feature template.
-title: "[FEAT-BE/FE] feature issue title"
+title: "[FEAT] feature issue title"
 labels: feat
 assignees: ''
 
