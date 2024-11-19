@@ -1,0 +1,4 @@
+npm run test
+npm run eslint:fix
+npm run prettier:fix
+git add .
