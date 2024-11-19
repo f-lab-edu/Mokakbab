@@ -1,64 +1,64 @@
 {
-  "compilerOptions": {
-    /* Type Checking */
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
+    "compilerOptions": {
+        /* Type Checking */
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
 
-    "exactOptionalPropertyTypes": false,
-    "noFallthroughCasesInSwitch": false,
+        "exactOptionalPropertyTypes": false,
+        "noFallthroughCasesInSwitch": false,
 
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
 
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true,
 
-    /* Modules */
-    "allowArbitraryExtensions": false,
-    "allowImportingTsExtensions": false,
-    "allowUmdGlobalAccess": false,
-    "module": "CommonJS",
-    "moduleResolution": "Node10",
-    "paths": {
-      "@APP/*": ["./src/*"],
-      "@TEST/*": ["./src/test/*"]
-    },
-    "resolveJsonModule": true,
+        /* Modules */
+        "allowArbitraryExtensions": false,
+        "allowImportingTsExtensions": false,
+        "allowUmdGlobalAccess": false,
+        "module": "CommonJS",
+        "moduleResolution": "Node10",
+        "paths": {
+            "@APP/*": ["./src/*"],
+            "@TEST/*": ["./src/test/*"]
+        },
+        "resolveJsonModule": true,
 
-    /* Emit */
-    "declaration": true,
-    "newLine": "lf",
-    "noEmitOnError": true,
-    "removeComments": false,
-    "sourceMap": true,
-    "stripInternal": true,
+        /* Emit */
+        "declaration": true,
+        "newLine": "lf",
+        "noEmitOnError": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "stripInternal": true,
 
-    /* JavaScript Support */
-    "allowJs": false,
+        /* JavaScript Support */
+        "allowJs": false,
 
-    /* Interop Constraints */
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": false,
+        /* Interop Constraints */
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": false,
 
-    /* Language and Environment */
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "ES2022",
-    "useDefineForClassFields": true,
+        /* Language and Environment */
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "ES2022",
+        "useDefineForClassFields": true,
 
-    /* Projects */
-    "incremental": false,
+        /* Projects */
+        "incremental": false,
 
-    /* Output Formatting */
-    "noErrorTruncation": true,
-    "pretty": true,
+        /* Output Formatting */
+        "noErrorTruncation": true,
+        "pretty": true,
 
-    /* Completeness */
-    "skipLibCheck": true
-  }
+        /* Completeness */
+        "skipLibCheck": true
+    }
 }
