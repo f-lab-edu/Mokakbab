@@ -1,0 +1,18 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node", // 세팅의 타입
+      "request": "launch", // launch 실행하는거, attach 실행되있는거에 붙는거
+      "name": "Debug NestJS", // 어떤 이름으로 부를건지
+      "runtimeExecutable": "npm", // 어떤걸로 실행 할건지 node, yarn ...
+      "runtimeArgs": ["run", "start:debug"], // npm run start:dev 에서 npm이 runtime이고 run start:dev가 Args임
+      "console": "integratedTerminal", // intergratedTerminal은 vscode에서 실행하는 터미널임
+      "restart": true, // 자동 연결 할건지
+      "autoAttachChildProcesses": true // 디버거를 자동으로 process에 붙을지 말지 결정
+    }
+  ]
+}
