@@ -1,0 +1,41 @@
+Dockerfile
+Dockerfile.dev
+.dockerignore
+node_modules
+npm-debug.log
+dist
+
+# env
+*.env*
+
+# Git related
+.git
+.gitignore
+.gitmessage.txt
+.husky
+
+# Test files
+coverage
+.nyc_output
+test
+**/*.spec.ts
+**/*.e2e-spec.ts
+
+# IDE and editor files
+.vscode
+.idea
+*.sublime-workspace
+
+# Config files
+.prettierrc
+.prettierignore
+.eslintrc.json
+eslint.config.mjs
+
+# Documentation
+README.md
+.github
+
+# Build configs
+tsconfig.json
+tsconfig.build.json
