@@ -2,8 +2,9 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { AppController } from "./app.controller";
 import { TypeOrmModuleOptions } from "./common/typeorm";
+import { AuthModule } from "./modules/auth.module";
+import { MembersModule } from "./modules/members.module";
 
 @Module({
     imports: [
@@ -12,8 +13,10 @@ import { TypeOrmModuleOptions } from "./common/typeorm";
             isGlobal: true,
         }),
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
+        MembersModule,
+        AuthModule,
     ],
-    controllers: [AppController],
+    controllers: [],
     providers: [],
     exports: [],
 })
