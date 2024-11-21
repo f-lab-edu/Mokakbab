@@ -6,6 +6,7 @@ import * as crypto from "crypto";
 
 import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
+import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
 import { MemberEntity } from "@APP/entities/member.entity";
 
 import { MailsService } from "./mails.service";
@@ -124,6 +125,10 @@ export class AuthService {
         } catch {
             throw new UnauthorizedException("잘못된 토큰입니다!");
         }
+    }
+
+    async verifyEmail(dto: VerifyEmailDto) {
+        return await this.membersService.verifyEmail(dto);
     }
 
     rotateAccessToken(token: string) {
