@@ -1,13 +1,20 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 
+import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
 import { MemberEntity } from "@APP/entities/member.entity";
 
 import { MembersService } from "./members.service";
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly membersService: MembersService) {}
+    constructor(
+        private readonly jwtService: JwtService,
+        private readonly membersService: MembersService,
+        private readonly configService: ConfigService,
+    ) {}
 
     extractTokenFromHeader(header: string, isBearer: boolean) {
         const splitToken = header.split(" ");
@@ -56,5 +63,34 @@ export class AuthService {
         }
 
         return existMember;
+    }
+
+    async signInByEmail(member: Pick<MemberEntity, "email" | "password">) {
+        const existMember = await this.authenticateWithEmailAndPassword(member);
+
+        return this.signInMember(existMember);
+    }
+
+    private signInMember(member: Pick<MemberEntity, "email" | "id">) {
+        return {
+            accessToken: this.signToken(member, false),
+            refreshToken: this.signToken(member, true),
+        };
+    }
+
+    private signToken(
+        member: Pick<MemberEntity, "email" | "id">,
+        isRefreshToken: boolean,
+    ) {
+        const payload = {
+            email: member.email,
+            sub: member.id,
+            type: isRefreshToken ? "refresh" : "access",
+        };
+
+        return this.jwtService.sign(payload, {
+            secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
+            expiresIn: isRefreshToken ? 3600 : 300,
+        });
     }
 }
