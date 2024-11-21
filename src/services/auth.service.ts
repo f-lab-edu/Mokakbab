@@ -105,4 +105,18 @@ export class AuthService {
             expiresIn: isRefreshToken ? 3600 : 300,
         });
     }
+
+    verifyToken(token: string) {
+        try {
+            return this.jwtService.verify(token, {
+                secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
+            });
+        } catch {
+            throw new UnauthorizedException("잘못된 토큰입니다!");
+        }
+    }
+
+    async updateRefreshToken(memberId: number) {
+        return await this.membersService.updateRefreshToken(memberId);
+    }
 }
