@@ -2,3 +2,9 @@ node_modules
 dist
 build
 .github/**
+.husky/**
+.vscode/**
+
+.dockerignore
+docker-compose-dev.yml
+Dockerfile

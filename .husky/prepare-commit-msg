@@ -1,0 +1,25 @@
+# 인자값 가져오기
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+# 자동 머지 커밋 메시지 등은 건너뜁니다.
+if [ "$COMMIT_SOURCE" == "merge" ]; then
+  exit 0
+fi
+
+# 현재 브랜치 이름 가져오기
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+# 브랜치 이름이 feature/ 또는 hotfix/ 로 시작하는지 확인
+if [[ "$BRANCH_NAME" =~ ^(feature|hotfix)/ ]]; then
+  # 브랜치 번호 추출 (예: feature/123-some-feature)
+  BRANCH_NUMBER=$(echo "$BRANCH_NAME" | grep -o -E '[0-9]+')
+  
+  # 브랜치 번호가 있는지 확인하고, 커밋 메시지에 추가
+  if [ -n "$BRANCH_NUMBER" ]; then
+    # 커밋 메시지 파일의 마지막에 브랜치 번호 추가
+    echo "" >> "$COMMIT_MSG_FILE"
+    echo "(#${BRANCH_NUMBER})" >> "$COMMIT_MSG_FILE"
+  fi
+fi
