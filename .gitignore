@@ -38,3 +38,5 @@ lerna-debug.log*
 
 # env
 *.env*
+# mysql
+mysql-data

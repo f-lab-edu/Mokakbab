@@ -8,3 +8,4 @@ build
 .dockerignore
 docker-compose-dev.yml
 Dockerfile
+mysql-data
