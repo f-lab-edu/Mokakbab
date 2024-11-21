@@ -1,7 +1,9 @@
+import { MailerModule } from "@nestjs-modules/mailer";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { EmailOptions } from "./common/config/email-config";
 import { TypeOrmModuleOptions } from "./common/typeorm";
 import { AuthModule } from "./modules/auth.module";
 import { MembersModule } from "./modules/members.module";
@@ -15,6 +17,7 @@ import { MembersModule } from "./modules/members.module";
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
         MembersModule,
         AuthModule,
+        MailerModule.forRootAsync(EmailOptions),
     ],
     controllers: [],
     providers: [],
