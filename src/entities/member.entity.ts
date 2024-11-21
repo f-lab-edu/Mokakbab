@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import {
     Column,
     CreateDateColumn,
@@ -11,15 +12,24 @@ export class MemberEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "varchar", length: 20, nullable: false })
     name!: string;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "varchar", length: 40, nullable: false })
     nickname!: string;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "varchar", length: 60, nullable: false })
     password!: string;
 
+    @IsNotEmpty()
+    @IsString()
+    @IsEmail()
     @Column({ type: "varchar", length: 100, nullable: false, unique: true })
     email!: string;
 

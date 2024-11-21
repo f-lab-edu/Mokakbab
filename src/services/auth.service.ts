@@ -4,6 +4,7 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 
 import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
+import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { MemberEntity } from "@APP/entities/member.entity";
 
 import { MembersService } from "./members.service";
@@ -69,6 +70,17 @@ export class AuthService {
         const existMember = await this.authenticateWithEmailAndPassword(member);
 
         return this.signInMember(existMember);
+    }
+
+    async registerByEmail(dto: RegisterMemberDto) {
+        const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+        const newMember = await this.membersService.createMember({
+            ...dto,
+            password: hashedPassword,
+        });
+
+        return this.signInMember(newMember);
     }
 
     private signInMember(member: Pick<MemberEntity, "email" | "id">) {
