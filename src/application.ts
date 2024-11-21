@@ -1,4 +1,8 @@
-import { INestApplication, NestApplicationOptions } from "@nestjs/common";
+import {
+    INestApplication,
+    NestApplicationOptions,
+    ValidationPipe,
+} from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 
 import { AppModule } from "./app.module";
@@ -9,7 +13,19 @@ export namespace Backend {
     ): Promise<INestApplication> => {
         const app = await NestFactory.create(AppModule, options);
 
-        await app.listen(6000);
+        await app
+            .useGlobalPipes(
+                new ValidationPipe({
+                    transform: true,
+                    transformOptions: {
+                        enableImplicitConversion: false,
+                    },
+                    stopAtFirstError: true,
+                    whitelist: true,
+                    forbidNonWhitelisted: true,
+                }),
+            )
+            .listen(6000);
         process.on("SIGINT", async () => {
             await end(app);
             process.exit(0);
