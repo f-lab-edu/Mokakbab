@@ -1,5 +1,11 @@
 import { Transform, Type } from "class-transformer";
-import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import {
+    IsDate,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString,
+} from "class-validator";
 import {
     Column,
     CreateDateColumn,
@@ -45,14 +51,18 @@ export class ArticleEntity {
     @Column({ type: "datetime" })
     endTime!: Date;
 
-    @Transform(({ value }) => {
-        if (!value) return null;
+    @Transform(
+        ({ value }) => {
+            if (!value) return null;
 
-        return new URL(
-            `/public/articles/${value}`,
-            process.env["API_BASE_URL"],
-        ).toString();
-    })
+            return new URL(
+                `/public/articles/${value}`,
+                process.env["API_BASE_URL"],
+            ).toString();
+        },
+        { toPlainOnly: true },
+    )
+    @IsOptional()
     @Column({ type: "varchar", length: 2048, nullable: true })
     articleImage?: string;
 

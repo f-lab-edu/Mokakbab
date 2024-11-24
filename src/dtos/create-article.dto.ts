@@ -10,4 +10,5 @@ export class CreateArticleDto extends PickType(ArticleEntity, [
     "categoryId",
     "districtId",
     "regionId",
+    "articleImage",
 ]) {}
