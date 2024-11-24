@@ -15,6 +15,47 @@ export class ParticipationsService {
         private readonly configService: ConfigService,
     ) {}
 
+    async getParticipationsByArticleId(
+        articleId: number,
+        cursor: number,
+        limit: number,
+    ) {
+        const query = this.participationsRepository
+            .createQueryBuilder("participation")
+            .where("participation.articleId = :articleId", {
+                articleId,
+            })
+            .orderBy("participation.id", "ASC")
+            .take(limit + 1);
+
+        if (cursor) {
+            query.andWhere("participation.id > :cursor", { cursor });
+        }
+
+        const participations = await query.getMany();
+        const hasNextPage = participations.length > limit;
+        const results = hasNextPage
+            ? participations.slice(0, -1)
+            : participations;
+
+        const lastItem = results[results.length - 1];
+        const nextUrl =
+            lastItem && hasNextPage
+                ? new URL(
+                      `${this.configService.get(ENV_API_BASE_URL)}/participations/article/${articleId}?cursor=${lastItem.id}&limit=${limit}`,
+                  )
+                : null;
+
+        return {
+            data: results,
+            cursor: {
+                after: lastItem?.id,
+            },
+            count: results.length,
+            next: nextUrl?.toString(),
+        };
+    }
+
     async getParticipations(
         currentMemberId: number,
         cursor: number,
