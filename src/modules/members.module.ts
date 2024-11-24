@@ -5,13 +5,15 @@ import multer from "multer";
 import { extname } from "path";
 
 import { MembersController } from "@APP/controllers/members.controller";
+import { BlockListEntity } from "@APP/entities/block-list.entity";
 import { MemberEntity } from "@APP/entities/member.entity";
+import { BlockListRepository } from "@APP/repositories/block-list.repository";
 import { MembersRepository } from "@APP/repositories/members.repository";
 import { MembersService } from "@APP/services/members.service";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([MemberEntity]),
+        TypeOrmModule.forFeature([MemberEntity, BlockListEntity]),
         MulterModule.register({
             limits: {
                 fileSize: 10000000,
@@ -41,7 +43,7 @@ import { MembersService } from "@APP/services/members.service";
         }),
     ],
     controllers: [MembersController],
-    providers: [MembersService, MembersRepository],
+    providers: [MembersService, MembersRepository, BlockListRepository],
     exports: [MembersService],
 })
 export class MembersModule {}

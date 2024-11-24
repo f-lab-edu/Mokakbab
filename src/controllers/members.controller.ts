@@ -22,6 +22,11 @@ import { MembersService } from "@APP/services/members.service";
 export class MembersController {
     constructor(private readonly membersService: MembersService) {}
 
+    @Get("blocks")
+    async getBlocks(@CurrentMemberDecorator("id") currentMemberId: number) {
+        return await this.membersService.findBlocks(currentMemberId);
+    }
+
     @Get(":memberId")
     async getMember(@Param("memberId", new ParseIntPipe()) memberId: number) {
         return await this.membersService.findById(memberId);
