@@ -195,4 +195,18 @@ export class MembersService {
             },
         });
     }
+
+    async createBlock(blockerId: number, blockedId: number) {
+        return await this.blockListRepository.save({
+            blockerId,
+            blockedId,
+        });
+    }
+
+    async deleteBlock(blockerId: number, blockedId: number) {
+        return await this.blockListRepository.delete({
+            blockerId,
+            blockedId,
+        });
+    }
 }

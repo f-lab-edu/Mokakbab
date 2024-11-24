@@ -8,6 +8,7 @@ import {
     Param,
     ParseIntPipe,
     Patch,
+    Post,
     UploadedFile,
     UseInterceptors,
 } from "@nestjs/common";
@@ -15,6 +16,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import * as bcrypt from "bcrypt";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
+import { CreateBlockListDto } from "@APP/dtos/create-block-list.dto";
 import { UpdateMemberDto } from "@APP/dtos/update-member.dto";
 import { MembersService } from "@APP/services/members.service";
 
@@ -25,6 +27,28 @@ export class MembersController {
     @Get("blacks")
     getBlacks(@CurrentMemberDecorator("id") currentMemberId: number) {
         return this.membersService.findBlacks(currentMemberId);
+    }
+
+    @Post("blocks")
+    async postBlock(
+        @CurrentMemberDecorator("id") currentMemberId: number,
+        @Body() dto: CreateBlockListDto,
+    ) {
+        return await this.membersService.createBlock(
+            currentMemberId,
+            dto.blockedId,
+        );
+    }
+
+    @Delete("blocks/:blockedId")
+    async deleteBlock(
+        @CurrentMemberDecorator("id") currentMemberId: number,
+        @Param("blockedId", new ParseIntPipe()) blockedId: number,
+    ) {
+        return await this.membersService.deleteBlock(
+            currentMemberId,
+            blockedId,
+        );
     }
 
     @Get(":memberId")
