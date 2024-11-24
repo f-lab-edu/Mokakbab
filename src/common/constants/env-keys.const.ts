@@ -6,3 +6,6 @@ export const ENV_DB_USERNAME = "DB_USERNAME" as const;
 export const ENV_DB_PASSWORD = "DB_PASSWORD" as const;
 export const ENV_DB_DATABASE = "DB_DATABASE" as const;
 export const ENV_DB_SYNCHRONIZE = "DB_SYNCHRONIZE" as const;
+
+// jwt
+export const ENV_JWT_SECRET_KEY = "JWT_SECRET_KEY" as const;
