@@ -15,6 +15,7 @@ import { ArticleLikeEntity } from "./article-like.entity";
 import { CategoryEntity } from "./category.entity";
 import { DistrictEntity } from "./district.entity";
 import { MemberEntity } from "./member.entity";
+import { ParticipationEntity } from "./participation.entity";
 import { RegionEntity } from "./region.entity";
 
 @Entity("articles")
@@ -82,6 +83,12 @@ export class ArticleEntity {
 
     @OneToMany(() => ArticleLikeEntity, (articleLike) => articleLike.article)
     articleLikes!: ArticleLikeEntity[];
+
+    @OneToMany(
+        () => ParticipationEntity,
+        (participation) => participation.article,
+    )
+    participations!: ParticipationEntity[];
 
     @CreateDateColumn({ type: "timestamp", nullable: false })
     createdAt!: Date;
