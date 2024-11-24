@@ -11,6 +11,6 @@ import { MembersModule } from "./members.module";
     imports: [JwtModule.register({}), MembersModule],
     controllers: [AuthController],
     providers: [AuthService, MailsService],
-    exports: [],
+    exports: [AuthService],
 })
 export class AuthModule {}
