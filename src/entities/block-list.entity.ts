@@ -1,3 +1,4 @@
+import { IsNotEmpty, IsNumber } from "class-validator";
 import {
     CreateDateColumn,
     Entity,
@@ -14,6 +15,8 @@ export class BlockListEntity {
     blockerId!: number;
 
     @PrimaryColumn({ type: "int" })
+    @IsNumber()
+    @IsNotEmpty()
     blockedId!: number;
 
     @CreateDateColumn({ type: "timestamp", nullable: false })
