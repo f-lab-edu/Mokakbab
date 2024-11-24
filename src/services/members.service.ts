@@ -5,6 +5,7 @@ import { MemberErrorCode } from "@APP/common/exception/error-code";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { UpdateMemberDto } from "@APP/dtos/update-member.dto";
 import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
+import { BlockListRepository } from "@APP/repositories/block-list.repository";
 import { MembersRepository } from "@APP/repositories/members.repository";
 import { RefreshTokenRepository } from "@APP/repositories/refresh-token.repository";
 import { VerificationCodeRepository } from "@APP/repositories/verification-code.repository";
@@ -15,6 +16,7 @@ export class MembersService {
         private readonly membersRepository: MembersRepository,
         private readonly refreshTokenRepository: RefreshTokenRepository,
         private readonly verificationCodeRepository: VerificationCodeRepository,
+        private readonly blockListRepository: BlockListRepository,
     ) {}
 
     findByEmail(email: string) {
@@ -184,5 +186,13 @@ export class MembersService {
             { id: memberId },
             { profileImage: filename },
         );
+    }
+
+    async findBlocks(memberId: number) {
+        return await this.blockListRepository.find({
+            where: {
+                blockerId: memberId,
+            },
+        });
     }
 }
