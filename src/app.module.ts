@@ -11,6 +11,7 @@ import { TypeOrmModuleOptions } from "./common/typeorm";
 import { ArticlesModule } from "./modules/articles.module";
 import { AuthModule } from "./modules/auth.module";
 import { MembersModule } from "./modules/members.module";
+import { ParticipationsModule } from "./modules/participations.module";
 
 @Module({
     imports: [
@@ -25,6 +26,7 @@ import { MembersModule } from "./modules/members.module";
         AuthModule,
         MailerModule.forRootAsync(EmailOptions),
         ArticlesModule,
+        ParticipationsModule,
     ],
     controllers: [],
     providers: [
