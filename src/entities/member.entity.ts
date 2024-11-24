@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { Exclude } from "class-transformer";
+import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
 import {
     Column,
     CreateDateColumn,
@@ -31,6 +32,10 @@ export class MemberEntity {
 
     @IsNotEmpty()
     @IsString()
+    @Exclude({
+        toPlainOnly: true,
+    })
+    @Length(4, 20)
     @Column({ type: "varchar", length: PASSWORD_HASH_LENGTH, nullable: false })
     password!: string; // 비밀번호
 
