@@ -18,6 +18,18 @@ export class ArticlesService {
         private readonly regionsRepository: RegionsRepository,
     ) {}
 
+    async findById(articleId: number) {
+        const article = await this.articlesRepository.findOne({
+            where: { id: articleId },
+        });
+
+        if (!article) {
+            throw new NotFoundException("게시글을 찾을 수 없습니다.");
+        }
+
+        return article;
+    }
+
     async createArticle(currentMemberId: number, body: CreateArticleDto) {
         const [category, district, region] = await Promise.all([
             this.categoriesRepository.exists({
