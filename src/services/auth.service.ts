@@ -2,11 +2,13 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
+import * as crypto from "crypto";
 
 import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { MemberEntity } from "@APP/entities/member.entity";
 
+import { MailsService } from "./mails.service";
 import { MembersService } from "./members.service";
 
 @Injectable()
@@ -14,6 +16,7 @@ export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         private readonly membersService: MembersService,
+        private readonly mailsService: MailsService,
         private readonly configService: ConfigService,
     ) {}
 
@@ -74,13 +77,20 @@ export class AuthService {
 
     async registerByEmail(dto: RegisterMemberDto) {
         const hashedPassword = await bcrypt.hash(dto.password, 10);
+        const verificationCode = this.generateVerificationCode();
 
-        const newMember = await this.membersService.createMember({
-            ...dto,
-            password: hashedPassword,
-        });
+        const newMember = await this.membersService.createMember(
+            {
+                ...dto,
+                password: hashedPassword,
+            },
+            verificationCode,
+        );
 
-        return this.signInMember(newMember);
+        await this.mailsService.sendVerificationEmail(
+            newMember.email,
+            verificationCode,
+        );
     }
 
     private signInMember(member: Pick<MemberEntity, "email" | "id">) {
@@ -136,5 +146,9 @@ export class AuthService {
 
     async updateRefreshToken(memberId: number) {
         return await this.membersService.updateRefreshToken(memberId);
+    }
+
+    private generateVerificationCode(): string {
+        return crypto.randomBytes(3).toString("hex").toUpperCase();
     }
 }

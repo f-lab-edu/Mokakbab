@@ -15,8 +15,8 @@ export class MembersService {
         });
     }
 
-    async createMember(dto: RegisterMemberDto) {
-        const emailExists = await this.membersRepository.exist({
+    async createMember(dto: RegisterMemberDto, verificationCode: string) {
+        const emailExists = await this.membersRepository.exists({
             where: {
                 email: dto.email,
             },
@@ -26,7 +26,10 @@ export class MembersService {
             throw new BadRequestException("이미 가입한 이메일입니다");
         }
 
-        const newMember = this.membersRepository.create(dto);
+        const newMember = this.membersRepository.create({
+            ...dto,
+            verificationCode,
+        });
 
         return await this.membersRepository.save(newMember);
     }
