@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
+import { UpdateMemberDto } from "@APP/dtos/update-member.dto";
 import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
 import { MembersRepository } from "@APP/repositories/members.repository";
 
@@ -13,6 +14,29 @@ export class MembersService {
             where: {
                 email,
             },
+        });
+    }
+
+    async findById(memberId: number) {
+        return this.membersRepository.findOne({
+            where: {
+                id: memberId,
+            },
+        });
+    }
+
+    async updateById(memberId: number, dto: UpdateMemberDto) {
+        return this.membersRepository.update(
+            {
+                id: memberId,
+            },
+            dto,
+        );
+    }
+
+    async deleteById(memberId: number) {
+        return this.membersRepository.delete({
+            id: memberId,
         });
     }
 
