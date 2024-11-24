@@ -39,8 +39,13 @@ export class MemberEntity {
     @Column({ type: "varchar", length: 60, nullable: true })
     refreshToken?: string | null;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "varchar", length: 60, nullable: true })
     verificationCode?: string;
+
+    @Column({ type: "boolean", default: false })
+    isEmailVerified!: boolean;
 
     @CreateDateColumn({ type: "timestamp", nullable: false })
     createdAt!: Date;
