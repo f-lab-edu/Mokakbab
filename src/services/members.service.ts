@@ -178,4 +178,11 @@ export class MembersService {
             },
         );
     }
+
+    async updateProfileImage(memberId: number, filename: string) {
+        return await this.membersRepository.update(
+            { id: memberId },
+            { profileImage: filename },
+        );
+    }
 }
