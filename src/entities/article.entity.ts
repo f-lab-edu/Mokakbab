@@ -1,3 +1,5 @@
+import { Type } from "class-transformer";
+import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import {
     Column,
     CreateDateColumn,
@@ -20,18 +22,30 @@ export class ArticleEntity {
     @PrimaryGeneratedColumn({ type: "int" })
     id!: number;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "varchar", length: 100 })
     title!: string;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "text" })
     content!: string;
 
+    @IsNotEmpty()
+    @Type(() => Date)
+    @IsDate()
     @Column({ type: "datetime" })
     startTime!: Date;
 
+    @IsNotEmpty()
+    @Type(() => Date)
+    @IsDate()
     @Column({ type: "datetime" })
     endTime!: Date;
 
+    @IsNotEmpty()
+    @IsNumber()
     @Column({ type: "int" })
     memberId!: number;
 
@@ -39,6 +53,8 @@ export class ArticleEntity {
     @JoinColumn({ name: "memberId", referencedColumnName: "id" })
     member!: MemberEntity;
 
+    @IsNotEmpty()
+    @IsNumber()
     @Column({ type: "int" })
     categoryId!: number;
 
@@ -46,6 +62,8 @@ export class ArticleEntity {
     @JoinColumn({ name: "categoryId", referencedColumnName: "id" })
     category!: CategoryEntity;
 
+    @IsNotEmpty()
+    @IsNumber()
     @Column({ type: "int" })
     regionId!: number;
 
@@ -53,6 +71,8 @@ export class ArticleEntity {
     @JoinColumn({ name: "regionId", referencedColumnName: "id" })
     region!: RegionEntity;
 
+    @IsNotEmpty()
+    @IsNumber()
     @Column({ type: "int" })
     districtId!: number;
 
