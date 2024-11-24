@@ -1,5 +1,8 @@
-import { Module } from "@nestjs/common";
+import { BadRequestException, Module } from "@nestjs/common";
+import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import multer from "multer";
+import { extname } from "path";
 
 import { ArticlesController } from "@APP/controllers/articles.controller";
 import { ArticleLikeEntity } from "@APP/entities/article-like.entity";
@@ -24,6 +27,33 @@ import { ArticlesService } from "@APP/services/articles.service";
             RegionEntity,
             ArticleLikeEntity,
         ]),
+        MulterModule.register({
+            limits: {
+                fileSize: 10000000,
+            },
+            fileFilter: (_req, file, cb) => {
+                const ext = extname(file.originalname);
+                if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
+                    return cb(
+                        new BadRequestException(
+                            "jpg/jpeg/png 파일만 업로드 가능합니다",
+                        ),
+                        false,
+                    );
+                }
+
+                return cb(null, true);
+            },
+
+            storage: multer.diskStorage({
+                destination: function (_req, _file, cb) {
+                    cb(null, "uploads/articles/");
+                },
+                filename: function (_req, file, cb) {
+                    cb(null, `${Date.now()}-${file.originalname}`);
+                },
+            }),
+        }),
     ],
     controllers: [ArticlesController],
     providers: [
