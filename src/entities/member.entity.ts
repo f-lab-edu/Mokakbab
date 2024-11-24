@@ -37,7 +37,7 @@ export class MemberEntity {
     profileImage?: string;
 
     @Column({ type: "varchar", length: 60, nullable: true })
-    refreshToken?: string;
+    refreshToken?: string | null;
 
     @Column({ type: "varchar", length: 60, nullable: true })
     verificationCode?: string;
