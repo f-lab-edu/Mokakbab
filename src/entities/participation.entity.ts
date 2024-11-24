@@ -1,3 +1,4 @@
+import { IsNotEmpty, IsNumber } from "class-validator";
 import {
     Column,
     CreateDateColumn,
@@ -20,6 +21,8 @@ export class ParticipationEntity {
     @Column({ type: "int", nullable: false })
     memberId!: number;
 
+    @IsNotEmpty()
+    @IsNumber()
     @Column({ type: "int", nullable: false })
     articleId!: number;
 
