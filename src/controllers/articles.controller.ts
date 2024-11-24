@@ -8,7 +8,10 @@ import {
     Patch,
     Post,
     Put,
+    UploadedFile,
+    UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
 import { CreateArticleDto } from "@APP/dtos/create-article.dto";
@@ -30,6 +33,14 @@ export class ArticlesController {
         @CurrentMemberDecorator("id") currentMemberId: number,
     ) {
         return this.articlesService.createArticle(currentMemberId, body);
+    }
+
+    @Patch("upload-image")
+    @UseInterceptors(FileInterceptor("image"))
+    async patchUploadImage(@UploadedFile() file: Express.Multer.File) {
+        return {
+            filename: file.filename,
+        };
     }
 
     @Patch(":articleId")

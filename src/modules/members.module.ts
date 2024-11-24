@@ -46,7 +46,7 @@ import { MembersService } from "@APP/services/members.service";
 
             storage: multer.diskStorage({
                 destination: function (_req, _file, cb) {
-                    cb(null, "uploads/");
+                    cb(null, "uploads/members/");
                 },
                 filename: function (_req, file, cb) {
                     cb(null, `${Date.now()}-${file.originalname}`);
