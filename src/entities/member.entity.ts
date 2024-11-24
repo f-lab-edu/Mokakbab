@@ -4,13 +4,17 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
 
+import { ArticleLikeEntity } from "./article-like.entity";
+import { ArticleEntity } from "./article.entity";
+
 @Entity("member")
 export class MemberEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ type: "int" })
     id!: number;
 
     @IsNotEmpty()
@@ -51,6 +55,12 @@ export class MemberEntity {
 
     @Column({ type: "boolean", default: false })
     isEmailVerified!: boolean;
+
+    @OneToMany(() => ArticleEntity, (article) => article.member)
+    articles!: ArticleEntity[];
+
+    @OneToMany(() => ArticleLikeEntity, (articleLike) => articleLike.member)
+    articleLikes!: ArticleLikeEntity[];
 
     @CreateDateColumn({ type: "timestamp", nullable: false })
     createdAt!: Date;

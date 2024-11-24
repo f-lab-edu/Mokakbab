@@ -2,20 +2,20 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { QueryRunner, Repository } from "typeorm";
 
-import { BlockListEntity } from "@APP/entities/block-list.entity";
+import { CategoryEntity } from "@APP/entities/category.entity";
 
 @Injectable()
-export class BlockListRepository extends Repository<BlockListEntity> {
+export class CategoriesRepository extends Repository<CategoryEntity> {
     constructor(
-        @InjectRepository(BlockListEntity)
-        private readonly repository: Repository<BlockListEntity>,
+        @InjectRepository(CategoryEntity)
+        private readonly repository: Repository<CategoryEntity>,
     ) {
         super(repository.target, repository.manager, repository.queryRunner);
     }
 
     getRepository(qr?: QueryRunner) {
         return qr
-            ? qr.manager.getRepository<BlockListEntity>(BlockListEntity)
+            ? qr.manager.getRepository<CategoryEntity>(CategoryEntity)
             : this.repository;
     }
 }

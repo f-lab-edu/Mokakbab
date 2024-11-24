@@ -8,7 +8,7 @@ import {
 
 @Entity("block_list")
 export class BlockListEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ type: "int" })
     id!: number;
 
     @PrimaryColumn({ type: "int" })
