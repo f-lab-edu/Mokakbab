@@ -28,4 +28,23 @@ export class MembersService {
             },
         });
     }
+
+    async findOneByEmail(email: string) {
+        return this.membersRepository.findOne({
+            where: {
+                email,
+            },
+        });
+    }
+
+    async updateRefreshToken(memberId: number) {
+        return await this.membersRepository.update(
+            {
+                id: memberId,
+            },
+            {
+                refreshToken: null,
+            },
+        );
+    }
 }
