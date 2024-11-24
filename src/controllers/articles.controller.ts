@@ -8,6 +8,7 @@ import {
     Patch,
     Post,
     Put,
+    Query,
     UploadedFile,
     UseInterceptors,
 } from "@nestjs/common";
@@ -21,6 +22,19 @@ import { ArticlesService } from "@APP/services/articles.service";
 @Controller("articles")
 export class ArticlesController {
     constructor(private readonly articlesService: ArticlesService) {}
+
+    @Get()
+    async getArticles(
+        @Query("cursor", new ParseIntPipe()) cursor: number,
+        @Query("limit", new ParseIntPipe()) limit: number,
+        @CurrentMemberDecorator("id") currentMemberId: number,
+    ) {
+        return await this.articlesService.findAll(
+            cursor,
+            limit,
+            currentMemberId,
+        );
+    }
 
     @Get(":articleId")
     async getArticle(
