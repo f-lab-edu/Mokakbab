@@ -40,3 +40,6 @@ lerna-debug.log*
 *.env*
 # mysql
 mysql-data
+
+# uploads
+uploads/
