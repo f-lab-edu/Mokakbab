@@ -7,6 +7,7 @@ import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { MemberErrorCode } from "@APP/common/exception/error-code";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
+import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
 import { MemberEntity } from "@APP/entities/member.entity";
 
 import { MembersService } from "./members.service";
@@ -134,6 +135,10 @@ export class AuthService {
         } catch {
             throw new BusinessErrorException(MemberErrorCode.INVALID_TOKEN);
         }
+    }
+
+    async verifyEmail(dto: VerifyEmailDto) {
+        return await this.membersService.verifyEmail(dto);
     }
 
     rotateAccessToken(token: string) {

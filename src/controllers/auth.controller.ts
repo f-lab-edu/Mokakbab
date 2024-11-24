@@ -7,6 +7,7 @@ import {
     RefreshTokenGuard,
 } from "@APP/common/guards/bearer-token.guard";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
+import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
 import { AuthService } from "@APP/services/auth.service";
 
 @Controller("auth")
@@ -32,6 +33,11 @@ export class AuthController {
     @Post("sign-out")
     signOut(@CurrentMemberDecorator("id") memberId: number) {
         void this.authService.updateRefreshToken(memberId);
+    }
+
+    @Post("verify-email")
+    async verifyEmail(@Body() dto: VerifyEmailDto) {
+        return await this.authService.verifyEmail(dto);
     }
 
     @UseGuards(RefreshTokenGuard)
