@@ -6,6 +6,7 @@ import {
 
 import { CreateArticleDto } from "@APP/dtos/create-article.dto";
 import { UpdateArticleDto } from "@APP/dtos/update-article.dto";
+import { ArticleLikesRepository } from "@APP/repositories/article-likes.repository";
 import { ArticlesRepository } from "@APP/repositories/articles.repository";
 import { CategoriesRepository } from "@APP/repositories/categories.repository";
 import { DistrictsRepository } from "@APP/repositories/districts.repository";
@@ -18,6 +19,7 @@ export class ArticlesService {
         private readonly categoriesRepository: CategoriesRepository,
         private readonly districtsRepository: DistrictsRepository,
         private readonly regionsRepository: RegionsRepository,
+        private readonly articleLikesRepository: ArticleLikesRepository,
     ) {}
 
     async findById(articleId: number) {
@@ -117,5 +119,20 @@ export class ArticlesService {
             memberId: currentMemberId,
             ...body,
         });
+    }
+
+    async likeOrUnLike(memberId: number, articleId: number): Promise<boolean> {
+        const like = await this.articleLikesRepository.findOneBy({
+            memberId,
+            articleId,
+        });
+
+        if (like) {
+            await this.articleLikesRepository.remove(like);
+        } else {
+            await this.articleLikesRepository.save({ memberId, articleId });
+        }
+
+        return !like;
     }
 }
