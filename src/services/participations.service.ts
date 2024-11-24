@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
+import { ENV_API_BASE_URL } from "@APP/common/constants/env-keys.const";
 import { ParticipationStatus } from "@APP/common/enum/participation-status.enum";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { ParticipationErrorCode } from "@APP/common/exception/error-code";
@@ -10,7 +12,49 @@ import { ParticipationsRepository } from "@APP/repositories/participations.repos
 export class ParticipationsService {
     constructor(
         private readonly participationsRepository: ParticipationsRepository,
+        private readonly configService: ConfigService,
     ) {}
+
+    async getParticipations(
+        currentMemberId: number,
+        cursor: number,
+        limit: number,
+    ) {
+        const query = this.participationsRepository
+            .createQueryBuilder("participation")
+            .where("participation.memberId = :memberId", {
+                memberId: currentMemberId,
+            })
+            .orderBy("participation.id", "ASC")
+            .take(limit + 1);
+
+        if (cursor) {
+            query.andWhere("participation.id > :cursor", { cursor });
+        }
+
+        const participations = await query.getMany();
+        const hasNextPage = participations.length > limit;
+        const results = hasNextPage
+            ? participations.slice(0, -1)
+            : participations;
+
+        const lastItem = results[results.length - 1];
+        const nextUrl =
+            lastItem && hasNextPage
+                ? new URL(
+                      `${this.configService.get(ENV_API_BASE_URL)}/participations?cursor=${lastItem.id}&limit=${limit}`,
+                  )
+                : null;
+
+        return {
+            data: results,
+            cursor: {
+                after: lastItem?.id,
+            },
+            count: results.length,
+            next: nextUrl?.toString(),
+        };
+    }
 
     getParticipation(participationId: number, currentMemberId: number) {
         return this.participationsRepository.findOne({
