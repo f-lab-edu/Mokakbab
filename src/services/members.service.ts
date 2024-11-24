@@ -3,11 +3,15 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { UpdateMemberDto } from "@APP/dtos/update-member.dto";
 import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
+import { BlockListRepository } from "@APP/repositories/block-list.repository";
 import { MembersRepository } from "@APP/repositories/members.repository";
 
 @Injectable()
 export class MembersService {
-    constructor(private readonly membersRepository: MembersRepository) {}
+    constructor(
+        private readonly membersRepository: MembersRepository,
+        private readonly blockListRepository: BlockListRepository,
+    ) {}
 
     async findByEmail(email: string) {
         return this.membersRepository.findOne({
@@ -107,5 +111,13 @@ export class MembersService {
             { id: memberId },
             { profileImage: filename },
         );
+    }
+
+    async findBlocks(memberId: number) {
+        return await this.blockListRepository.find({
+            where: {
+                blockerId: memberId,
+            },
+        });
     }
 }
