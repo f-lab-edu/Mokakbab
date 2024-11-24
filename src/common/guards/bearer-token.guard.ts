@@ -4,19 +4,37 @@ import {
     Injectable,
     UnauthorizedException,
 } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 
 import { AuthService } from "@APP/services/auth.service";
 import { MembersService } from "@APP/services/members.service";
+
+import { IS_PUBLIC_KEY } from "../decorators/is-public.decorator";
+import { IsPublicEnum } from "../enum/is-public.enum";
 
 @Injectable()
 export class BearerTokenGuard implements CanActivate {
     constructor(
         private readonly authService: AuthService,
         private readonly membersService: MembersService,
+        private readonly reflector: Reflector,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
+
+        const isPublic = this.reflector.getAllAndOverride(IS_PUBLIC_KEY, [
+            context.getHandler(),
+            context.getClass,
+        ]);
+
+        if (isPublic) {
+            request.isPublic = isPublic;
+        }
+
+        if (isPublic === IsPublicEnum.PUBLIC) {
+            return true;
+        }
 
         const rawToken = request.headers.authorization;
 
@@ -43,6 +61,13 @@ export class AccessTokenGuard extends BearerTokenGuard {
         await super.canActivate(context);
 
         const req = context.switchToHttp().getRequest();
+
+        if (
+            req.isPublic === IsPublicEnum.PUBLIC ||
+            req.isPublic === IsPublicEnum.REFRESH
+        ) {
+            return true;
+        }
 
         if (req.tokenType !== "access") {
             throw new UnauthorizedException("Access Token이 아닙니다.");
