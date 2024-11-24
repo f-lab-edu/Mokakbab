@@ -1,4 +1,4 @@
-import { Exclude } from "class-transformer";
+import { Exclude, Transform } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
 import {
     Column,
@@ -43,6 +43,14 @@ export class MemberEntity {
     @Column({ type: "varchar", length: 100, nullable: false, unique: true })
     email!: string;
 
+    @Transform(({ value }) => {
+        if (!value) return null;
+
+        return new URL(
+            `/public/members/${value}`,
+            process.env["API_BASE_URL"],
+        ).toString();
+    })
     @Column({ type: "varchar", length: 2048, nullable: true })
     profileImage?: string;
 
