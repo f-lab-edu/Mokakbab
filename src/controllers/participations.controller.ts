@@ -22,6 +22,21 @@ export class ParticipationsController {
         private readonly articlesService: ArticlesService,
     ) {}
 
+    @Get("articles/:articleId")
+    async getParticipationsByArticle(
+        @Param("articleId", new ParseIntPipe()) articleId: number,
+        @Query("cursor", new ParseIntPipe()) cursor: number,
+        @Query("limit", new ParseIntPipe()) limit: number,
+    ) {
+        await this.articlesService.findById(articleId);
+
+        return await this.participationsService.getParticipationsByArticleId(
+            articleId,
+            cursor,
+            limit,
+        );
+    }
+
     @Get()
     async getParticipations(
         @CurrentMemberDecorator("id") currentMemberId: number,
