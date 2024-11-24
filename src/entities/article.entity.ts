@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import {
     Column,
@@ -44,6 +44,17 @@ export class ArticleEntity {
     @IsDate()
     @Column({ type: "datetime" })
     endTime!: Date;
+
+    @Transform(({ value }) => {
+        if (!value) return null;
+
+        return new URL(
+            `/public/articles/${value}`,
+            process.env["API_BASE_URL"],
+        ).toString();
+    })
+    @Column({ type: "varchar", length: 2048, nullable: true })
+    articleImage?: string;
 
     @IsNotEmpty()
     @IsNumber()
