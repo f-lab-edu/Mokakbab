@@ -49,12 +49,18 @@ jobs:
             docker stop $(docker ps -a -q)
             docker rm $(docker ps -a -q)
             docker run -d -p 3000:80 \
+              -e DB_TYPE='${{ secrets.DB_TYPE }}' \
               -e DB_HOST='${{ secrets.DB_HOST }}' \
               -e DB_PORT='${{ secrets.DB_PORT }}' \
               -e DB_USERNAME='${{ secrets.DB_USERNAME }}' \
               -e DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
               -e DB_DATABASE='${{ secrets.DB_DATABASE }}' \
+              -e DB_SYNCHRONIZE='${{ secrets.DB_SYNCHRONIZE }}' \
               -e JWT_SECRET_KEY='${{ secrets.JWT_SECRET_KEY }}' \
+              -e MAIL_HOST='${{ secrets.MAIL_HOST }}' \
+              -e MAIL_PORT='${{ secrets.MAIL_PORT }}' \
+              -e MAIL_USER='${{ secrets.MAIL_USER }}' \
+              -e MAIL_PWD='${{ secrets.MAIL_PWD }}' \
               -e API_BASE_URL='${{ secrets.API_BASE_URL }}' \
               ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker image prune -f
