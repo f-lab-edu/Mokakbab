@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.DEV_PASSWORD }}
           port: ${{ secrets.DEV_PORT }}
           script: |
-            docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend
+            docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker stop $(docker ps -a -q)
             docker rm $(docker ps -a -q)
             docker run -d -p 3000:80 \
@@ -56,6 +56,5 @@ jobs:
               -e DB_DATABASE='${{ secrets.DB_DATABASE }}' \
               -e JWT_SECRET_KEY='${{ secrets.JWT_SECRET_KEY }}' \
               -e API_BASE_URL='${{ secrets.API_BASE_URL }}' \
-              ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend
+              ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker image prune -f
-            
