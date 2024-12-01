@@ -48,7 +48,7 @@ jobs:
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker stop $(docker ps -a -q)
             docker rm $(docker ps -a -q)
-            docker run -d -p 3000:80 \
+            docker run -d -p 3000:3000 \
               -e DB_TYPE='${{ secrets.DB_TYPE }}' \
               -e DB_HOST='${{ secrets.DB_HOST }}' \
               -e DB_PORT='${{ secrets.DB_PORT }}' \

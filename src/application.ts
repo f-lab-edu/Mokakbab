@@ -25,7 +25,7 @@ export namespace Backend {
                     forbidNonWhitelisted: true,
                 }),
             )
-            .listen(6000);
+            .listen(3000);
         process.on("SIGINT", async () => {
             await end(app);
             process.exit(0);
