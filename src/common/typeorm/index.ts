@@ -1,4 +1,5 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import path from "path";
 
 import {
     ENV_DB_DATABASE,
@@ -21,7 +22,7 @@ export const TypeOrmModuleOptions = {
             username: configService.get(ENV_DB_USERNAME),
             database: configService.get(ENV_DB_DATABASE),
             password: configService.get(ENV_DB_PASSWORD),
-            entities: [__dirname + "/../../**/*.entity.{js,ts}"],
+            entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE),
         };
 
