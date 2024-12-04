@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import {
     Column,
     CreateDateColumn,
@@ -15,19 +16,31 @@ import { VerificationCodeEntity } from "./verification-code.entity";
 @Entity("member")
 export class MemberEntity {
     @PrimaryGeneratedColumn()
-    id!: number; // 사용자아이디 (PK)
+    id!: number;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "varchar", length: 20, nullable: false })
-    name!: string; // 사용자이름
+    name!: string;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "varchar", length: 40, nullable: false })
-    nickname!: string; // 사용자별칭
+    nickname!: string;
 
+    @IsNotEmpty()
+    @IsString()
     @Column({ type: "varchar", length: PASSWORD_HASH_LENGTH, nullable: false })
     password!: string; // 비밀번호
 
+    @IsNotEmpty()
+    @IsString()
+    @IsEmail()
+    @Column({ type: "varchar", length: 100, nullable: false, unique: true })
+    email!: string;
+
     @Column({ type: "varchar", length: 2048, nullable: true })
-    profileImage?: string; // 프로필이미지
+    profileImage?: string;
 
     @OneToOne(() => RefreshTokenEntity, (refreshToken) => refreshToken.member)
     refreshToken?: RefreshTokenEntity; // 리프레시토큰
@@ -39,8 +52,8 @@ export class MemberEntity {
     verificationCode?: VerificationCodeEntity; // 이메일인증코드
 
     @CreateDateColumn({ type: "timestamp", nullable: false })
-    createdAt!: Date; // 생성날짜
+    createdAt!: Date;
 
     @UpdateDateColumn({ type: "timestamp", nullable: false })
-    updatedAt!: Date; // 수정날짜
+    updatedAt!: Date;
 }
