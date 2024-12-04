@@ -2,9 +2,12 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
+
+import { VerificationCodeEntity } from "./verification-code.entity";
 
 @Entity("member")
 export class MemberEntity {
@@ -26,8 +29,11 @@ export class MemberEntity {
     @Column({ type: "varchar", length: 60, nullable: true })
     refreshToken?: string; // 리프레시토큰
 
-    @Column({ type: "varchar", length: 60, nullable: true })
-    verificationCode?: string; // 이메일인증코드
+    @OneToOne(
+        () => VerificationCodeEntity,
+        (verificationCode) => verificationCode.member,
+    )
+    verificationCode?: VerificationCodeEntity; // 이메일인증코드
 
     @CreateDateColumn({ type: "timestamp", nullable: false })
     createdAt!: Date; // 생성날짜
