@@ -7,7 +7,7 @@ import { MembersRepository } from "@APP/repositories/members.repository";
 export class MembersService {
     constructor(private readonly membersRepository: MembersRepository) {}
 
-    async findByEmail(email: string) {
+    findByEmail(email: string) {
         return this.membersRepository.findOne({
             where: {
                 email,
@@ -15,19 +15,17 @@ export class MembersService {
         });
     }
 
-    async createMember(dto: RegisterMemberDto) {
-        const emailExists = await this.membersRepository.exist({
-            where: {
-                email: dto.email,
-            },
-        });
-
-        if (emailExists) {
-            throw new BadRequestException("이미 가입한 이메일입니다");
-        }
-
+    createMember(dto: RegisterMemberDto) {
         const newMember = this.membersRepository.create(dto);
 
-        return await this.membersRepository.save(newMember);
+        return this.membersRepository.save(newMember);
+    }
+
+    existByEmail(email: string) {
+        return this.membersRepository.exist({
+            where: {
+                email,
+            },
+        });
     }
 }
