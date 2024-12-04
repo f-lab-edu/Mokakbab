@@ -16,14 +16,14 @@ export const TypeOrmModuleOptions = {
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) => {
         const option = {
-            type: configService.get(ENV_DB_TYPE),
-            host: configService.get(ENV_DB_HOST),
-            port: Number(configService.get<number>(ENV_DB_PORT)),
-            username: configService.get(ENV_DB_USERNAME),
-            database: configService.get(ENV_DB_DATABASE),
-            password: configService.get(ENV_DB_PASSWORD),
+            type: configService.get(ENV_DB_TYPE) || "mysql",
+            host: configService.get(ENV_DB_HOST) || "localhost",
+            port: Number(configService.get<number>(ENV_DB_PORT)) || 3306,
+            username: configService.get(ENV_DB_USERNAME) || "root",
+            database: configService.get(ENV_DB_DATABASE) || "test",
+            password: configService.get(ENV_DB_PASSWORD) || "test",
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
-            synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE),
+            synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
         };
 
         return option;
