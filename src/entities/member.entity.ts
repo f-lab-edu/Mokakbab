@@ -7,6 +7,8 @@ import {
     UpdateDateColumn,
 } from "typeorm";
 
+import { PASSWORD_HASH_LENGTH } from "@APP/common/constants/number.const";
+
 import { RefreshTokenEntity } from "./refresh-token.entity";
 import { VerificationCodeEntity } from "./verification-code.entity";
 
@@ -21,7 +23,7 @@ export class MemberEntity {
     @Column({ type: "varchar", length: 40, nullable: false })
     nickname!: string; // 사용자별칭
 
-    @Column({ type: "varchar", length: 60, nullable: false })
+    @Column({ type: "varchar", length: PASSWORD_HASH_LENGTH, nullable: false })
     password!: string; // 비밀번호
 
     @Column({ type: "varchar", length: 2048, nullable: true })
