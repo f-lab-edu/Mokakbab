@@ -7,6 +7,7 @@ import {
     UpdateDateColumn,
 } from "typeorm";
 
+import { RefreshTokenEntity } from "./refresh-token.entity";
 import { VerificationCodeEntity } from "./verification-code.entity";
 
 @Entity("member")
@@ -26,8 +27,8 @@ export class MemberEntity {
     @Column({ type: "varchar", length: 2048, nullable: true })
     profileImage?: string; // 프로필이미지
 
-    @Column({ type: "varchar", length: 60, nullable: true })
-    refreshToken?: string; // 리프레시토큰
+    @OneToOne(() => RefreshTokenEntity, (refreshToken) => refreshToken.member)
+    refreshToken?: RefreshTokenEntity; // 리프레시토큰
 
     @OneToOne(
         () => VerificationCodeEntity,
