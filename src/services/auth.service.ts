@@ -1,9 +1,11 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 
 import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
+import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
+import { MemberErrorCode } from "@APP/common/exception/error-code";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { MemberEntity } from "@APP/entities/member.entity";
 
@@ -23,7 +25,7 @@ export class AuthService {
         const prefix = isBearer ? "Bearer" : "Basic";
 
         if (splitToken.length !== 2 || splitToken[0] !== prefix) {
-            throw new UnauthorizedException("잘못된 토큰입니다!");
+            throw new BusinessErrorException(MemberErrorCode.INVALID_TOKEN);
         }
 
         const token = splitToken[1]!;
@@ -36,7 +38,7 @@ export class AuthService {
         const splitEmail = decoded.split(":");
 
         if (splitEmail.length !== 2) {
-            throw new UnauthorizedException("잘못된 유형의 토큰입니다!");
+            throw new BusinessErrorException(MemberErrorCode.INVALID_TOKEN);
         }
 
         return {
@@ -51,7 +53,7 @@ export class AuthService {
         const existMember = await this.membersService.findByEmail(member.email);
 
         if (!existMember) {
-            throw new UnauthorizedException("존재 하지 않는 사용자입니다.");
+            throw new BusinessErrorException(MemberErrorCode.NOT_FOUND_MEMBER);
         }
 
         const compareOk = await bcrypt.compare(
@@ -60,7 +62,7 @@ export class AuthService {
         );
 
         if (!compareOk) {
-            throw new UnauthorizedException("비밀번호가 틀렸습니다.");
+            throw new BusinessErrorException(MemberErrorCode.INVALID_PASSWORD);
         }
 
         return existMember;
@@ -74,6 +76,14 @@ export class AuthService {
 
     async registerByEmail(dto: RegisterMemberDto) {
         const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+        const existMember = await this.membersService.existByEmail(dto.email);
+
+        if (existMember) {
+            throw new BusinessErrorException(
+                MemberErrorCode.EMAIL_ALREADY_EXISTS,
+            );
+        }
 
         const newMember = await this.membersService.createMember({
             ...dto,

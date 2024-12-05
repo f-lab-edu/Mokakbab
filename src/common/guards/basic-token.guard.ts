@@ -1,11 +1,9 @@
-import {
-    CanActivate,
-    ExecutionContext,
-    Injectable,
-    UnauthorizedException,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 
 import { AuthService } from "@APP/services/auth.service";
+
+import { BusinessErrorException } from "../exception/business-error.exception";
+import { MemberErrorCode } from "../exception/error-code";
 
 @Injectable()
 export class BasicTokenGuard implements CanActivate {
@@ -15,7 +13,8 @@ export class BasicTokenGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const rawToken = request.headers["authorization"];
 
-        if (!rawToken) throw new UnauthorizedException("토큰이 없습니다!");
+        if (!rawToken)
+            throw new BusinessErrorException(MemberErrorCode.TOKEN_NOT_FOUND);
 
         const token = this.authService.extractTokenFromHeader(rawToken, false);
 
