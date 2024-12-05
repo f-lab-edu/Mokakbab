@@ -15,4 +15,8 @@ export const MemberErrorCode = {
         "2006",
         "토큰 재발급은 Refresh 토큰으로만 가능합니다!",
     ),
+    INVALID_VERIFICATION_CODE: new ErrorCode(
+        "2007",
+        "인증 코드가 일치하지 않습니다",
+    ),
 };

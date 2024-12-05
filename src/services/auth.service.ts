@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
+import * as crypto from "crypto";
 
 import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
@@ -10,6 +11,7 @@ import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
 import { MemberEntity } from "@APP/entities/member.entity";
 
+import { MailsService } from "./mails.service";
 import { MembersService } from "./members.service";
 
 @Injectable()
@@ -17,6 +19,7 @@ export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         private readonly membersService: MembersService,
+        private readonly mailsService: MailsService,
         private readonly configService: ConfigService,
     ) {}
 
@@ -77,6 +80,7 @@ export class AuthService {
 
     async registerByEmail(dto: RegisterMemberDto) {
         const hashedPassword = await bcrypt.hash(dto.password, 10);
+        const verificationCode = this.generateVerificationCode();
 
         const existMember = await this.membersService.existByEmail(dto.email);
 
@@ -86,10 +90,18 @@ export class AuthService {
             );
         }
 
-        const newMember = await this.membersService.createMember({
-            ...dto,
-            password: hashedPassword,
-        });
+        const newMember = await this.membersService.createMember(
+            {
+                ...dto,
+                password: hashedPassword,
+            },
+            verificationCode,
+        );
+
+        void this.mailsService.sendVerificationEmail(
+            newMember.email,
+            verificationCode,
+        );
 
         return this.signInMember(newMember);
     }
@@ -137,8 +149,8 @@ export class AuthService {
         }
     }
 
-    async verifyEmail(dto: VerifyEmailDto) {
-        return await this.membersService.verifyEmail(dto);
+    verifyEmail(dto: VerifyEmailDto) {
+        return this.membersService.verifyEmail(dto);
     }
 
     rotateAccessToken(token: string) {
@@ -161,5 +173,9 @@ export class AuthService {
 
     updateRefreshToken(memberId: number) {
         return this.membersService.updateRefreshToken(memberId);
+    }
+
+    private generateVerificationCode(): string {
+        return crypto.randomBytes(3).toString("hex").toUpperCase();
     }
 }

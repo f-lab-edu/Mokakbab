@@ -54,6 +54,9 @@ export class MemberEntity {
     @JoinColumn()
     verificationCode?: VerificationCodeEntity; // 이메일인증코드
 
+    @Column({ type: "boolean", default: false })
+    isEmailVerified!: boolean;
+
     @CreateDateColumn({ type: "timestamp", nullable: false })
     createdAt!: Date;
 
