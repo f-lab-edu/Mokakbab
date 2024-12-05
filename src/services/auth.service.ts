@@ -111,7 +111,8 @@ export class AuthService {
         };
 
         return this.jwtService.sign(payload, {
-            secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
+            secret:
+                this.configService.get<string>(ENV_JWT_SECRET_KEY) || "secret",
             expiresIn: isRefreshToken ? 3600 : 300,
         });
     }
@@ -122,7 +123,7 @@ export class AuthService {
                 secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
             });
         } catch {
-            throw new UnauthorizedException("잘못된 토큰입니다!");
+            throw new BusinessErrorException(MemberErrorCode.INVALID_TOKEN);
         }
     }
 
@@ -130,8 +131,8 @@ export class AuthService {
         const decoded = this.verifyToken(token);
 
         if (decoded.type !== "refresh") {
-            throw new UnauthorizedException(
-                "토큰 재발급은 Refresh 토큰으로만 가능합니다!",
+            throw new BusinessErrorException(
+                MemberErrorCode.INVALID_TOKEN_TYPE,
             );
         }
 
@@ -144,7 +145,7 @@ export class AuthService {
         );
     }
 
-    async updateRefreshToken(memberId: number) {
-        return await this.membersService.updateRefreshToken(memberId);
+    updateRefreshToken(memberId: number) {
+        return this.membersService.updateRefreshToken(memberId);
     }
 }

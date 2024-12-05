@@ -25,6 +25,9 @@ export class BusinessErrorFilter implements ExceptionFilter {
             case "2005":
                 status = 401;
                 break;
+            case "2006":
+                status = 401;
+                break;
         }
 
         response.status(status).json({
