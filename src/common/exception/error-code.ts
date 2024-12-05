@@ -11,4 +11,8 @@ export const MemberErrorCode = {
     INVALID_PASSWORD: new ErrorCode("2003", "비밀번호가 틀렸습니다."),
     INVALID_TOKEN: new ErrorCode("2004", "잘못된 토큰입니다"),
     TOKEN_NOT_FOUND: new ErrorCode("2005", "토큰이 없습니다!"),
+    INVALID_TOKEN_TYPE: new ErrorCode(
+        "2006",
+        "토큰 재발급은 Refresh 토큰으로만 가능합니다!",
+    ),
 };

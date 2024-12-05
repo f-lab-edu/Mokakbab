@@ -9,3 +9,6 @@ export const ENV_DB_SYNCHRONIZE = "DB_SYNCHRONIZE" as const;
 
 // jwt
 export const ENV_JWT_SECRET_KEY = "JWT_SECRET_KEY" as const;
+
+// server
+export const ENV_SERVER_PORT = "SERVER_PORT" as const;

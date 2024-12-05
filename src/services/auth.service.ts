@@ -93,11 +93,20 @@ export class AuthService {
         return this.signInMember(newMember);
     }
 
-    private signInMember(member: Pick<MemberEntity, "email" | "id">) {
-        return {
+    private async signInMember(member: Pick<MemberEntity, "email" | "id">) {
+        const tokens = {
             accessToken: this.signToken(member, false),
             refreshToken: this.signToken(member, true),
         };
+
+        const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, 10);
+
+        void this.membersService.saveRefreshToken(
+            member.id,
+            hashedRefreshToken,
+        );
+
+        return tokens;
     }
 
     private signToken(
@@ -111,8 +120,41 @@ export class AuthService {
         };
 
         return this.jwtService.sign(payload, {
-            secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
+            secret:
+                this.configService.get<string>(ENV_JWT_SECRET_KEY) || "secret",
             expiresIn: isRefreshToken ? 3600 : 300,
         });
+    }
+
+    verifyToken(token: string) {
+        try {
+            return this.jwtService.verify(token, {
+                secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
+            });
+        } catch {
+            throw new BusinessErrorException(MemberErrorCode.INVALID_TOKEN);
+        }
+    }
+
+    rotateAccessToken(token: string) {
+        const decoded = this.verifyToken(token);
+
+        if (decoded.type !== "refresh") {
+            throw new BusinessErrorException(
+                MemberErrorCode.INVALID_TOKEN_TYPE,
+            );
+        }
+
+        return this.signToken(
+            {
+                email: decoded.email,
+                id: decoded.sub,
+            },
+            false,
+        );
+    }
+
+    updateRefreshToken(memberId: number) {
+        return this.membersService.updateRefreshToken(memberId);
     }
 }
