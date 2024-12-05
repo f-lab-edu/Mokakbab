@@ -6,6 +6,7 @@ import {
 import { NestFactory } from "@nestjs/core";
 
 import { AppModule } from "./app.module";
+import { ENV_SERVER_PORT } from "./common/constants/env-keys.const";
 import { BusinessErrorFilter } from "./common/filter/business-error.filter";
 
 export namespace Backend {
@@ -27,7 +28,7 @@ export namespace Backend {
                     forbidNonWhitelisted: true,
                 }),
             )
-            .listen(6000);
+            .listen(ENV_SERVER_PORT);
 
         process.on("SIGINT", async () => {
             await end(app);
