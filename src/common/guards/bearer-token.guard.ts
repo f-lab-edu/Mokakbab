@@ -4,6 +4,7 @@ import {
     Injectable,
     UnauthorizedException,
 } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
 
 import { AuthService } from "@APP/services/auth.service";
 import { MembersService } from "@APP/services/members.service";
@@ -33,6 +34,7 @@ export class BearerTokenGuard implements CanActivate {
 
         request.member = member;
         request.tokenType = result.type;
+        request.token = token;
 
         return true;
     }
@@ -61,6 +63,16 @@ export class RefreshTokenGuard extends BearerTokenGuard {
         if (req.tokenType !== "refresh") {
             throw new UnauthorizedException("Refresh Token이 아닙니다.");
         }
+
+        const refreshToken = req.token;
+
+        const compareOk = await bcrypt.compare(
+            refreshToken,
+            req.member.refreshToken?.token,
+        );
+
+        if (!compareOk)
+            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
 
         return true;
     }

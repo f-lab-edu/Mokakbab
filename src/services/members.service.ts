@@ -38,18 +38,28 @@ export class MembersService {
             where: {
                 email,
             },
+            relations: {
+                refreshToken: true,
+            },
         });
     }
 
     async updateRefreshToken(memberId: number) {
-        return await this.membersRepository.update(
-            {
+        const foundMember = await this.membersRepository.findOneOrFail({
+            where: {
                 id: memberId,
             },
+            relations: {
+                refreshToken: true,
+            },
+        });
+
+        return this.refreshTokenRepository.update(
             {
-                refreshToken: {
-                    token: null,
-                },
+                id: foundMember.refreshToken!.id,
+            },
+            {
+                token: null,
             },
         );
     }
