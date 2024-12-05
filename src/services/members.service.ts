@@ -6,12 +6,14 @@ import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
 import { MembersRepository } from "@APP/repositories/members.repository";
 import { RefreshTokenRepository } from "@APP/repositories/refresh-token.repository";
+import { VerificationCodeRepository } from "@APP/repositories/verification-code.repository";
 
 @Injectable()
 export class MembersService {
     constructor(
         private readonly membersRepository: MembersRepository,
         private readonly refreshTokenRepository: RefreshTokenRepository,
+        private readonly verificationCodeRepository: VerificationCodeRepository,
     ) {}
 
     findByEmail(email: string) {
@@ -56,8 +58,20 @@ export class MembersService {
         return verifyCodeExists;
     }
 
-    createMember(dto: RegisterMemberDto, verificationCode: string) {
-        const newMember = this.membersRepository.create(dto);
+    async createMember(dto: RegisterMemberDto, verificationCode: string) {
+        const newVerificationCode = this.verificationCodeRepository.create({
+            code: verificationCode,
+        });
+
+        const savedVerificationCode =
+            await this.verificationCodeRepository.save(newVerificationCode);
+
+        const newMember = this.membersRepository.create({
+            ...dto,
+            verificationCode: {
+                id: savedVerificationCode.id,
+            },
+        });
 
         return this.membersRepository.save(newMember);
     }
