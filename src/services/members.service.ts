@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { MembersRepository } from "@APP/repositories/members.repository";
