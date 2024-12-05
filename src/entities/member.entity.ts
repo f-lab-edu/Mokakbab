@@ -3,6 +3,7 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    JoinColumn,
     OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
@@ -43,12 +44,14 @@ export class MemberEntity {
     profileImage?: string;
 
     @OneToOne(() => RefreshTokenEntity, (refreshToken) => refreshToken.member)
+    @JoinColumn()
     refreshToken?: RefreshTokenEntity; // 리프레시토큰
 
     @OneToOne(
         () => VerificationCodeEntity,
         (verificationCode) => verificationCode.member,
     )
+    @JoinColumn()
     verificationCode?: VerificationCodeEntity; // 이메일인증코드
 
     @CreateDateColumn({ type: "timestamp", nullable: false })

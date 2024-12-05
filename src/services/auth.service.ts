@@ -93,11 +93,20 @@ export class AuthService {
         return this.signInMember(newMember);
     }
 
-    private signInMember(member: Pick<MemberEntity, "email" | "id">) {
-        return {
+    private async signInMember(member: Pick<MemberEntity, "email" | "id">) {
+        const tokens = {
             accessToken: this.signToken(member, false),
             refreshToken: this.signToken(member, true),
         };
+
+        const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, 10);
+
+        void this.membersService.saveRefreshToken(
+            member.id,
+            hashedRefreshToken,
+        );
+
+        return tokens;
     }
 
     private signToken(

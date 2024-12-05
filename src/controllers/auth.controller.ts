@@ -30,13 +30,13 @@ export class AuthController {
 
     @UseGuards(AccessTokenGuard)
     @Post("sign-out")
-    async signOut(@CurrentMemberDecorator("id") memberId: number) {
-        await this.authService.updateRefreshToken(memberId);
+    signOut(@CurrentMemberDecorator("id") memberId: number) {
+        void this.authService.updateRefreshToken(memberId);
     }
 
     @UseGuards(RefreshTokenGuard)
     @Post("access-token")
-    async postAccessToken(@Headers("authorization") rawToken: string) {
+    postAccessToken(@Headers("authorization") rawToken: string) {
         const token = this.authService.extractTokenFromHeader(rawToken, true);
 
         return this.authService.rotateAccessToken(token);
