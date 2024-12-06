@@ -16,29 +16,29 @@ export class AuthController {
     @IsPublicDecorator(IsPublicEnum.PUBLIC)
     @UseGuards(BasicTokenGuard)
     @Post("sign-in")
-    async signIn(@Headers("authorization") rawToken: string) {
+    signIn(@Headers("authorization") rawToken: string) {
         const token = this.authService.extractTokenFromHeader(rawToken, false);
 
         const decoded = this.authService.decodeBasicToken(token);
 
-        return await this.authService.signInByEmail(decoded);
+        return this.authService.signInByEmail(decoded);
     }
 
     @IsPublicDecorator(IsPublicEnum.PUBLIC)
     @Post("sign-up")
-    async signUp(@Body() dto: RegisterMemberDto) {
-        return await this.authService.registerByEmail(dto);
+    signUp(@Body() dto: RegisterMemberDto) {
+        return this.authService.registerByEmail(dto);
     }
 
     @Post("sign-out")
     signOut(@CurrentMemberDecorator("id") memberId: number) {
-        void this.authService.updateRefreshToken(memberId);
+        return this.authService.updateRefreshToken(memberId);
     }
 
     @IsPublicDecorator(IsPublicEnum.PUBLIC)
     @Post("verify-email")
-    async verifyEmail(@Body() dto: VerifyEmailDto) {
-        return await this.authService.verifyEmail(dto);
+    verifyEmail(@Body() dto: VerifyEmailDto) {
+        return this.authService.verifyEmail(dto);
     }
 
     @IsPublicDecorator(IsPublicEnum.REFRESH)

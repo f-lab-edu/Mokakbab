@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { MembersController } from "@APP/controllers/members.controller";
 import { MemberEntity } from "@APP/entities/member.entity";
 import { RefreshTokenEntity } from "@APP/entities/refresh-token.entity";
 import { VerificationCodeEntity } from "@APP/entities/verification-code.entity";
@@ -17,7 +18,7 @@ import { MembersService } from "@APP/services/members.service";
             VerificationCodeEntity,
         ]),
     ],
-    controllers: [],
+    controllers: [MembersController],
     providers: [
         MembersService,
         MembersRepository,

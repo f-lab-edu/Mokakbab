@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { MemberErrorCode } from "@APP/common/exception/error-code";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
+import { UpdateMemberDto } from "@APP/dtos/update-member.dto";
 import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
 import { MembersRepository } from "@APP/repositories/members.repository";
 import { RefreshTokenRepository } from "@APP/repositories/refresh-token.repository";
@@ -21,6 +22,29 @@ export class MembersService {
             where: {
                 email,
             },
+        });
+    }
+
+    findById(memberId: number) {
+        return this.membersRepository.findOne({
+            where: {
+                id: memberId,
+            },
+        });
+    }
+
+    updateById(memberId: number, dto: UpdateMemberDto) {
+        return this.membersRepository.update(
+            {
+                id: memberId,
+            },
+            dto,
+        );
+    }
+
+    deleteById(memberId: number) {
+        return this.membersRepository.delete({
+            id: memberId,
         });
     }
 
