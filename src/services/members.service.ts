@@ -196,17 +196,17 @@ export class MembersService {
         });
     }
 
-    async createBlock(blockerId: number, blockedId: number) {
-        return await this.blockListRepository.save({
-            blockerId,
-            blockedId,
+    createBlack(blackerId: number, blackedId: number) {
+        return this.blackListRepository.save({
+            blackerId,
+            blackedId,
         });
     }
 
-    async deleteBlock(blockerId: number, blockedId: number) {
-        return await this.blockListRepository.delete({
-            blockerId,
-            blockedId,
+    deleteBlack(blackerId: number, blackedId: number) {
+        return this.blackListRepository.delete({
+            blackerId,
+            blackedId,
         });
     }
 }
