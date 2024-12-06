@@ -5,16 +5,16 @@ import {
     PrimaryGeneratedColumn,
 } from "typeorm";
 
-@Entity("block_list")
-export class BlockListEntity {
+@Entity("black_list")
+export class BlackListEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
     @PrimaryColumn({ type: "int" })
-    blockerId!: number;
+    blackerId!: number;
 
     @PrimaryColumn({ type: "int" })
-    blockedId!: number;
+    blackedId!: number;
 
     @CreateDateColumn({ type: "timestamp", nullable: false })
     createdAt!: Date;
