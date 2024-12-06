@@ -25,7 +25,7 @@ export class MembersService {
         });
     }
 
-    async findById(memberId: number) {
+    findById(memberId: number) {
         return this.membersRepository.findOne({
             where: {
                 id: memberId,
@@ -33,7 +33,7 @@ export class MembersService {
         });
     }
 
-    async updateById(memberId: number, dto: UpdateMemberDto) {
+    updateById(memberId: number, dto: UpdateMemberDto) {
         return this.membersRepository.update(
             {
                 id: memberId,
@@ -42,7 +42,7 @@ export class MembersService {
         );
     }
 
-    async deleteById(memberId: number) {
+    deleteById(memberId: number) {
         return this.membersRepository.delete({
             id: memberId,
         });

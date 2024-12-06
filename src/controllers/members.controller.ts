@@ -20,8 +20,8 @@ export class MembersController {
     constructor(private readonly membersService: MembersService) {}
 
     @Get(":memberId")
-    async getMember(@Param("memberId", new ParseIntPipe()) memberId: number) {
-        return await this.membersService.findById(memberId);
+    getMember(@Param("memberId", new ParseIntPipe()) memberId: number) {
+        return this.membersService.findById(memberId);
     }
 
     @Delete(":memberId")
@@ -65,6 +65,6 @@ export class MembersController {
 
         await this.membersService.updateById(memberId, dto);
 
-        return await this.membersService.findById(memberId);
+        return this.membersService.findById(memberId);
     }
 }
