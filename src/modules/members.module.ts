@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import multer from "multer";
 import { extname } from "path";
 
+import { MAX_FILE_SIZE } from "@APP/common/constants/number.const";
 import { MembersController } from "@APP/controllers/members.controller";
 import { MemberEntity } from "@APP/entities/member.entity";
 import { RefreshTokenEntity } from "@APP/entities/refresh-token.entity";
@@ -22,7 +23,7 @@ import { MembersService } from "@APP/services/members.service";
         ]),
         MulterModule.register({
             limits: {
-                fileSize: 10000000,
+                fileSize: MAX_FILE_SIZE,
             },
             fileFilter: (_req, file, cb) => {
                 const ext = extname(file.originalname);
