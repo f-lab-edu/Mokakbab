@@ -22,6 +22,11 @@ import { MembersService } from "@APP/services/members.service";
 export class MembersController {
     constructor(private readonly membersService: MembersService) {}
 
+    @Get("blacks")
+    getBlacks(@CurrentMemberDecorator("id") currentMemberId: number) {
+        return this.membersService.findBlacks(currentMemberId);
+    }
+
     @Get(":memberId")
     getMember(@Param("memberId", new ParseIntPipe()) memberId: number) {
         return this.membersService.findById(memberId);

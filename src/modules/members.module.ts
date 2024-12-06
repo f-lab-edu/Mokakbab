@@ -6,9 +6,11 @@ import { extname } from "path";
 
 import { MAX_FILE_SIZE } from "@APP/common/constants/number.const";
 import { MembersController } from "@APP/controllers/members.controller";
+import { BlackListEntity } from "@APP/entities/black-list.entity";
 import { MemberEntity } from "@APP/entities/member.entity";
 import { RefreshTokenEntity } from "@APP/entities/refresh-token.entity";
 import { VerificationCodeEntity } from "@APP/entities/verification-code.entity";
+import { BlackListRepository } from "@APP/repositories/black-list.repository";
 import { MembersRepository } from "@APP/repositories/members.repository";
 import { RefreshTokenRepository } from "@APP/repositories/refresh-token.repository";
 import { VerificationCodeRepository } from "@APP/repositories/verification-code.repository";
@@ -21,6 +23,9 @@ import { MembersService } from "@APP/services/members.service";
             RefreshTokenEntity,
             VerificationCodeEntity,
         ]),
+
+        TypeOrmModule.forFeature([MemberEntity, BlackListEntity]),
+
         MulterModule.register({
             limits: {
                 fileSize: MAX_FILE_SIZE,
@@ -55,6 +60,7 @@ import { MembersService } from "@APP/services/members.service";
         MembersRepository,
         RefreshTokenRepository,
         VerificationCodeRepository,
+        BlackListRepository,
     ],
     exports: [MembersService],
 })
