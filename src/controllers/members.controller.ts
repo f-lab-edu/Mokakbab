@@ -8,7 +8,10 @@ import {
     Param,
     ParseIntPipe,
     Patch,
+    UploadedFile,
+    UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import * as bcrypt from "bcrypt";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
@@ -66,5 +69,21 @@ export class MembersController {
         await this.membersService.updateById(memberId, dto);
 
         return this.membersService.findById(memberId);
+    }
+
+    @Patch(":memberId/profile-image")
+    @UseInterceptors(FileInterceptor("image"))
+    async patchProfileImage(
+        @CurrentMemberDecorator("id") currentMemberId: number,
+        @UploadedFile() file: Express.Multer.File,
+    ) {
+        await this.membersService.updateProfileImage(
+            currentMemberId,
+            file.filename,
+        );
+
+        return {
+            filename: file.filename,
+        };
     }
 }

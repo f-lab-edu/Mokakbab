@@ -178,4 +178,11 @@ export class MembersService {
             },
         );
     }
+
+    updateProfileImage(memberId: number, filename: string) {
+        return this.membersRepository.update(
+            { id: memberId },
+            { profileImage: filename },
+        );
+    }
 }
