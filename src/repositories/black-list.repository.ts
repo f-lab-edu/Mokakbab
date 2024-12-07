@@ -1,8 +1,10 @@
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { QueryRunner, Repository } from "typeorm";
 
 import { BlackListEntity } from "@APP/entities/black-list.entity";
 
+@Injectable()
 export class BlackListRepository extends Repository<BlackListEntity> {
     constructor(
         @InjectRepository(BlackListEntity)

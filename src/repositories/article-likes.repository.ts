@@ -2,20 +2,20 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { QueryRunner, Repository } from "typeorm";
 
-import { RefreshTokenEntity } from "@APP/entities/refresh-token.entity";
+import { ArticleLikeEntity } from "@APP/entities/article-like.entity";
 
 @Injectable()
-export class RefreshTokenRepository extends Repository<RefreshTokenEntity> {
+export class ArticleLikesRepository extends Repository<ArticleLikeEntity> {
     constructor(
-        @InjectRepository(RefreshTokenEntity)
-        private readonly repository: Repository<RefreshTokenEntity>,
+        @InjectRepository(ArticleLikeEntity)
+        private readonly repository: Repository<ArticleLikeEntity>,
     ) {
         super(repository.target, repository.manager, repository.queryRunner);
     }
 
     getRepository(qr?: QueryRunner) {
         return qr
-            ? qr.manager.getRepository<RefreshTokenEntity>(RefreshTokenEntity)
+            ? qr.manager.getRepository<ArticleLikeEntity>(ArticleLikeEntity)
             : this.repository;
     }
 }
