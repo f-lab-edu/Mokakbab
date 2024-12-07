@@ -9,7 +9,7 @@ export class ArticlesController {
     constructor(private readonly articlesService: ArticlesService) {}
 
     @Post()
-    async postArticle(
+    postArticle(
         @Body() body: CreateArticleDto,
         @CurrentMemberDecorator("id") currentMemberId: number,
     ) {

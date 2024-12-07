@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
+import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
+import { ArticleErrorCode } from "@APP/common/exception/error-code";
 import { CreateArticleDto } from "@APP/dtos/create-article.dto";
 import { ArticlesRepository } from "@APP/repositories/articles.repository";
 import { CategoriesRepository } from "@APP/repositories/categories.repository";
@@ -35,11 +37,13 @@ export class ArticlesService {
         ]);
 
         if (!category) {
-            throw new NotFoundException("카테고리를 찾을 수 없습니다.");
+            throw new BusinessErrorException(
+                ArticleErrorCode.NOT_FOUND_CATEGORY,
+            );
         }
 
         if (!district || !region) {
-            throw new NotFoundException("지역을 찾을 수 없습니다.");
+            throw new BusinessErrorException(ArticleErrorCode.NOT_FOUND_REGION);
         }
 
         return this.articlesRepository.save(
