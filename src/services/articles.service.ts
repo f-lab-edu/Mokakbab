@@ -18,6 +18,20 @@ export class ArticlesService {
         private readonly regionsRepository: RegionsRepository,
     ) {}
 
+    async findById(articleId: number) {
+        const article = await this.articlesRepository.findOne({
+            where: { id: articleId },
+        });
+
+        if (!article) {
+            throw new BusinessErrorException(
+                ArticleErrorCode.NOT_FOUND_ARTICLE,
+            );
+        }
+
+        return article;
+    }
+
     async createArticle(currentMemberId: number, body: CreateArticleDto) {
         const [category, district, region] = await Promise.all([
             this.categoriesRepository.exists({

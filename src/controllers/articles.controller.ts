@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Delete,
+    Get,
     Param,
     ParseIntPipe,
     Patch,
@@ -16,6 +17,11 @@ import { ArticlesService } from "@APP/services/articles.service";
 @Controller("articles")
 export class ArticlesController {
     constructor(private readonly articlesService: ArticlesService) {}
+
+    @Get(":articleId")
+    getArticle(@Param("articleId", new ParseIntPipe()) articleId: number) {
+        return this.articlesService.findById(articleId);
+    }
 
     @Post()
     postArticle(
