@@ -34,6 +34,6 @@ import { ArticlesService } from "@APP/services/articles.service";
         RegionsRepository,
         ArticleLikesRepository,
     ],
-    exports: [],
+    exports: [ArticlesService],
 })
 export class ArticlesModule {}
