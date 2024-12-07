@@ -8,6 +8,7 @@ import {
     Param,
     ParseIntPipe,
     Patch,
+    Post,
     UploadedFile,
     UseInterceptors,
 } from "@nestjs/common";
@@ -15,6 +16,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import * as bcrypt from "bcrypt";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
+import { CreateBlackListDto } from "@APP/dtos/create-black-list.dto";
 import { UpdateMemberDto } from "@APP/dtos/update-member.dto";
 import { MembersService } from "@APP/services/members.service";
 
@@ -25,6 +27,22 @@ export class MembersController {
     @Get("blacks")
     getBlacks(@CurrentMemberDecorator("id") currentMemberId: number) {
         return this.membersService.findBlacks(currentMemberId);
+    }
+
+    @Post("blacks")
+    postBlack(
+        @CurrentMemberDecorator("id") currentMemberId: number,
+        @Body() dto: CreateBlackListDto,
+    ) {
+        return this.membersService.createBlack(currentMemberId, dto.blackedId);
+    }
+
+    @Delete("blacks/:blackedId")
+    deleteBlack(
+        @CurrentMemberDecorator("id") currentMemberId: number,
+        @Param("blackedId", new ParseIntPipe()) blackedId: number,
+    ) {
+        return this.membersService.deleteBlack(currentMemberId, blackedId);
     }
 
     @Get(":memberId")

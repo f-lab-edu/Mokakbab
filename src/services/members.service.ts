@@ -195,4 +195,18 @@ export class MembersService {
             },
         });
     }
+
+    createBlack(blackerId: number, blackedId: number) {
+        return this.blackListRepository.save({
+            blackerId,
+            blackedId,
+        });
+    }
+
+    deleteBlack(blackerId: number, blackedId: number) {
+        return this.blackListRepository.delete({
+            blackerId,
+            blackedId,
+        });
+    }
 }
