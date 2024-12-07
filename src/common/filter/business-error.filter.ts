@@ -12,24 +12,31 @@ export class BusinessErrorFilter implements ExceptionFilter {
         let status = 500;
 
         switch (exception.errorCode.code) {
+            // 400 Bad Request
             case "2001":
+            case "2007":
                 status = 400;
                 break;
-            case "2004":
+
+            // 401 Unauthorized
             case "2003":
-                status = 401;
-                break;
-            case "2002":
-                status = 404;
-                break;
+            case "2004":
             case "2005":
-                status = 401;
-                break;
             case "2006":
                 status = 401;
                 break;
-            case "2007":
-                status = 400;
+
+            // 403 Forbidden
+            case "3004":
+                status = 403;
+                break;
+
+            // 404 Not Found
+            case "2002":
+            case "3001":
+            case "3002":
+            case "3003":
+                status = 404;
                 break;
         }
 
