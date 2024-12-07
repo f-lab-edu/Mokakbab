@@ -2,6 +2,7 @@ import { MailerModule } from "@nestjs-modules/mailer";
 import { ClassSerializerInterceptor, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import path from "path";
 
@@ -15,6 +16,10 @@ import { ParticipationsModule } from "./modules/participations.module";
 
 @Module({
     imports: [
+        ServeStaticModule.forRoot({
+            rootPath: path.resolve(process.cwd(), "uploads"),
+            serveRoot: "/public",
+        }),
         ConfigModule.forRoot({
             envFilePath: [
                 path.resolve(process.cwd(), `.${process.env["NODE_ENV"]}.env`),
