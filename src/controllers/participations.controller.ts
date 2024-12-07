@@ -19,7 +19,7 @@ export class ParticipationsController {
     ) {
         await this.articlesService.findById(body.articleId);
 
-        return await this.participationsService.createParticipation(
+        return this.participationsService.createParticipation(
             currentMemberId,
             body,
         );

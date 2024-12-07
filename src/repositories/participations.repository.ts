@@ -5,7 +5,7 @@ import { QueryRunner, Repository } from "typeorm";
 import { ParticipationEntity } from "@APP/entities/participation.entity";
 
 @Injectable()
-export class ParticipationRepository extends Repository<ParticipationEntity> {
+export class ParticipationsRepository extends Repository<ParticipationEntity> {
     constructor(
         @InjectRepository(ParticipationEntity)
         private readonly repository: Repository<ParticipationEntity>,

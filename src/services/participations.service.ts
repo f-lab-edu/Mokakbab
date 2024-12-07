@@ -1,24 +1,21 @@
 import { Injectable } from "@nestjs/common";
 
 import { CreateParticipationDto } from "@APP/dtos/create-participation.dto";
-import { ParticipationRepository } from "@APP/repositories/participation.repository";
+import { ParticipationsRepository } from "@APP/repositories/participations.repository";
 
 @Injectable()
 export class ParticipationsService {
     constructor(
-        private readonly participationsRepository: ParticipationRepository,
+        private readonly participationsRepository: ParticipationsRepository,
     ) {}
 
-    async createParticipation(
-        currentMemberId: number,
-        body: CreateParticipationDto,
-    ) {
+    createParticipation(currentMemberId: number, body: CreateParticipationDto) {
         const newParticipation = this.createParticipationEntity(
             currentMemberId,
             body,
         );
 
-        return await this.participationsRepository.save(newParticipation);
+        return this.participationsRepository.save(newParticipation);
     }
 
     private createParticipationEntity(
