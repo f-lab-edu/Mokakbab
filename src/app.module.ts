@@ -5,7 +5,6 @@ import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import path from "path";
-import { join } from "path";
 
 import { EmailOptions } from "./common/config/email-config";
 import { AccessTokenGuard } from "./common/guards/bearer-token.guard";
@@ -18,7 +17,7 @@ import { ParticipationsModule } from "./modules/participations.module";
 @Module({
     imports: [
         ServeStaticModule.forRoot({
-            rootPath: join(__dirname, "..", "uploads"),
+            rootPath: path.resolve(process.cwd(), "uploads"),
             serveRoot: "/public",
         }),
         ConfigModule.forRoot({

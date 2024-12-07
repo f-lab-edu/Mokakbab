@@ -37,7 +37,7 @@ export class ArticlesController {
 
     @Patch("upload-image")
     @UseInterceptors(FileInterceptor("image"))
-    async patchUploadImage(@UploadedFile() file: Express.Multer.File) {
+    patchUploadImage(@UploadedFile() file: Express.Multer.File) {
         return {
             filename: file.filename,
         };
