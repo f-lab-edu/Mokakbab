@@ -30,7 +30,7 @@ export class ParticipationsController {
     ) {
         await this.articlesService.findById(articleId);
 
-        return await this.participationsService.getParticipationsByArticleId(
+        return this.participationsService.getParticipationsByArticleId(
             articleId,
             cursor,
             limit,
