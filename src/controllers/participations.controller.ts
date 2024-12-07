@@ -5,7 +5,9 @@ import {
     Get,
     NotFoundException,
     Param,
+    ParseIntPipe,
     Post,
+    Query,
 } from "@nestjs/common";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
@@ -19,6 +21,34 @@ export class ParticipationsController {
         private readonly participationsService: ParticipationsService,
         private readonly articlesService: ArticlesService,
     ) {}
+
+    @Get("articles/:articleId")
+    async getParticipationsByArticle(
+        @Param("articleId", new ParseIntPipe()) articleId: number,
+        @Query("cursor", new ParseIntPipe()) cursor: number,
+        @Query("limit", new ParseIntPipe()) limit: number,
+    ) {
+        await this.articlesService.findById(articleId);
+
+        return this.participationsService.getParticipationsByArticleId(
+            articleId,
+            cursor,
+            limit,
+        );
+    }
+
+    @Get()
+    async getParticipations(
+        @CurrentMemberDecorator("id") currentMemberId: number,
+        @Query("cursor", new ParseIntPipe()) cursor: number,
+        @Query("limit", new ParseIntPipe()) limit: number,
+    ) {
+        return await this.participationsService.getParticipations(
+            currentMemberId,
+            cursor,
+            limit,
+        );
+    }
 
     @Get(":participationId")
     async getParticipation(
