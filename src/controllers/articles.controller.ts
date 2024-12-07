@@ -19,9 +19,7 @@ export class ArticlesController {
     constructor(private readonly articlesService: ArticlesService) {}
 
     @Get(":articleId")
-    async getArticle(
-        @Param("articleId", new ParseIntPipe()) articleId: number,
-    ) {
+    getArticle(@Param("articleId", new ParseIntPipe()) articleId: number) {
         return this.articlesService.findById(articleId);
     }
 

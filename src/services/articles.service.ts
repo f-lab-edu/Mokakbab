@@ -24,7 +24,9 @@ export class ArticlesService {
         });
 
         if (!article) {
-            throw new NotFoundException("게시글을 찾을 수 없습니다.");
+            throw new BusinessErrorException(
+                ArticleErrorCode.NOT_FOUND_ARTICLE,
+            );
         }
 
         return article;
