@@ -26,7 +26,7 @@ export class ArticlesController {
     }
 
     @Patch(":articleId")
-    async patchArticle(
+    patchArticle(
         @Param("articleId", new ParseIntPipe()) articleId: number,
         @Body() body: UpdateArticleDto,
         @CurrentMemberDecorator("id") currentMemberId: number,
@@ -39,7 +39,7 @@ export class ArticlesController {
     }
 
     @Delete(":articleId")
-    async deleteArticle(
+    deleteArticle(
         @Param("articleId", new ParseIntPipe()) articleId: number,
         @CurrentMemberDecorator("id") currentMemberId: number,
     ) {

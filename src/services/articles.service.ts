@@ -62,11 +62,15 @@ export class ArticlesService {
         });
 
         if (!article) {
-            throw new NotFoundException("게시글을 찾을 수 없습니다.");
+            throw new BusinessErrorException(
+                ArticleErrorCode.NOT_FOUND_ARTICLE,
+            );
         }
 
         if (article.memberId !== currentMemberId) {
-            throw new ForbiddenException("권한이 없습니다.");
+            throw new BusinessErrorException(
+                ArticleErrorCode.FORBIDDEN_ARTICLE,
+            );
         }
 
         await this.articlesRepository.update(
@@ -87,14 +91,18 @@ export class ArticlesService {
         });
 
         if (!article) {
-            throw new NotFoundException("게시글을 찾을 수 없습니다.");
+            throw new BusinessErrorException(
+                ArticleErrorCode.NOT_FOUND_ARTICLE,
+            );
         }
 
         if (article.memberId !== currentMemberId) {
-            throw new ForbiddenException("권한이 없습니다.");
+            throw new BusinessErrorException(
+                ArticleErrorCode.FORBIDDEN_ARTICLE,
+            );
         }
 
-        await this.articlesRepository.delete(articleId);
+        return this.articlesRepository.delete(articleId);
     }
 
     private createArticleEntity(
