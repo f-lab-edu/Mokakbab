@@ -7,6 +7,7 @@ import { ArticleEntity } from "@APP/entities/article.entity";
 import { CategoryEntity } from "@APP/entities/category.entity";
 import { DistrictEntity } from "@APP/entities/district.entity";
 import { RegionEntity } from "@APP/entities/region.entity";
+import { ArticleLikesRepository } from "@APP/repositories/article-likes.repository";
 import { ArticlesRepository } from "@APP/repositories/articles.repository";
 import { CategoriesRepository } from "@APP/repositories/categories.repository";
 import { DistrictsRepository } from "@APP/repositories/districts.repository";
@@ -21,6 +22,7 @@ import { ArticlesService } from "@APP/services/articles.service";
             CategoryEntity,
             DistrictEntity,
             RegionEntity,
+            ArticleLikeEntity,
         ]),
     ],
     controllers: [ArticlesController],
@@ -30,6 +32,7 @@ import { ArticlesService } from "@APP/services/articles.service";
         CategoriesRepository,
         DistrictsRepository,
         RegionsRepository,
+        ArticleLikesRepository,
     ],
     exports: [],
 })

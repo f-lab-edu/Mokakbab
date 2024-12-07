@@ -7,6 +7,7 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    Put,
 } from "@nestjs/common";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
@@ -50,5 +51,15 @@ export class ArticlesController {
         @CurrentMemberDecorator("id") currentMemberId: number,
     ) {
         return this.articlesService.deleteById(articleId, currentMemberId);
+    }
+
+    @Put(":articleId/like")
+    async putArticleLike(
+        @Param("articleId", new ParseIntPipe()) articleId: number,
+        @CurrentMemberDecorator("id") currentMemberId: number,
+    ) {
+        await this.articlesService.findById(articleId);
+
+        return this.articlesService.likeOrUnLike(currentMemberId, articleId);
     }
 }
