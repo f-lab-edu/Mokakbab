@@ -20,3 +20,8 @@ export const MemberErrorCode = {
         "인증 코드가 일치하지 않습니다",
     ),
 };
+
+export const ArticleErrorCode = {
+    NOT_FOUND_CATEGORY: new ErrorCode("3001", "카테고리를 찾을 수 없습니다."),
+    NOT_FOUND_REGION: new ErrorCode("3002", "지역을 찾을 수 없습니다."),
+};

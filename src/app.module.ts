@@ -8,6 +8,7 @@ import path from "path";
 import { EmailOptions } from "./common/config/email-config";
 import { AccessTokenGuard } from "./common/guards/bearer-token.guard";
 import { TypeOrmModuleOptions } from "./common/typeorm";
+import { ArticlesModule } from "./modules/articles.module";
 import { AuthModule } from "./modules/auth.module";
 import { MembersModule } from "./modules/members.module";
 
@@ -23,6 +24,7 @@ import { MembersModule } from "./modules/members.module";
         MembersModule,
         AuthModule,
         MailerModule.forRootAsync(EmailOptions),
+        ArticlesModule,
     ],
     controllers: [],
     providers: [
