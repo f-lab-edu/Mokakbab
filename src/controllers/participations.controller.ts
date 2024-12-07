@@ -1,4 +1,12 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+} from "@nestjs/common";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
 import { CreateParticipationDto } from "@APP/dtos/create-participation.dto";
@@ -12,6 +20,23 @@ export class ParticipationsController {
         private readonly articlesService: ArticlesService,
     ) {}
 
+    @Get(":participationId")
+    async getParticipation(
+        @Param("participationId") participationId: number,
+        @CurrentMemberDecorator("id") currentMemberId: number,
+    ) {
+        const participation = await this.participationsService.getParticipation(
+            participationId,
+            currentMemberId,
+        );
+
+        if (!participation) {
+            throw new NotFoundException("참여 정보를 찾을 수 없습니다.");
+        }
+
+        return participation;
+    }
+
     @Post()
     async postParticipation(
         @Body() body: CreateParticipationDto,
@@ -22,6 +47,17 @@ export class ParticipationsController {
         return this.participationsService.createParticipation(
             currentMemberId,
             body,
+        );
+    }
+
+    @Delete(":participationId")
+    deleteParticipation(
+        @Param("participationId") participationId: number,
+        @CurrentMemberDecorator("id") currentMemberId: number,
+    ) {
+        return this.participationsService.deleteParticipation(
+            participationId,
+            currentMemberId,
         );
     }
 }
