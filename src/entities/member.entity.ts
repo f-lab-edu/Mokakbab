@@ -1,5 +1,11 @@
 import { Exclude, Transform } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
+import {
+    IsEmail,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+    Length,
+} from "class-validator";
 import {
     Column,
     CreateDateColumn,
@@ -49,14 +55,18 @@ export class MemberEntity {
     @Column({ type: "varchar", length: 100, nullable: false, unique: true })
     email!: string;
 
-    @Transform(({ value }) => {
-        if (!value) return null;
+    @Transform(
+        ({ value }) => {
+            if (!value) return null;
 
-        return new URL(
-            `/public/members/${value}`,
-            process.env["API_BASE_URL"],
-        ).toString();
-    })
+            return new URL(
+                `/public/members/${value}`,
+                process.env["API_BASE_URL"],
+            ).toString();
+        },
+        { toPlainOnly: true },
+    )
+    @IsOptional()
     @Column({ type: "varchar", length: 2048, nullable: true })
     profileImage?: string;
 
