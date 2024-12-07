@@ -1,0 +1,66 @@
+name: auto deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  push_to_registry:
+    name: Push to ncp container registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to NCP Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.NCP_CONTAINER_REGISTRY }}
+          username: ${{ secrets.NCP_ACCESS_KEY }}
+          password: ${{ secrets.NCP_SECRET_KEY }}
+      - name: build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
+          cache-from: type=registry,ref=${{ secrets.NCP_CONTAINER_REGISTRY }}/prv-backend:latest
+          cache-to: type=inline
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.GIT_TOKEN }}
+
+  pull_from_registry:
+    name: Connect server ssh and pull from container registry
+    needs: push_to_registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: connect ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          password: ${{ secrets.DEV_PASSWORD }}
+          port: ${{ secrets.DEV_PORT }}
+          script: |
+            docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
+            docker stop $(docker ps -a -q)
+            docker rm $(docker ps -a -q)
+            docker run -d -p 3000:3000 \
+              -e DB_TYPE='${{ secrets.DB_TYPE }}' \
+              -e DB_HOST='${{ secrets.DB_HOST }}' \
+              -e DB_PORT='${{ secrets.DB_PORT }}' \
+              -e DB_USERNAME='${{ secrets.DB_USERNAME }}' \
+              -e DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
+              -e DB_DATABASE='${{ secrets.DB_DATABASE }}' \
+              -e DB_SYNCHRONIZE='${{ secrets.DB_SYNCHRONIZE }}' \
+              -e JWT_SECRET_KEY='${{ secrets.JWT_SECRET_KEY }}' \
+              -e MAIL_HOST='${{ secrets.MAIL_HOST }}' \
+              -e MAIL_PORT='${{ secrets.MAIL_PORT }}' \
+              -e MAIL_USER='${{ secrets.MAIL_USER }}' \
+              -e MAIL_PWD='${{ secrets.MAIL_PWD }}' \
+              -e API_BASE_URL='${{ secrets.API_BASE_URL }}' \
+              ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
+            docker image prune -f

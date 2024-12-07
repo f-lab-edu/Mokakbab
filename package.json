@@ -5,9 +5,11 @@
     "author": "yanggwangseong",
     "license": "MIT",
     "scripts": {
+        "build": "nest build",
         "start:dev": "cross-env NODE_ENV=development nest start --watch",
         "test": "jest",
         "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
+        "start:prod": "cross-env NODE_ENV=production node dist/main",
         "---------------------------------------------": "",
         "eslint": "eslint src",
         "eslint:fix": "eslint src --fix",
