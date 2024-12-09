@@ -1,10 +1,8 @@
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { ParticipationStatus } from "@APP/common/enum/participation-status.enum";
+import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
+import { ParticipationErrorCode } from "@APP/common/exception/error-code";
 import { CreateParticipationDto } from "@APP/dtos/create-participation.dto";
 import { ParticipationsRepository } from "@APP/repositories/participations.repository";
 
@@ -40,17 +38,19 @@ export class ParticipationsService {
             return this.participationsRepository.save(newParticipation);
         }
 
-        if (participation.status === ParticipationStatus.CANCELLED) {
-            const updatedParticipation = this.createParticipationEntity(
-                currentMemberId,
-                body,
-                ParticipationStatus.ACTIVE,
+        if (participation.status === ParticipationStatus.ACTIVE) {
+            throw new BusinessErrorException(
+                ParticipationErrorCode.ALREADY_PARTICIPATED,
             );
-
-            return this.participationsRepository.save(updatedParticipation);
         }
 
-        throw new ConflictException("이미 참여한 게시글입니다.");
+        const updatedParticipation = this.createParticipationEntity(
+            currentMemberId,
+            body,
+            ParticipationStatus.ACTIVE,
+        );
+
+        return this.participationsRepository.save(updatedParticipation);
     }
 
     private createParticipationEntity(
@@ -74,7 +74,9 @@ export class ParticipationsService {
         });
 
         if (!participation) {
-            throw new NotFoundException("참여 정보를 찾을 수 없습니다.");
+            throw new BusinessErrorException(
+                ParticipationErrorCode.NOT_FOUND_PARTICIPATION,
+            );
         }
 
         return this.participationsRepository.update(

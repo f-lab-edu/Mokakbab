@@ -15,6 +15,7 @@ export class BusinessErrorFilter implements ExceptionFilter {
             // 400 Bad Request
             case "2001":
             case "2007":
+            case "4001":
                 status = 400;
                 break;
 
@@ -36,6 +37,7 @@ export class BusinessErrorFilter implements ExceptionFilter {
             case "3001":
             case "3002":
             case "3003":
+            case "4002":
                 status = 404;
                 break;
         }
