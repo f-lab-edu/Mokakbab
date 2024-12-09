@@ -27,3 +27,11 @@ export const ArticleErrorCode = {
     NOT_FOUND_ARTICLE: new ErrorCode("3003", "게시글을 찾을 수 없습니다."),
     FORBIDDEN_ARTICLE: new ErrorCode("3004", "권한이 없습니다."),
 };
+
+export const ParticipationErrorCode = {
+    ALREADY_PARTICIPATED: new ErrorCode("4001", "이미 참여한 게시글입니다."),
+    NOT_FOUND_PARTICIPATION: new ErrorCode(
+        "4002",
+        "참여 정보를 찾을 수 없습니다.",
+    ),
+};
