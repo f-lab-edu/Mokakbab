@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+    backend:
+      image: ${NCP_CONTAINER_REGISTRY}/backend:latest
+      container_name: backend_prod
+      ports:
+          - "${BACKEND_OUTBOUND_PORT}:${BACKEND_INBOUND_PORT}"
+      environment:
+          - DB_TYPE=${DB_TYPE}
+          - DB_HOST=${DB_HOST}
+          - DB_PORT=${DB_PORT}
+          - DB_USERNAME=${DB_USERNAME}
+          - DB_PASSWORD=${DB_PASSWORD}
+          - DB_DATABASE=${DB_DATABASE}
+          - DB_SYNCHRONIZE=${DB_SYNCHRONIZE}
+          - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+          - MAIL_HOST=${MAIL_HOST}
+          - MAIL_PORT=${MAIL_PORT}
+          - MAIL_USER=${MAIL_USER}
+          - MAIL_PWD=${MAIL_PWD}
+          - API_BASE_URL=${API_BASE_URL}
+          - SERVER_PORT=${SERVER_PORT}
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+
+    mysql-prod:
+      image: mysql:8.0
+      restart: always
+      container_name: mysql_prod
+      volumes:
+          - ./mysql-data:/var/lib/mysql
+      ports:
+          - "${MYSQL_OUTBOUND_PORT}:${MYSQL_INBOUND_PORT}"
+      environment:
+          - MYSQL_DATABASE=${DB_DATABASE}
+          - MYSQL_USER=${DB_USERNAME}
+          - MYSQL_PASSWORD=${DB_PASSWORD}
+          - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
