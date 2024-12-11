@@ -36,9 +36,5 @@ eslint.config.mjs
 README.md
 .github
 
-# Build configs
-tsconfig.json
-tsconfig.build.json
-
 # docker
 docker-compose-dev.yml
