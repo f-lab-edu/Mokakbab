@@ -3,7 +3,7 @@ name: auto deploy
 on:
   push:
     branches:
-      - feature/51-ncp-deploy-cd
+      - main
 
 jobs:
   push_to_registry:
@@ -49,7 +49,7 @@ jobs:
           port: ${{ secrets.DEV_PORT }}
           source: "docker-compose.yml"
           target: "~/"
-          
+
       - name: connect ssh
         uses: appleboy/ssh-action@master
         with:
