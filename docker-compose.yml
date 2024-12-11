@@ -3,9 +3,6 @@ services:
     backend:
       image: ${NCP_CONTAINER_REGISTRY}/backend:latest
       container_name: backend_prod
-      volumes:
-        - /app/node_modules
-        - .:/app
       ports:
           - "${BACKEND_OUTBOUND_PORT}:${BACKEND_INBOUND_PORT}"
       environment:
