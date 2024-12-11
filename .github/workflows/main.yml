@@ -45,22 +45,29 @@ jobs:
           password: ${{ secrets.DEV_PASSWORD }}
           port: ${{ secrets.DEV_PORT }}
           script: |
+            echo "DB_TYPE=${{ secrets.DB_TYPE }}" > .env
+            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
+            echo "DB_SYNCHRONIZE=${{ secrets.DB_SYNCHRONIZE }}" >> .env
+            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+            echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> .env
+            echo "MAIL_PORT=${{ secrets.MAIL_PORT }}" >> .env
+            echo "MAIL_USER=${{ secrets.MAIL_USER }}" >> .env
+            echo "MAIL_PWD=${{ secrets.MAIL_PWD }}" >> .env
+            echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .env
+            echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+            echo "NCP_CONTAINER_REGISTRY=${{ secrets.NCP_CONTAINER_REGISTRY }}" >> .env
+            echo "BACKEND_OUTBOUND_PORT=${{ secrets.BACKEND_OUTBOUND_PORT }}" >> .env
+            echo "BACKEND_INBOUND_PORT=${{ secrets.BACKEND_INBOUND_PORT }}" >> .env
+            echo "MYSQL_OUTBOUND_PORT=${{ secrets.MYSQL_OUTBOUND_PORT }}" >> .env
+            echo "MYSQL_INBOUND_PORT=${{ secrets.MYSQL_INBOUND_PORT }}" >> .env
+            echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+            
+            docker-compose down
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
-            docker stop $(docker ps -a -q)
-            docker rm $(docker ps -a -q)
-            docker run -d -p 3000:3000 \
-              -e DB_TYPE='${{ secrets.DB_TYPE }}' \
-              -e DB_HOST='${{ secrets.DB_HOST }}' \
-              -e DB_PORT='${{ secrets.DB_PORT }}' \
-              -e DB_USERNAME='${{ secrets.DB_USERNAME }}' \
-              -e DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
-              -e DB_DATABASE='${{ secrets.DB_DATABASE }}' \
-              -e DB_SYNCHRONIZE='${{ secrets.DB_SYNCHRONIZE }}' \
-              -e JWT_SECRET_KEY='${{ secrets.JWT_SECRET_KEY }}' \
-              -e MAIL_HOST='${{ secrets.MAIL_HOST }}' \
-              -e MAIL_PORT='${{ secrets.MAIL_PORT }}' \
-              -e MAIL_USER='${{ secrets.MAIL_USER }}' \
-              -e MAIL_PWD='${{ secrets.MAIL_PWD }}' \
-              -e API_BASE_URL='${{ secrets.API_BASE_URL }}' \
-              ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
+            docker-compose up -d
             docker image prune -f
+
