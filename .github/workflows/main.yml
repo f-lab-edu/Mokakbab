@@ -3,8 +3,8 @@ name: auto deploy
 on:
   push:
     branches:
-      - main
-
+      - develop
+      
 jobs:
   push_to_registry:
     name: Push to ncp container registry
