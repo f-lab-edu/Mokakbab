@@ -3,7 +3,7 @@ name: auto deploy
 on:
   push:
     branches:
-      - main
+      - feature/51-ncp-deploy-cd
 
 jobs:
   push_to_registry:
