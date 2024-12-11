@@ -1,4 +1,4 @@
-version: "2.0"
+version: "3.8"
 services:
     backend:
       image: ${NCP_CONTAINER_REGISTRY}/backend:latest
@@ -20,6 +20,8 @@ services:
           - MAIL_PWD=${MAIL_PWD}
           - API_BASE_URL=${API_BASE_URL}
           - SERVER_PORT=${SERVER_PORT}
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
 
     mysql-prod:
       image: mysql:8.0
