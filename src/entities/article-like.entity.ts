@@ -1,8 +1,9 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn, Unique } from "typeorm";
 
 import { ArticleEntity } from "./article.entity";
 import { MemberEntity } from "./member.entity";
 
+@Unique(["articleId", "memberId"])
 @Entity("article_likes")
 export class ArticleLikeEntity {
     @PrimaryColumn({ type: "int" })

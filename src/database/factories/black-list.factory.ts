@@ -2,20 +2,22 @@ import { setSeederFactory } from "typeorm-extension";
 
 import { BlackListEntity } from "@APP/entities/black-list.entity";
 
+import { MEMBER_ID_RANGE } from "../utils/member-id-range.const";
+
 export default setSeederFactory(BlackListEntity, async (faker) => {
     const blackListEntry = new BlackListEntity();
 
-    let initiatorId = faker.number.int({ min: 1, max: 100 });
-    let targetId = faker.number.int({ min: 1, max: 100 });
+    const memberIdRanges = faker.helpers.weightedArrayElement(MEMBER_ID_RANGE);
 
-    // 자기 자신을 블랙 하는것을 방지 하기 위해
-    while (initiatorId === targetId) {
-        initiatorId = faker.number.int({ min: 1, max: 100 });
-        targetId = faker.number.int({ min: 1, max: 100 });
-    }
+    blackListEntry.blackerId = faker.number.int({
+        min: memberIdRanges.min,
+        max: memberIdRanges.max,
+    });
 
-    blackListEntry.blackerId = initiatorId;
-    blackListEntry.blackedId = targetId;
+    blackListEntry.blackedId = faker.number.int({
+        min: memberIdRanges.min,
+        max: memberIdRanges.max,
+    });
 
     return blackListEntry;
 });

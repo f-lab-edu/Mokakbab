@@ -4,8 +4,10 @@ import {
     Entity,
     PrimaryColumn,
     PrimaryGeneratedColumn,
+    Unique,
 } from "typeorm";
 
+@Unique(["blackerId", "blackedId"])
 @Entity("black_list")
 export class BlackListEntity {
     @PrimaryGeneratedColumn()

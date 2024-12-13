@@ -29,6 +29,7 @@ services:
       container_name: mysql_prod
       volumes:
           - ./mysql-data:/var/lib/mysql
+          - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       ports:
           - "${MYSQL_OUTBOUND_PORT}:${MYSQL_INBOUND_PORT}"
       environment:

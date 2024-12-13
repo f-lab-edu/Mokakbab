@@ -34,6 +34,14 @@ const options: DataSourceOptions & SeederOptions = {
     logging: true,
     seeds: [`src/database/seeds/**/*{.js,.ts}`],
     factories: [`src/database/factories/**/*{.js,.ts}`],
+    extra: {
+        connectionLimit: 30,
+        queueLimit: 0,
+        waitForConnections: true,
+    },
+    // 커넥션 풀 사이즈 설정
+    poolSize: 30,
+    connectTimeout: 120000,
 };
 
 export const dataSource = new DataSource(options);

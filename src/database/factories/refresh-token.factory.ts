@@ -1,24 +1,13 @@
-import * as bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { setSeederFactory } from "typeorm-extension";
 
-import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
 import { RefreshTokenEntity } from "@APP/entities/refresh-token.entity";
 
-export default setSeederFactory(RefreshTokenEntity, async (faker) => {
-    const payload = {
-        email: faker.internet.email(),
-        sub: faker.number.int(),
-        type: "refresh",
-    };
-
-    const secret = process.env[ENV_JWT_SECRET_KEY] || "secret";
-    const expiresIn = "3600";
-
+export default setSeederFactory(RefreshTokenEntity, async () => {
     const refreshToken = new RefreshTokenEntity();
 
-    const token = jwt.sign(payload, secret, { expiresIn });
-    refreshToken.token = await bcrypt.hash(token, 10);
+    // bcrypt 해시가 너무 오래 걸려 미리 해싱
+    refreshToken.token =
+        "$2b$10$ndYzoPCCXt.24qzOusAB/OYMqaS1UKVqQsGvQh9t/MaqFqgg.g0fO";
 
     return refreshToken;
 });
