@@ -1,3 +1,4 @@
+import { IsNotEmpty, IsNumber } from "class-validator";
 import {
     CreateDateColumn,
     Entity,
@@ -11,9 +12,13 @@ export class BlackListEntity {
     id!: number;
 
     @PrimaryColumn({ type: "int" })
+    @IsNumber()
+    @IsNotEmpty()
     blackerId!: number;
 
     @PrimaryColumn({ type: "int" })
+    @IsNumber()
+    @IsNotEmpty()
     blackedId!: number;
 
     @CreateDateColumn({ type: "timestamp", nullable: false })

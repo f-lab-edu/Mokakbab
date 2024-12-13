@@ -5,10 +5,10 @@ import { setSeederFactory } from "typeorm-extension";
 import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
 import { RefreshTokenEntity } from "@APP/entities/refresh-token.entity";
 
-export default setSeederFactory(RefreshTokenEntity, async () => {
+export default setSeederFactory(RefreshTokenEntity, async (faker) => {
     const payload = {
-        email: "Alisha_Dibbert@hotmail.com",
-        sub: 8,
+        email: faker.internet.email(),
+        sub: faker.number.int(),
         type: "refresh",
     };
 

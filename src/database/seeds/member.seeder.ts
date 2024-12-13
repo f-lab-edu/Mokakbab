@@ -20,7 +20,7 @@ export default class MemberSeeder implements Seeder {
         //     refreshToken: refreshToken,
         // });
 
-        const members = await memberFactory.saveMany(1);
+        const members = await memberFactory.saveMany(100);
 
         console.log(`멤버 생성 완료 : ${members.length}`);
     }
