@@ -129,13 +129,11 @@ export class ParticipationsService {
             );
         }
 
-        const updatedParticipation = this.createParticipationEntity(
-            currentMemberId,
-            body,
-            ParticipationStatus.ACTIVE,
-        );
-
-        return this.participationsRepository.save(updatedParticipation);
+        // 기존 참여 정보가 있고 CANCELLED 상태인 경우, update를 사용
+        return this.participationsRepository.save({
+            ...participation,
+            status: ParticipationStatus.ACTIVE,
+        });
     }
 
     private createParticipationEntity(
