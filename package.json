@@ -21,7 +21,6 @@
         "seed:dev": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs -d ./data-source.ts seed:run --name"
     },
     "dependencies": {
-        "@faker-js/faker": "^9.3.0",
         "@nestjs-modules/mailer": "^2.0.2",
         "@nestjs/common": "^10.4.8",
         "@nestjs/config": "^3.3.0",

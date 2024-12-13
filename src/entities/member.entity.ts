@@ -68,7 +68,7 @@ export class MemberEntity {
     )
     @IsOptional()
     @Column({ type: "varchar", length: 2048, nullable: true })
-    profileImage?: string;
+    profileImage?: string | null;
 
     @OneToOne(() => RefreshTokenEntity, (refreshToken) => refreshToken.member)
     @JoinColumn()
