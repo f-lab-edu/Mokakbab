@@ -4,7 +4,7 @@ import { setSeederFactory } from "typeorm-extension";
 import { MemberEntity } from "../../entities/member.entity";
 
 export default setSeederFactory(MemberEntity, async (faker) => {
-    const hashedPassword = await bcrypt.hash(faker.internet.password(), 10);
+    const hashedPassword = await bcrypt.hash("123456", 10);
 
     const member = new MemberEntity();
     member.name = faker.person.firstName();
