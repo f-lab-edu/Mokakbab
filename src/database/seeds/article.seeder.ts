@@ -10,7 +10,7 @@ export default class ArticleSeeder implements Seeder {
     ): Promise<void> {
         const articleFactory = factoryManager.get(ArticleEntity);
 
-        const articles = await articleFactory.saveMany(50000);
+        const articles = await articleFactory.saveMany(1);
 
         console.log(`게시글 생성 완료 : ${articles.length}`);
     }

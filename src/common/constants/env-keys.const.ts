@@ -1,7 +1,6 @@
 // database
 export const ENV_DB_TYPE = "DB_TYPE" as const;
 export const ENV_DB_HOST = "DB_HOST" as const;
-export const ENV_DB_SOURCE_HOST = "DB_SOURCE_HOST" as const;
 export const ENV_DB_PORT = "DB_PORT" as const;
 export const ENV_DB_USERNAME = "DB_USERNAME" as const;
 export const ENV_DB_PASSWORD = "DB_PASSWORD" as const;

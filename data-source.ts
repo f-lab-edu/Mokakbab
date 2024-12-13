@@ -5,9 +5,9 @@ import { SeederOptions } from "typeorm-extension";
 
 import {
     ENV_DB_DATABASE,
+    ENV_DB_HOST,
     ENV_DB_PASSWORD,
     ENV_DB_PORT,
-    ENV_DB_SOURCE_HOST,
     ENV_DB_TYPE,
     ENV_DB_USERNAME,
 } from "@APP/common/constants/env-keys.const";
@@ -25,7 +25,7 @@ dotenv.config({
 
 const options: DataSourceOptions & SeederOptions = {
     type: (process.env[ENV_DB_TYPE] as any) || "mysql",
-    host: process.env[ENV_DB_SOURCE_HOST] || "localhost",
+    host: process.env[ENV_DB_HOST] || "localhost",
     port: Number(process.env[ENV_DB_PORT]) || 3306,
     username: process.env[ENV_DB_USERNAME] || "root",
     password: process.env[ENV_DB_PASSWORD] || "test",
