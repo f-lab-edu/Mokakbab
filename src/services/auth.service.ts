@@ -98,7 +98,7 @@ export class AuthService {
             verificationCode,
         );
 
-        await this.mailsService.sendVerificationEmail(
+        void this.mailsService.sendVerificationEmail(
             newMember.email,
             verificationCode,
         );

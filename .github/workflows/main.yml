@@ -3,7 +3,7 @@ name: auto deploy
 on:
   push:
     branches:
-      - feature/54-fake-dataset-seeding
+      - feature/55-load-test
       
 jobs:
   push_to_registry:

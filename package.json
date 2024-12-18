@@ -18,7 +18,10 @@
         "prepare": "husky",
         "--------------------------------------------": "",
         "seed": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs -d ./data-source.ts seed:run --name",
-        "seed:dev": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs -d ./data-source.ts seed:run --name"
+        "seed:dev": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs -d ./data-source.ts seed:run --name",
+        "-------------------------------------------": "",
+        "k6:run:articles": "docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/articles-performance.js",
+        "k6:run:participations": "docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/participations-performance.js"
     },
     "dependencies": {
         "@nestjs-modules/mailer": "^2.0.2",

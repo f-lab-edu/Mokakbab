@@ -24,6 +24,15 @@ export const TypeOrmModuleOptions = {
             password: configService.get(ENV_DB_PASSWORD) || "test",
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
+            extra: {
+                connectionLimit: 30,
+                queueLimit: 0,
+                waitForConnections: true,
+            },
+            // 커넥션 풀 사이즈 설정
+            poolSize: 30,
+            connectTimeout: 120000,
+            logging: true,
         };
 
         return option;

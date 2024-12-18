@@ -72,12 +72,9 @@ export class ArticlesService {
             .innerJoin("article.category", "category")
             .innerJoin("article.region", "region")
             .innerJoin("article.district", "district")
+            .where(cursor ? "article.id < :cursor" : "1=1", { cursor })
             .orderBy("article.id", "DESC")
-            .take(limit + 1);
-
-        if (cursor) {
-            query.where("article.id < :cursor", { cursor });
-        }
+            .limit(limit + 1);
 
         const articles = await query.getRawMany();
 

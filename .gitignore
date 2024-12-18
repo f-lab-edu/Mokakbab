@@ -48,3 +48,4 @@ uploads/
 Dockerfile.dev
 docker-compose-dev.yml
 docker-compose-dev.yml
+grafana

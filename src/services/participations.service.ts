@@ -25,14 +25,17 @@ export class ParticipationsService {
             .where("participation.articleId = :articleId", {
                 articleId,
             })
+            .andWhere("participation.status = :status", {
+                status: ParticipationStatus.ACTIVE,
+            })
             .orderBy("participation.id", "ASC")
-            .take(limit + 1);
+            .limit(limit + 1);
 
         if (cursor) {
             query.andWhere("participation.id > :cursor", { cursor });
         }
 
-        const participations = await query.getMany();
+        const participations = await query.getRawMany();
         const hasNextPage = participations.length > limit;
         const results = hasNextPage
             ? participations.slice(0, -1)
