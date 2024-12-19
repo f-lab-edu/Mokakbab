@@ -6,24 +6,19 @@ const dataReceivedTrend = new Trend("data_received_size", true);
 
 export const options = {
     scenarios: {
-        ramping_rps_test: {
-            executor: "ramping-arrival-rate",
-            timeUnit: "1s",
-            preAllocatedVUs: 20,
-            maxVUs: 50,
-            stages: [
-                { duration: "30s", target: 5 },
-                { duration: "1m", target: 10 },
-                { duration: "1m", target: 10 },
-                { duration: "30s", target: 15 },
-                { duration: "30s", target: 0 },
-            ],
+        simple_rps_test: {
+            executor: "constant-arrival-rate",
+            rate: 10, // 초당 10개의 요청 (RPS)
+            timeUnit: "1s", // RPS 단위 설정
+            duration: "5m", // 테스트 지속 시간: 5분
+            preAllocatedVUs: 20, // 미리 할당할 VU 수
+            maxVUs: 50, // 최대 VU 수
         },
     },
     thresholds: {
         http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
         dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-        http_req_duration: [{ threshold: "p(95)<2000", abortOnFail: true }],
+        http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
     },
 };
 

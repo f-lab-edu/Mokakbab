@@ -14,7 +14,7 @@ export const options = {
             /* rate의 시간 단위 (1s, 1m, 1h 등) */
             timeUnit: "1s",
             /* 전체 테스트 실행 시간 */
-            duration: "2m",
+            duration: "5m",
             /* 테스트 시작 시 미리 할당할 가상 사용자 수 */
             preAllocatedVUs: 5,
             /* 최대 가상 사용자 수 (필요시 추가 할당) */
@@ -27,7 +27,7 @@ export const options = {
         /* 부하로 인한 요청 누락률이 5% 미만이어야 함 */
         dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
         /* 95%의 요청이 3초 이내에 완료되어야 함 */
-        http_req_duration: [{ threshold: "p(95)<7000", abortOnFail: true }],
+        http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
     },
 };
 

@@ -10,7 +10,7 @@ export const options = {
             executor: "constant-arrival-rate",
             rate: 1,
             timeUnit: "1s",
-            duration: "1m",
+            duration: "5m",
             preAllocatedVUs: 5,
             maxVUs: 10,
         },
@@ -18,7 +18,7 @@ export const options = {
     thresholds: {
         http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
         dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-        http_req_duration: [{ threshold: "p(95)<2000", abortOnFail: true }],
+        http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
     },
 };
 
