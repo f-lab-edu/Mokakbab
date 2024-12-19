@@ -32,7 +32,9 @@ export const TypeOrmModuleOptions = {
             // 커넥션 풀 사이즈 설정
             poolSize: 30,
             connectTimeout: 120000,
-            logging: true,
+            ...(configService.get("NODE_ENV") === "development"
+                ? { retryAttempts: 10, logging: true }
+                : { logging: false }),
         };
 
         return option;

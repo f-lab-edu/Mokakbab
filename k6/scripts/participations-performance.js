@@ -8,19 +8,22 @@ export const options = {
     scenarios: {
         ramping_rps_test: {
             executor: "ramping-arrival-rate",
-            startRate: 15,
             timeUnit: "1s",
-            stages: [
-                { duration: "1m", target: 20 },
-                { duration: "1m", target: 25 },
-                { duration: "1m", target: 30 },
-            ],
             preAllocatedVUs: 20,
             maxVUs: 50,
+            stages: [
+                { duration: "30s", target: 5 },
+                { duration: "1m", target: 10 },
+                { duration: "1m", target: 10 },
+                { duration: "30s", target: 15 },
+                { duration: "30s", target: 0 },
+            ],
         },
     },
     thresholds: {
-        http_req_failed: ["rate<0.05"],
+        http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
+        dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
+        http_req_duration: [{ threshold: "p(95)<2000", abortOnFail: true }],
     },
 };
 

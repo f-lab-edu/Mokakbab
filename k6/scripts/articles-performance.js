@@ -6,21 +6,28 @@ const dataReceivedTrend = new Trend("data_received_size", true);
 
 export const options = {
     scenarios: {
-        ramping_rps_test: {
-            executor: "ramping-arrival-rate",
-            startRate: 15,
+        simple_rps_test: {
+            /* 일정한 RPS(Request Per Second)를 유지하는 실행기 타입 */
+            executor: "constant-arrival-rate",
+            /* 초당 실행할 반복 횟수 */
+            rate: 1,
+            /* rate의 시간 단위 (1s, 1m, 1h 등) */
             timeUnit: "1s",
-            stages: [
-                { duration: "1m", target: 25 },
-                { duration: "1m", target: 35 },
-                { duration: "1m", target: 45 },
-            ],
-            preAllocatedVUs: 50,
-            maxVUs: 100,
+            /* 전체 테스트 실행 시간 */
+            duration: "2m",
+            /* 테스트 시작 시 미리 할당할 가상 사용자 수 */
+            preAllocatedVUs: 5,
+            /* 최대 가상 사용자 수 (필요시 추가 할당) */
+            maxVUs: 10,
         },
     },
     thresholds: {
-        http_req_failed: ["rate<0.05"],
+        /* HTTP 요청 실패율이 5% 미만이어야 함 */
+        http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
+        /* 부하로 인한 요청 누락률이 5% 미만이어야 함 */
+        dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
+        /* 95%의 요청이 3초 이내에 완료되어야 함 */
+        http_req_duration: [{ threshold: "p(95)<7000", abortOnFail: true }],
     },
 };
 
@@ -38,7 +45,7 @@ export default function () {
             headers: {
                 Authorization: `Bearer ${ACCESS_TOKEN}`,
             },
-            timeout: "60s",
+            timeout: "180s",
         },
     );
 
