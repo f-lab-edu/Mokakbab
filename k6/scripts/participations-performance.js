@@ -10,7 +10,7 @@ export const options = {
             executor: "constant-arrival-rate",
             rate: 10, // 초당 10개의 요청 (RPS)
             timeUnit: "1s", // RPS 단위 설정
-            duration: "5m", // 테스트 지속 시간: 5분
+            duration: "1m", // 테스트 지속 시간: 5분
             preAllocatedVUs: 20, // 미리 할당할 VU 수
             maxVUs: 50, // 최대 VU 수
         },

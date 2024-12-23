@@ -24,59 +24,58 @@ export class ArticlesService {
     ) {}
 
     async findAll(cursor: number, limit: number = 10, currentMemberId: number) {
-        const query = this.articlesRepository
-            .createQueryBuilder("article")
-            .select([
-                'article.id AS "articleId"',
-                'article.title AS "title"',
-                'article.content AS "content"',
-                'article.startTime AS "startTime"',
-                'article.endTime AS "endTime"',
-                'article.articleImage AS "articleImage"',
-                'article.createdAt AS "createdAt"',
-                'article.updatedAt AS "updatedAt"',
-                'member.id AS "memberId"',
-                'member.name AS "memberName"',
-                'member.nickname AS "memberNickname"',
-                'member.profileImage AS "memberProfileImage"',
-                'category.id AS "categoryId"',
-                'category.name AS "categoryName"',
-                'region.id AS "regionId"',
-                'region.name AS "regionName"',
-                'district.id AS "districtId"',
-                'district.name AS "districtName"',
-            ])
-            .addSelect((qb) => {
-                return qb
-                    .select("COUNT(*)")
-                    .from("article_likes", "al")
-                    .where("al.articleId = article.id");
-            }, "likeCount")
-            .addSelect((qb) => {
-                return qb
-                    .select("COUNT(*)")
-                    .from("participation", "p")
-                    .where("p.articleId = article.id")
-                    .andWhere("p.status = :status", { status: "ACTIVE" });
-            }, "participantCount")
-            .addSelect((qb) => {
-                return qb
-                    .select("CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END")
-                    .from("article_likes", "al")
-                    .where("al.articleId = article.id")
-                    .andWhere("al.memberId = :currentMemberId", {
-                        currentMemberId,
-                    });
-            }, "isLiked")
-            .innerJoin("article.member", "member")
-            .innerJoin("article.category", "category")
-            .innerJoin("article.region", "region")
-            .innerJoin("article.district", "district")
-            .where(cursor ? "article.id < :cursor" : "1=1", { cursor })
-            .orderBy("article.id", "DESC")
-            .limit(limit + 1);
+        const articles = await this.articlesRepository.findAllV1(
+            currentMemberId,
+            cursor,
+            limit,
+        );
 
-        const articles = await query.getRawMany();
+        const transformImageUrl = (
+            filename: string | null,
+            type: "articles" | "members",
+        ) => {
+            if (!filename) return null;
+            return new URL(
+                `/public/${type}/${filename}`,
+                this.configService.get(ENV_API_BASE_URL),
+            ).toString();
+        };
+
+        const transformedArticles = articles.map((article) => ({
+            ...article,
+            articleImage: transformImageUrl(article.articleImage, "articles"),
+            memberProfileImage: transformImageUrl(
+                article.memberProfileImage,
+                "members",
+            ),
+        }));
+
+        const hasNextPage = transformedArticles.length > limit;
+        const results = hasNextPage
+            ? transformedArticles.slice(0, -1)
+            : transformedArticles;
+
+        const lastItem = results[results.length - 1];
+
+        const nextUrl =
+            lastItem && hasNextPage
+                ? new URL(
+                      `${this.configService.get(ENV_API_BASE_URL)}/articles?cursor=${lastItem.id}&limit=${limit}`,
+                  )
+                : null;
+
+        return {
+            data: results,
+            cursor: {
+                after: lastItem?.id,
+            },
+            count: results.length,
+            next: nextUrl?.toString(),
+        };
+    }
+
+    async findAll2(cursor: number, limit: number = 10) {
+        const articles = await this.articlesRepository.findAllV2(cursor, limit);
 
         const transformImageUrl = (
             filename: string | null,

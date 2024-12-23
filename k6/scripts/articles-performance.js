@@ -14,7 +14,7 @@ export const options = {
             /* rate의 시간 단위 (1s, 1m, 1h 등) */
             timeUnit: "1s",
             /* 전체 테스트 실행 시간 */
-            duration: "5m",
+            duration: "1m",
             /* 테스트 시작 시 미리 할당할 가상 사용자 수 */
             preAllocatedVUs: 5,
             /* 최대 가상 사용자 수 (필요시 추가 할당) */

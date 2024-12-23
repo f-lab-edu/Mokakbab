@@ -27,9 +27,9 @@ export class ArticlesController {
     getArticles(
         @Query("cursor", new ParseIntPipe()) cursor: number,
         @Query("limit", new ParseIntPipe()) limit: number,
-        @CurrentMemberDecorator("id") currentMemberId: number,
+        @CurrentMemberDecorator("id") _currentMemberId: number,
     ) {
-        return this.articlesService.findAll(cursor, limit, currentMemberId);
+        return this.articlesService.findAll2(cursor, limit);
     }
 
     @Get(":articleId")
