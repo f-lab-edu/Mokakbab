@@ -10,3 +10,7 @@ docker-compose-dev.yml
 docker-compose.yml
 Dockerfile
 mysql-data
+
+grafana/**
+prometheus/prometheus.yml
+docker-compose.dev-bak.yml

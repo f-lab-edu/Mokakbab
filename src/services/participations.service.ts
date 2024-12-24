@@ -20,22 +20,13 @@ export class ParticipationsService {
         cursor: number,
         limit: number,
     ) {
-        const query = this.participationsRepository
-            .createQueryBuilder("participation")
-            .where("participation.articleId = :articleId", {
+        const participations =
+            await this.participationsRepository.findAllParticipationsByArticleId(
                 articleId,
-            })
-            .andWhere("participation.status = :status", {
-                status: ParticipationStatus.ACTIVE,
-            })
-            .orderBy("participation.id", "ASC")
-            .limit(limit + 1);
+                cursor,
+                limit,
+            );
 
-        if (cursor) {
-            query.andWhere("participation.id > :cursor", { cursor });
-        }
-
-        const participations = await query.getRawMany();
         const hasNextPage = participations.length > limit;
         const results = hasNextPage
             ? participations.slice(0, -1)

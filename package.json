@@ -22,7 +22,16 @@
         "-------------------------------------------": "",
         "k6:run:articles": "docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/articles-performance.js",
         "k6:run:participations": "docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/participations-performance.js",
-        "k6:run:signup": "docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/signup-performance.js"
+        "k6:run:signup": "docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/signup-performance.js",
+        "clinic:doctor-participations": "cross-env NODE_ENV=development clinic doctor --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/participations-performance.js' -- node dist/main.js",
+        "clinic:doctor-articles": "cross-env NODE_ENV=development clinic doctor --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/articles-performance.js' -- node dist/main.js",
+        "clinic:doctor-signup": "cross-env NODE_ENV=development clinic doctor --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/signup-performance.js' -- node dist/main.js",
+        "clinic:flame-participations": "cross-env NODE_ENV=development clinic flame --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/participations-performance.js' -- node dist/main.js",
+        "clinic:flame-articles": "cross-env NODE_ENV=development clinic flame --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/articles-performance.js' -- node dist/main.js",
+        "clinic:flame-signup": "cross-env NODE_ENV=development clinic flame --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/signup-performance.js' -- node dist/main.js",
+        "clinic:bubbleprof-participations": "cross-env NODE_ENV=development clinic bubbleprof --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/participations-performance.js' -- node dist/main.js",
+        "clinic:bubbleprof-articles": "cross-env NODE_ENV=development clinic bubbleprof --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/articles-performance.js' -- node dist/main.js",
+        "clinic:bubbleprof-signup": "cross-env NODE_ENV=development clinic bubbleprof --on-port 'docker-compose -f docker-compose-dev.yml run --rm k6 run /scripts/signup-performance.js' -- node dist/main.js"
     },
     "dependencies": {
         "@nestjs-modules/mailer": "^2.0.2",

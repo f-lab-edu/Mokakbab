@@ -11,7 +11,7 @@ import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
 import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
 import { MemberEntity } from "@APP/entities/member.entity";
 
-import { MailsService } from "./mails.service";
+//import { MailsService } from "./mails.service";
 import { MembersService } from "./members.service";
 
 @Injectable()
@@ -19,7 +19,7 @@ export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         private readonly membersService: MembersService,
-        private readonly mailsService: MailsService,
+        //private readonly mailsService: MailsService,
         private readonly configService: ConfigService,
     ) {}
 
@@ -98,10 +98,13 @@ export class AuthService {
             verificationCode,
         );
 
-        void this.mailsService.sendVerificationEmail(
-            newMember.email,
-            verificationCode,
-        );
+        /**
+         * 테스트를 위해서 잠시 보류
+         */
+        // void this.mailsService.sendVerificationEmail(
+        //     newMember.email,
+        //     verificationCode,
+        // );
 
         return this.signInMember(newMember);
     }

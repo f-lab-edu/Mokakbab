@@ -28,13 +28,19 @@ export class ParticipationsController {
         @Query("cursor", new ParseIntPipe()) cursor: number,
         @Query("limit", new ParseIntPipe()) limit: number,
     ) {
-        await this.articlesService.findById(articleId);
+        const [article, participation] = await Promise.all([
+            this.articlesService.findById(articleId),
+            this.participationsService.getParticipationsByArticleId(
+                articleId,
+                cursor,
+                limit,
+            ),
+        ]);
 
-        return this.participationsService.getParticipationsByArticleId(
-            articleId,
-            cursor,
-            limit,
-        );
+        return {
+            ...participation,
+            article,
+        };
     }
 
     @Get()

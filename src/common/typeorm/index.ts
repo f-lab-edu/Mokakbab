@@ -33,7 +33,7 @@ export const TypeOrmModuleOptions = {
             poolSize: 30,
             connectTimeout: 120000,
             ...(configService.get("NODE_ENV") === "development"
-                ? { retryAttempts: 10, logging: true }
+                ? { retryAttempts: 10, logging: false }
                 : { logging: false }),
         };
 

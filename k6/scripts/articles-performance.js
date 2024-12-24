@@ -10,23 +10,30 @@ export const options = {
             /* 일정한 RPS(Request Per Second)를 유지하는 실행기 타입 */
             executor: "constant-arrival-rate",
             /* 초당 실행할 반복 횟수 */
-            rate: 1,
+            rate: 4,
             /* rate의 시간 단위 (1s, 1m, 1h 등) */
             timeUnit: "1s",
             /* 전체 테스트 실행 시간 */
             duration: "1m",
             /* 테스트 시작 시 미리 할당할 가상 사용자 수 */
-            preAllocatedVUs: 5,
+            preAllocatedVUs: 10,
             /* 최대 가상 사용자 수 (필요시 추가 할당) */
-            maxVUs: 10,
+            maxVUs: 30,
         },
+    },
+    // 태그 추가
+    tags: {
+        testName: "articles-api-test",
+        testType: "performance",
+        component: "articles",
+        version: "1.0",
     },
     thresholds: {
         /* HTTP 요청 실패율이 5% 미만이어야 함 */
         http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
         /* 부하로 인한 요청 누락률이 5% 미만이어야 함 */
         dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-        /* 95%의 요청이 3초 이내에 완료되어야 함 */
+        // /* 95%의 요청이 3초 이내에 완료되어야 함 */
         http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
     },
 };
