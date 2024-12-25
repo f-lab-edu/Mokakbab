@@ -8,12 +8,19 @@ export const options = {
     scenarios: {
         simple_rps_test: {
             executor: "constant-arrival-rate",
-            rate: 1,
+            rate: 5,
             timeUnit: "1s",
-            duration: "1m",
-            preAllocatedVUs: 5,
-            maxVUs: 10,
+            duration: "3m",
+            preAllocatedVUs: 15,
+            maxVUs: 30,
         },
+    },
+    // 태그 추가
+    tags: {
+        testName: "v1-signup-result",
+        testType: "performance",
+        component: "signup",
+        version: "1.0",
     },
     thresholds: {
         http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],

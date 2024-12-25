@@ -3,7 +3,7 @@ name: auto deploy
 on:
   push:
     branches:
-      - feature/55-load-test
+      - v1
       
 jobs:
   push_to_registry:
@@ -28,6 +28,18 @@ jobs:
           push: true
           tags: ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
           cache-from: type=registry,ref=${{ secrets.NCP_CONTAINER_REGISTRY }}/prv-backend:latest
+          cache-to: type=inline
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.GIT_TOKEN }}
+
+      - name: Build and push backend-flame
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile.clinic-flame
+          push: true
+          tags: ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend-flame:latest
+          cache-from: type=registry,ref=${{ secrets.NCP_CONTAINER_REGISTRY }}/prv-backend-flame:latest
           cache-to: type=inline
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.GIT_TOKEN }}
@@ -81,6 +93,7 @@ jobs:
             
             docker-compose down
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
-            docker-compose up -d
+            docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend-flame:latest
+            docker-compose up -d backend database
             docker image prune -f
 

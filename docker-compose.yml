@@ -1,4 +1,4 @@
-version: "3.8"
+version: "2.26"
 services:
     backend:
       image: ${NCP_CONTAINER_REGISTRY}/backend:latest
@@ -20,6 +20,31 @@ services:
           - MAIL_PWD=${MAIL_PWD}
           - API_BASE_URL=${API_BASE_URL}
           - SERVER_PORT=${SERVER_PORT}
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+
+    backend-flame:
+      image: ${NCP_CONTAINER_REGISTRY}/backend-flame:latest
+      container_name: backend_flame
+      ports:
+          - "${BACKEND_OUTBOUND_PORT}:${BACKEND_INBOUND_PORT}"
+      environment:
+          - DB_TYPE=${DB_TYPE}
+          - DB_HOST=${DB_HOST}
+          - DB_PORT=${DB_PORT}
+          - DB_USERNAME=${DB_USERNAME}
+          - DB_PASSWORD=${DB_PASSWORD}
+          - DB_DATABASE=${DB_DATABASE}
+          - DB_SYNCHRONIZE=${DB_SYNCHRONIZE}
+          - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+          - MAIL_HOST=${MAIL_HOST}
+          - MAIL_PORT=${MAIL_PORT}
+          - MAIL_USER=${MAIL_USER}
+          - MAIL_PWD=${MAIL_PWD}
+          - API_BASE_URL=${API_BASE_URL}
+          - SERVER_PORT=${SERVER_PORT}
+      volumes:
+        - ./clinic-flame:/app/.clinic
       extra_hosts:
         - "host.docker.internal:host-gateway"
 
