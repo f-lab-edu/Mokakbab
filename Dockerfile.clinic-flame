@@ -15,5 +15,5 @@ RUN npm run build
 
 RUN mkdir -p uploads/members uploads/articles
 
-CMD ["clinic", "flame", "--", "node", "/app/dist/main.js"]
+ENTRYPOINT ["/bin/sh"]
 
