@@ -15,5 +15,5 @@ RUN npm run build
 
 RUN mkdir -p uploads/members uploads/articles
 
-ENTRYPOINT ["/bin/sh"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
 
