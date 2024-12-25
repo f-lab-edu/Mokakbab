@@ -94,6 +94,6 @@ jobs:
             docker-compose down
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend-flame:latest
-            docker-compose up -d backend database
+            docker-compose up -d backend mysql-prod
             docker image prune -f
 
