@@ -4,7 +4,11 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import * as crypto from "crypto";
 
-import { ENV_JWT_SECRET_KEY } from "@APP/common/constants/env-keys.const";
+import {
+    ENV_JWT_ACCESS_TOKEN_EXPIRATION,
+    ENV_JWT_REFRESH_TOKEN_EXPIRATION,
+    ENV_JWT_SECRET_KEY,
+} from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { MemberErrorCode } from "@APP/common/exception/error-code";
 import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
@@ -138,7 +142,13 @@ export class AuthService {
         return this.jwtService.sign(payload, {
             secret:
                 this.configService.get<string>(ENV_JWT_SECRET_KEY) || "secret",
-            expiresIn: isRefreshToken ? 3600 : 300,
+            expiresIn: isRefreshToken
+                ? this.configService.get<string>(
+                      ENV_JWT_REFRESH_TOKEN_EXPIRATION,
+                  )
+                : this.configService.get<string>(
+                      ENV_JWT_ACCESS_TOKEN_EXPIRATION,
+                  ),
         });
     }
 

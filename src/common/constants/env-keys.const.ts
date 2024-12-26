@@ -12,6 +12,10 @@ export const ENV_API_BASE_URL = "API_BASE_URL" as const;
 
 // jwt
 export const ENV_JWT_SECRET_KEY = "JWT_SECRET_KEY" as const;
+export const ENV_JWT_ACCESS_TOKEN_EXPIRATION =
+    "JWT_ACCESS_TOKEN_EXPIRATION" as const;
+export const ENV_JWT_REFRESH_TOKEN_EXPIRATION =
+    "JWT_REFRESH_TOKEN_EXPIRATION" as const;
 
 // server
 export const ENV_SERVER_PORT = "SERVER_PORT" as const;

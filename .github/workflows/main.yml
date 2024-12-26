@@ -3,7 +3,7 @@ name: auto deploy
 on:
   push:
     branches:
-      - v1
+      - feature/56-v1-profile
       
 jobs:
   push_to_registry:
@@ -90,7 +90,8 @@ jobs:
             echo "MYSQL_OUTBOUND_PORT=${{ secrets.MYSQL_OUTBOUND_PORT }}" >> .env
             echo "MYSQL_INBOUND_PORT=${{ secrets.MYSQL_INBOUND_PORT }}" >> .env
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
-            
+            echo "JWT_ACCESS_TOKEN_EXPIRATION=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }}" >> .env
+            echo "JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}" >> .env
             docker-compose down
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend-flame:latest

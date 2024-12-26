@@ -23,7 +23,7 @@ export const options = {
     },
     // 태그 추가
     tags: {
-        testName: "v1-articles-result",
+        testName: "v1-articles-frame",
         testType: "performance",
         component: "articles",
         version: "1.0",

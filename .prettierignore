@@ -14,3 +14,5 @@ mysql-data
 grafana/**
 prometheus/prometheus.yml
 docker-compose.dev-bak.yml
+clinic-report/**
+.clinic

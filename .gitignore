@@ -51,3 +51,6 @@ docker-compose.dev-bak.yml
 grafana
 prometheus
 
+.clinic
+
+clinic-report/**
