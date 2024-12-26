@@ -49,6 +49,7 @@ services:
           - SERVER_PORT=${SERVER_PORT}
       volumes:
         - ./clinic-flame:/app/.clinic
+        - ./clinic-flame:/tmp  # Doctor 실행을 위한 TMPDIR 경로와 동일하게 설정
       extra_hosts:
         - "host.docker.internal:host-gateway"
 

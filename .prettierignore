@@ -16,3 +16,5 @@ prometheus/prometheus.yml
 docker-compose.dev-bak.yml
 clinic-report/**
 .clinic
+
+backup2.sql

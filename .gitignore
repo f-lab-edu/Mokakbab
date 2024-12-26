@@ -54,3 +54,4 @@ prometheus
 .clinic
 
 clinic-report/**
+backup2.sql
