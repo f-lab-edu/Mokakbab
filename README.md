@@ -37,3 +37,7 @@
 - 🔄 **[추가 개선 작업](#)**
     - k6 부하 테스트 결과
     - 프로파일링 결과 및 개선 사항
+
+## 🛠 트러블 슈팅 (Troubleshooting)
+
+- [TypeORM Seeding 성능 문제 해결 (#67)](https://github.com/f-lab-edu/Mokakbab/pull/67)
