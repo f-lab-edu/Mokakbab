@@ -59,10 +59,8 @@ export class MemberEntity {
         ({ value }) => {
             if (!value) return null;
 
-            return new URL(
-                `/public/members/${value}`,
-                process.env["API_BASE_URL"],
-            ).toString();
+            const bucketUrl = process.env["N_BUCKET_URL"];
+            return `${bucketUrl}/members/${process.env["NODE_ENV"]}/profile/${value}`;
         },
         { toPlainOnly: true },
     )

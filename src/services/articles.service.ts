@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { ENV_API_BASE_URL } from "@APP/common/constants/env-keys.const";
+import {
+    ENV_API_BASE_URL,
+    ENV_N_BUCKET_URL,
+} from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { ArticleErrorCode } from "@APP/common/exception/error-code";
 import { CreateArticleDto } from "@APP/dtos/create-article.dto";
@@ -14,6 +17,8 @@ import { RegionsRepository } from "@APP/repositories/regions.repository";
 
 @Injectable()
 export class ArticlesService {
+    private readonly bucketUrl: string;
+    private readonly env: string;
     constructor(
         private readonly articlesRepository: ArticlesRepository,
         private readonly categoriesRepository: CategoriesRepository,
@@ -21,7 +26,11 @@ export class ArticlesService {
         private readonly regionsRepository: RegionsRepository,
         private readonly articleLikesRepository: ArticleLikesRepository,
         private readonly configService: ConfigService,
-    ) {}
+    ) {
+        this.bucketUrl =
+            this.configService.get(ENV_N_BUCKET_URL) || "BUKET_URL";
+        this.env = this.configService.get<string>("NODE_ENV") || "default";
+    }
 
     async findAll(currentMemberId: number, cursor: number, limit: number = 10) {
         const articles = await this.articlesRepository.findAllV1(
@@ -35,10 +44,8 @@ export class ArticlesService {
             type: "articles" | "members",
         ) => {
             if (!filename) return null;
-            return new URL(
-                `/public/${type}/${filename}`,
-                this.configService.get(ENV_API_BASE_URL),
-            ).toString();
+            const kind = type === "articles" ? "somenail" : "profile";
+            return `${this.bucketUrl}/${type}/${this.env}/${kind}/${filename}`;
         };
 
         const transformedArticles = articles.map((article) => ({
@@ -90,10 +97,8 @@ export class ArticlesService {
             type: "articles" | "members",
         ) => {
             if (!filename) return null;
-            return new URL(
-                `/public/${type}/${filename}`,
-                this.configService.get(ENV_API_BASE_URL),
-            ).toString();
+            const kind = type === "articles" ? "somenail" : "profile";
+            return `${this.bucketUrl}/${type}/${this.env}/${kind}/${filename}`;
         };
 
         const transformedArticles = articles.map((article) => ({

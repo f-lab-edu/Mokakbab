@@ -97,6 +97,7 @@ jobs:
             echo "N_ENDPOINT=${{ secrets.N_ENDPOINT }}" >> .env
             echo "N_REGION=${{ secrets.N_REGION }}" >> .env
             echo "N_BUCKET_NAME=${{ secrets.N_BUCKET_NAME }}" >> .env
+            echo "N_BUCKET_URL=${{ secrets.N_BUCKET_URL }}" >> .env
             docker-compose down
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend-flame:latest
