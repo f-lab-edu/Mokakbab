@@ -3,7 +3,7 @@ name: auto deploy
 on:
   push:
     branches:
-      - feature/71-article-list-performance
+      - feature/75-server-scale-out-nginx
       
 jobs:
   push_to_registry:
@@ -101,6 +101,6 @@ jobs:
             docker-compose down
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend-flame:latest
-            docker-compose up -d backend mysql-prod
+            docker-compose up -d --scale backend=3 mysql-prod nginx
             docker image prune -f
 
