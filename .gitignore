@@ -55,3 +55,7 @@ prometheus
 
 clinic-report/**
 backup2.sql
+
+# typeorm
+src/database/migrations/**
+

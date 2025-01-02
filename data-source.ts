@@ -34,6 +34,7 @@ const options: DataSourceOptions & SeederOptions = {
     logging: true,
     seeds: [`src/database/seeds/**/*{.js,.ts}`],
     factories: [`src/database/factories/**/*{.js,.ts}`],
+    migrations: ["src/database/migrations/*.ts"],
     extra: {
         connectionLimit: 30,
         queueLimit: 0,

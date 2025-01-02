@@ -18,3 +18,7 @@ clinic-report/**
 .clinic
 
 backup2.sql
+
+# typeorm
+src/database/migrations/**
+
