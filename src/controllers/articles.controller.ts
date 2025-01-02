@@ -47,9 +47,13 @@ export class ArticlesController {
 
     @Patch("upload-image")
     @UseInterceptors(FileInterceptor("image"))
-    patchUploadImage(@UploadedFile() file: Express.Multer.File) {
+    patchUploadImage(
+        @UploadedFile()
+        file: Express.Multer.File & { key: string; location: string },
+    ) {
         return {
-            filename: file.filename,
+            filename: file.key.split("/").at(-1) || "",
+            location: file.location,
         };
     }
 

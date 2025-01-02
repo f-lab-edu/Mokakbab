@@ -92,6 +92,11 @@ jobs:
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
             echo "JWT_ACCESS_TOKEN_EXPIRATION=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }}" >> .env
             echo "JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}" >> .env
+            echo "N_ACCESS_KEY=${{ secrets.N_ACCESS_KEY }}" >> .env
+            echo "N_SECRET_KEY=${{ secrets.N_SECRET_KEY }}" >> .env
+            echo "N_ENDPOINT=${{ secrets.N_ENDPOINT }}" >> .env
+            echo "N_REGION=${{ secrets.N_REGION }}" >> .env
+            echo "N_BUCKET_NAME=${{ secrets.N_BUCKET_NAME }}" >> .env
             docker-compose down
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend:latest
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/backend-flame:latest

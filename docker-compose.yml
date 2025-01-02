@@ -22,6 +22,11 @@ services:
           - MAIL_PWD=${MAIL_PWD}
           - API_BASE_URL=${API_BASE_URL}
           - SERVER_PORT=${SERVER_PORT}
+          - N_ACCESS_KEY=${N_ACCESS_KEY}
+          - N_SECRET_KEY=${N_SECRET_KEY}
+          - N_ENDPOINT=${N_ENDPOINT}
+          - N_REGION=${N_REGION}
+          - N_BUCKET_NAME=${N_BUCKET_NAME}
       extra_hosts:
         - "host.docker.internal:host-gateway"
 
@@ -47,6 +52,11 @@ services:
           - MAIL_PWD=${MAIL_PWD}
           - API_BASE_URL=${API_BASE_URL}
           - SERVER_PORT=${SERVER_PORT}
+          - N_ACCESS_KEY=${N_ACCESS_KEY}
+          - N_SECRET_KEY=${N_SECRET_KEY}
+          - N_ENDPOINT=${N_ENDPOINT}
+          - N_REGION=${N_REGION}
+          - N_BUCKET_NAME=${N_BUCKET_NAME}
       volumes:
         - ./clinic-flame:/app/.clinic
         - ./clinic-flame:/tmp  # Doctor 실행을 위한 TMPDIR 경로와 동일하게 설정
