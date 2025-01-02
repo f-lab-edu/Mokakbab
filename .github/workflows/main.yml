@@ -3,7 +3,7 @@ name: auto deploy
 on:
   push:
     branches:
-      - feature/56-v1-profile
+      - feature/71-article-list-performance
       
 jobs:
   push_to_registry:

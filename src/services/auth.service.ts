@@ -7,7 +7,6 @@ import * as crypto from "crypto";
 import {
     ENV_JWT_ACCESS_TOKEN_EXPIRATION,
     ENV_JWT_REFRESH_TOKEN_EXPIRATION,
-    ENV_JWT_SECRET_KEY,
 } from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { MemberErrorCode } from "@APP/common/exception/error-code";
@@ -140,8 +139,6 @@ export class AuthService {
         };
 
         return this.jwtService.sign(payload, {
-            secret:
-                this.configService.get<string>(ENV_JWT_SECRET_KEY) || "secret",
             expiresIn: isRefreshToken
                 ? this.configService.get<string>(
                       ENV_JWT_REFRESH_TOKEN_EXPIRATION,
@@ -152,11 +149,9 @@ export class AuthService {
         });
     }
 
-    verifyToken(token: string) {
+    async verifyToken(token: string) {
         try {
-            return this.jwtService.verify(token, {
-                secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
-            });
+            return await this.jwtService.verifyAsync(token);
         } catch {
             throw new BusinessErrorException(MemberErrorCode.INVALID_TOKEN);
         }
@@ -166,8 +161,8 @@ export class AuthService {
         return this.membersService.verifyEmail(dto);
     }
 
-    rotateAccessToken(token: string) {
-        const decoded = this.verifyToken(token);
+    async rotateAccessToken(token: string) {
+        const decoded = await this.verifyToken(token);
 
         if (decoded.type !== "refresh") {
             throw new BusinessErrorException(
