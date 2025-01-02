@@ -23,7 +23,7 @@ export class ArticlesService {
         private readonly configService: ConfigService,
     ) {}
 
-    async findAll(cursor: number, limit: number = 10, currentMemberId: number) {
+    async findAll(currentMemberId: number, cursor: number, limit: number = 10) {
         const articles = await this.articlesRepository.findAllV1(
             currentMemberId,
             cursor,
@@ -74,8 +74,16 @@ export class ArticlesService {
         };
     }
 
-    async findAll2(cursor: number, limit: number = 10) {
-        const articles = await this.articlesRepository.findAllV2(cursor, limit);
+    async findAll2(
+        currentMemberId: number,
+        cursor: number,
+        limit: number = 10,
+    ) {
+        const articles = await this.articlesRepository.findAllV2(
+            currentMemberId,
+            cursor,
+            limit,
+        );
 
         const transformImageUrl = (
             filename: string | null,

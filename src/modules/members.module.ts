@@ -22,9 +22,8 @@ import { MembersService } from "@APP/services/members.service";
             MemberEntity,
             RefreshTokenEntity,
             VerificationCodeEntity,
+            BlackListEntity,
         ]),
-
-        TypeOrmModule.forFeature([MemberEntity, BlackListEntity]),
 
         MulterModule.register({
             limits: {

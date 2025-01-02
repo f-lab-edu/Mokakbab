@@ -10,23 +10,23 @@ export const options = {
             /* 일정한 RPS(Request Per Second)를 유지하는 실행기 타입 */
             executor: "constant-arrival-rate",
             /* 초당 실행할 반복 횟수 */
-            rate: 1,
+            rate: 500,
             /* rate의 시간 단위 (1s, 1m, 1h 등) */
             timeUnit: "1s",
             /* 전체 테스트 실행 시간 */
             duration: "3m",
             /* 테스트 시작 시 미리 할당할 가상 사용자 수 */
-            preAllocatedVUs: 30,
+            preAllocatedVUs: 700,
             /* 최대 가상 사용자 수 (필요시 추가 할당) */
-            maxVUs: 50,
+            maxVUs: 1000,
         },
     },
     // 태그 추가
     tags: {
-        testName: "v1-articles-frame",
+        testName: "v2-articles-application3",
         testType: "performance",
         component: "articles",
-        version: "1.0",
+        version: "2.0",
     },
     thresholds: {
         /* HTTP 요청 실패율이 5% 미만이어야 함 */

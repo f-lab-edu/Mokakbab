@@ -29,7 +29,7 @@ export class ArticlesController {
         @Query("limit", new ParseIntPipe()) limit: number,
         @CurrentMemberDecorator("id") _currentMemberId: number,
     ) {
-        return this.articlesService.findAll(cursor, limit, _currentMemberId);
+        return this.articlesService.findAll2(_currentMemberId, cursor, limit);
     }
 
     @Get(":articleId")

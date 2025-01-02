@@ -8,19 +8,19 @@ export const options = {
     scenarios: {
         simple_rps_test: {
             executor: "constant-arrival-rate",
-            rate: 120, // 초당 10개의 요청 (RPS)
+            rate: 700, // 초당 10개의 요청 (RPS)
             timeUnit: "1s", // RPS 단위 설정
             duration: "3m", // 테스트 지속 시간: 5분
-            preAllocatedVUs: 300, // 미리 할당할 VU 수
-            maxVUs: 500, // 최대 VU 수
+            preAllocatedVUs: 1000, // 미리 할당할 VU 수
+            maxVUs: 1400, // 최대 VU 수
         },
     },
     // 태그 추가
     tags: {
-        testName: "v1-participations-result3",
+        testName: "v2-participations-application",
         testType: "performance",
         component: "participations",
-        version: "1.0",
+        version: "2.0",
     },
     thresholds: {
         http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
