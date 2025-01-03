@@ -61,16 +61,13 @@ services:
           - N_REGION=${N_REGION}
           - N_BUCKET_NAME=${N_BUCKET_NAME}
           - N_BUCKET_URL=${N_BUCKET_URL}
-      volumes:
-        - ./clinic-flame:/app/.clinic
-        - ./clinic-flame:/tmp  # Doctor 실행을 위한 TMPDIR 경로와 동일하게 설정
-      network_mode: host
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
 
     mysql-prod:
       image: mysql:8.0
       restart: always
       container_name: mysql_prod
-      network_mode: host
       volumes:
           - ./mysql-data:/var/lib/mysql
           - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
