@@ -24,16 +24,16 @@ export const TypeOrmModuleOptions = {
             password: configService.get(ENV_DB_PASSWORD) || "test",
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
+            keepAliveInitialDelay: 10000, // Keep-Alive 딜레이
+            enableKeepAlive: true,
             extra: {
-                connectionLimit: 30,
-                queueLimit: 0,
-                waitForConnections: true,
+                connectionLimit: 50, // 연결 풀 최대 크기
+                queueLimit: 300, // 대기열 크기 (0은 무제한)
+                waitForConnections: true, // 연결 대기 활성화
+                connectTimeout: 120000, // 연결 타임아웃 (밀리초)
             },
-            // 커넥션 풀 사이즈 설정
-            poolSize: 30,
-            connectTimeout: 120000,
             ...(configService.get("NODE_ENV") === "development"
-                ? { retryAttempts: 10, logging: false }
+                ? { retryAttempts: 10, logging: true }
                 : { logging: false }),
         };
 
