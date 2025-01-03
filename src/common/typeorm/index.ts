@@ -27,10 +27,10 @@ export const TypeOrmModuleOptions = {
             keepAliveInitialDelay: 10000, // Keep-Alive 딜레이
             enableKeepAlive: true,
             extra: {
-                connectionLimit: 50, // 연결 풀 최대 크기
-                queueLimit: 300, // 대기열 크기 (0은 무제한)
-                waitForConnections: true, // 연결 대기 활성화
-                connectTimeout: 120000, // 연결 타임아웃 (밀리초)
+                connectionLimit: 300, // MySQL max_connections의 60%로 설정
+                queueLimit: 1500, // 대기열 크기를 MySQL max_connections와 균형 맞춤
+                waitForConnections: true,
+                connectTimeout: 60000, // 연결 타임아웃 증가
             },
             ...(configService.get("NODE_ENV") === "development"
                 ? { retryAttempts: 10, logging: true }

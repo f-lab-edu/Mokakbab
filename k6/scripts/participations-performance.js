@@ -8,10 +8,10 @@ export const options = {
     scenarios: {
         simple_rps_test: {
             executor: "constant-arrival-rate",
-            rate: 500, // 초당 10개의 요청 (RPS)
+            rate: 500, // 초당 500개의 요청 (RPS)
             timeUnit: "1s", // RPS 단위 설정
-            duration: "10s", // 테스트 지속 시간: 5분
-            preAllocatedVUs: 500, // 미리 할당할 VU 수
+            duration: "3m", // 테스트 지속 시간: 10초
+            preAllocatedVUs: 800, // 미리 할당할 VU 수
             maxVUs: 1000, // 최대 VU 수
         },
     },
