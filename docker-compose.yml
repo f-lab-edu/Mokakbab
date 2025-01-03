@@ -3,6 +3,7 @@ services:
     backend:
       image: ${NCP_CONTAINER_REGISTRY}/backend:latest
       container_name: backend_prod
+      network_mode: host
       ports:
           - "${BACKEND_OUTBOUND_PORT}:${BACKEND_INBOUND_PORT}"
       environment:
@@ -63,16 +64,17 @@ services:
       volumes:
         - ./clinic-flame:/app/.clinic
         - ./clinic-flame:/tmp  # Doctor 실행을 위한 TMPDIR 경로와 동일하게 설정
-      extra_hosts:
-        - "host.docker.internal:host-gateway"
+      network_mode: host
 
     mysql-prod:
       image: mysql:8.0
       restart: always
       container_name: mysql_prod
+      network_mode: host
       volumes:
           - ./mysql-data:/var/lib/mysql
           - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+          - ./mysql/logs:/var/log/mysql
       ports:
           - "${MYSQL_OUTBOUND_PORT}:${MYSQL_INBOUND_PORT}"
       environment:
@@ -80,4 +82,5 @@ services:
           - MYSQL_USER=${DB_USERNAME}
           - MYSQL_PASSWORD=${DB_PASSWORD}
           - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
 
