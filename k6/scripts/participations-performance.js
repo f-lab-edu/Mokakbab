@@ -46,6 +46,7 @@ export default function () {
                 Authorization: `Bearer ${ACCESS_TOKEN}`,
             },
             timeout: "60s",
+            tags: { name: "participations" },
         },
     );
 

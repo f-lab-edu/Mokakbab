@@ -28,7 +28,7 @@ export const TypeOrmModuleOptions = {
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             logging: ["error", "warn"] as LogLevel[],
             extra: {
-                connectionLimit: 500,
+                connectionLimit: 300,
                 waitForConnections: true,
                 queueLimit: 0,
             } as PoolOptions,
