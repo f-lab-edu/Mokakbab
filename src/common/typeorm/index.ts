@@ -27,8 +27,8 @@ export const TypeOrmModuleOptions = {
             keepAliveInitialDelay: 10000, // Keep-Alive 딜레이
             enableKeepAlive: true,
             extra: {
-                connectionLimit: 300, // MySQL max_connections의 60%로 설정
-                queueLimit: 1500, // 대기열 크기를 MySQL max_connections와 균형 맞춤
+                connectionLimit: 300, // MySQL max_connections의 50%로 설정 이전에 500
+                queueLimit: 1500, // 대기열 크기를 조정 이전에 2000
                 waitForConnections: true,
                 connectTimeout: 30000, // 연결 타임아웃
                 acquireTimeout: 30000, // 풀에서 커넥션 획득 타임아웃

@@ -6,13 +6,16 @@ const dataReceivedTrend = new Trend("data_received_size", true);
 
 export const options = {
     scenarios: {
-        simple_rps_test: {
-            executor: "constant-arrival-rate",
-            rate: 500, // 초당 500개의 요청 (RPS)
-            timeUnit: "1s", // RPS 단위 설정
-            duration: "1m", // 테스트 지속 시간: 10초
-            preAllocatedVUs: 700, // 미리 할당할 VU 수
-            maxVUs: 1000, // 최대 VU 수
+        ramp_up_test: {
+            executor: "ramping-arrival-rate",
+            startRate: 50, // 초당 50 요청으로 시작
+            timeUnit: "1s",
+            stages: [
+                { target: 300, duration: "1m" }, // 1분 동안 50 → 300 RPS 증가
+                { target: 700, duration: "2m" }, // 2분 동안 300 → 700 RPS 증가
+            ],
+            preAllocatedVUs: 1200, // VUs 증가
+            maxVUs: 1600, // 최대 VUs 증가
         },
     },
     // 태그 추가
@@ -22,11 +25,11 @@ export const options = {
         component: "participations",
         version: "2.0",
     },
-    // thresholds: {
-    //     http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
-    //     dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-    //     http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
-    // },
+    thresholds: {
+        http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
+        dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
+        http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
+    },
 };
 
 export default function () {
