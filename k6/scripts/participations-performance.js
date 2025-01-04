@@ -23,9 +23,9 @@ export const options = {
         version: "2.0",
     },
     thresholds: {
-        http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
-        dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-        http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
+        http_req_failed: [{ threshold: "rate<0.05" }],
+        dropped_iterations: [{ threshold: "rate<0.05" }],
+        http_req_duration: [{ threshold: "p(95)<3000" }],
     },
 };
 
@@ -49,7 +49,8 @@ export default function () {
         },
     );
 
-    dataReceivedTrend.add(participationsResponse.body.length);
+    if (participationsResponse.body)
+        dataReceivedTrend.add(participationsResponse.body.length);
 
     check(participationsResponse, {
         "participations status is 200": (r) => r.status === 200,
