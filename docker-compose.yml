@@ -3,7 +3,6 @@ services:
     backend:
       image: ${NCP_CONTAINER_REGISTRY}/backend:latest
       container_name: backend_prod
-      network_mode: host
       ports:
           - "${BACKEND_OUTBOUND_PORT}:${BACKEND_INBOUND_PORT}"
       environment:
@@ -29,8 +28,6 @@ services:
           - N_REGION=${N_REGION}
           - N_BUCKET_NAME=${N_BUCKET_NAME}
           - N_BUCKET_URL=${N_BUCKET_URL}
-      extra_hosts:
-        - "host.docker.internal:host-gateway"
       
 
     backend-flame:
@@ -61,8 +58,6 @@ services:
           - N_REGION=${N_REGION}
           - N_BUCKET_NAME=${N_BUCKET_NAME}
           - N_BUCKET_URL=${N_BUCKET_URL}
-      extra_hosts:
-        - "host.docker.internal:host-gateway"
 
     mysql-prod:
       image: mysql:8.0

@@ -8,14 +8,15 @@ export const options = {
     scenarios: {
         ramp_up_test: {
             executor: "ramping-arrival-rate",
-            startRate: 50, // 초당 50 요청으로 시작
+            startRate: 50,
             timeUnit: "1s",
             stages: [
-                { target: 300, duration: "1m" }, // 1분 동안 50 → 300 RPS 증가
-                { target: 700, duration: "2m" }, // 2분 동안 300 → 700 RPS 증가
+                { target: 200, duration: "2m" },
+                { target: 500, duration: "3m" },
+                { target: 700, duration: "5m" },
             ],
-            preAllocatedVUs: 1200, // VUs 증가
-            maxVUs: 1600, // 최대 VUs 증가
+            preAllocatedVUs: 1500,
+            maxVUs: 2000,
         },
     },
     // 태그 추가
