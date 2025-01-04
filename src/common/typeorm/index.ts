@@ -1,5 +1,5 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
-//import { PoolOptions } from "mysql2";
+import { PoolOptions } from "mysql2";
 import path from "path";
 import { LogLevel } from "typeorm";
 
@@ -27,6 +27,11 @@ export const TypeOrmModuleOptions = {
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             logging: ["error", "warn"] as LogLevel[],
+            extra: {
+                connectionLimit: 100,
+                waitForConnections: true,
+                queueLimit: 0,
+            } as PoolOptions,
             // extra: {
             //     waitForConnections: true,
             //     connectionLimit: 200, // MySQL max_connections의 약 20%

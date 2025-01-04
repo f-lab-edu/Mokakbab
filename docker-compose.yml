@@ -5,6 +5,8 @@ services:
       container_name: backend_prod
       ports:
           - "${BACKEND_OUTBOUND_PORT}:${BACKEND_INBOUND_PORT}"
+      depends_on:
+          - mysql-prod
       environment:
           - DB_TYPE=${DB_TYPE}
           - DB_HOST=${DB_HOST}
@@ -28,8 +30,6 @@ services:
           - N_REGION=${N_REGION}
           - N_BUCKET_NAME=${N_BUCKET_NAME}
           - N_BUCKET_URL=${N_BUCKET_URL}
-    depends_on:
-        - mysql-prod
       
 
     backend-flame:
