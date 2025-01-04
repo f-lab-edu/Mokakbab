@@ -4,18 +4,47 @@ import { Trend } from "k6/metrics";
 
 const dataReceivedTrend = new Trend("data_received_size", true);
 
+// export const options = {
+//     scenarios: {
+//         simple_rps_test: {
+//             executor: "constant-arrival-rate",
+//             rate: 500,
+//             timeUnit: "1s",
+//             duration: "1m",
+//             preAllocatedVUs: 1500,
+//             maxVUs: 1500,
+//         },
+//     },
+//     // 태그 추가
+//     tags: {
+//         testName: "v2-participations-application",
+//         testType: "performance",
+//         component: "participations",
+//         version: "2.0",
+//     },
+//     thresholds: {
+//         http_req_failed: [{ threshold: "rate<0.05" }],
+//         dropped_iterations: [{ threshold: "rate<0.05" }],
+//         http_req_duration: [{ threshold: "p(95)<3000" }],
+//     },
+// };
+
 export const options = {
     scenarios: {
-        simple_rps_test: {
-            executor: "constant-arrival-rate",
-            rate: 500,
+        gradual_rps_test: {
+            executor: "ramping-arrival-rate",
+            startRate: 50, // 시작 RPS
             timeUnit: "1s",
-            duration: "1m",
-            preAllocatedVUs: 1500,
-            maxVUs: 1500,
+            preAllocatedVUs: 800,
+            maxVUs: 1000,
+            stages: [
+                { target: 100, duration: "30s" }, // 30초 동안 100 RPS로 증가
+                { target: 300, duration: "30s" }, // 30초 동안 300 RPS로 증가
+                { target: 500, duration: "1m" }, // 1분 동안 500 RPS 유지
+                { target: 0, duration: "30s" }, // 30초 동안 RPS를 0으로 감소
+            ],
         },
     },
-    // 태그 추가
     tags: {
         testName: "v2-participations-application",
         testType: "performance",
