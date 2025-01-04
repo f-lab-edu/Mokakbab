@@ -5,28 +5,32 @@ import { Trend } from "k6/metrics";
 const dataReceivedTrend = new Trend("data_received_size", true);
 
 export const options = {
+    // 여러 시나리오 정의
     scenarios: {
-        simple_rps_test: {
+        // 1) ramp_up 시나리오
+        ramp_up: {
+            executor: "ramping-arrival-rate",
+            startRate: 50, // 초당 50 요청으로 시작
+            timeUnit: "1s", // RPS 단위
+            preAllocatedVUs: 100, // ramp-up 초기에 미리 할당할 VU 수
+            maxVUs: 500, // 최대 VU 수
+            stages: [
+                { target: 500, duration: "1m" }, // 1분 동안 50→500 RPS 상승
+            ],
+            gracefulStop: "0s", // ramp_up 시나리오 끝나면 바로 종료
+        },
+
+        // 2) steady_state 시나리오
+        steady_state: {
             executor: "constant-arrival-rate",
-            rate: 500, // 초당 500개의 요청 (RPS)
-            timeUnit: "1s", // RPS 단위 설정
-            duration: "1m", // 테스트 지속 시간: 10초
-            preAllocatedVUs: 700, // 미리 할당할 VU 수
-            maxVUs: 1000, // 최대 VU 수
+            rate: 500, // 초당 500 요청
+            timeUnit: "1s",
+            duration: "2m", // 2분 동안 유지
+            startTime: "1m", // ramp_up 끝나는 시점(1분) 이후 시작
+            preAllocatedVUs: 700,
+            maxVUs: 1000,
         },
     },
-    // 태그 추가
-    tags: {
-        testName: "v2-hello-application",
-        testType: "performance",
-        component: "hello",
-        version: "2.0",
-    },
-    // thresholds: {
-    //     http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
-    //     dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-    //     http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
-    // },
 };
 
 export default function () {
