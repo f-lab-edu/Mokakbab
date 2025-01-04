@@ -10,6 +10,7 @@ import path from "path";
 import { AppModule } from "./app.module";
 import { ENV_SERVER_PORT } from "./common/constants/env-keys.const";
 import { BusinessErrorFilter } from "./common/filter/business-error.filter";
+import { GlobalExceptionFilter } from "./common/filter/global-exception.filter";
 
 dotenv.config({
     path: path.resolve(
@@ -29,7 +30,10 @@ export namespace Backend {
         const app = await NestFactory.create(AppModule, options);
 
         await app
-            .useGlobalFilters(new BusinessErrorFilter())
+            .useGlobalFilters(
+                new GlobalExceptionFilter(),
+                new BusinessErrorFilter(),
+            )
             .useGlobalPipes(
                 new ValidationPipe({
                     transform: true,

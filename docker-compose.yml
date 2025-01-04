@@ -28,6 +28,8 @@ services:
           - N_REGION=${N_REGION}
           - N_BUCKET_NAME=${N_BUCKET_NAME}
           - N_BUCKET_URL=${N_BUCKET_URL}
+    depends_on:
+        - mysql-prod
       
 
     backend-flame:
@@ -58,6 +60,8 @@ services:
           - N_REGION=${N_REGION}
           - N_BUCKET_NAME=${N_BUCKET_NAME}
           - N_BUCKET_URL=${N_BUCKET_URL}
+      depends_on:
+        - mysql-prod
 
     mysql-prod:
       image: mysql:8.0

@@ -9,6 +9,7 @@ import {
     Post,
     Query,
 } from "@nestjs/common";
+import { DataSource } from "typeorm";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
 import { IsPublicDecorator } from "@APP/common/decorators/is-public.decorator";
@@ -22,6 +23,7 @@ export class ParticipationsController {
     constructor(
         private readonly participationsService: ParticipationsService,
         private readonly articlesService: ArticlesService,
+        private readonly dataSource: DataSource,
     ) {}
 
     @Get("articles/:articleId")
@@ -38,6 +40,15 @@ export class ParticipationsController {
                 limit,
             ),
         ]);
+
+        const driver: any = this.dataSource.driver; // TypeORM의 드라이버 접근
+        const pool = driver.pool; // MySQL2의 연결 풀 가져오기
+
+        console.log("MySQL2 Connection Pool:", {
+            total: pool._allConnections.length, // 총 커넥션 수
+            idle: pool._freeConnections.length, // 대기 중인 커넥션 수
+            waitingClients: pool._connectionQueue.length, // 대기 중인 요청
+        });
 
         return {
             ...participation,
