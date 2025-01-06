@@ -7,7 +7,7 @@ const connection = mysql.createConnection({
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    port: process.env.DB_PORT,
+    port: parseInt(process.env.DB_PORT),
 });
 
 const server = http.createServer((req, res) => {
