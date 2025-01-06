@@ -10,10 +10,4 @@ COPY test.js ./
 
 EXPOSE 3000
 
-ENV DB_HOST=localhost \
-    DB_USERNAME=default_user \
-    DB_PASSWORD=default_password \
-    DB_DATABASE=default_db \
-    DB_PORT=3306
-
 CMD ["node", "test.js"]
