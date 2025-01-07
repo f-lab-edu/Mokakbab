@@ -32,7 +32,7 @@ import { ArticlesService } from "@APP/services/articles.service";
             useFactory: (configService: ConfigService) => {
                 return new MulterBuilder(configService)
                     .setResource("articles")
-                    .setPath("/somenail")
+                    .setPath("/thumbnail")
                     .build();
             },
         }),

@@ -44,7 +44,7 @@ export class ArticlesService {
             type: "articles" | "members",
         ) => {
             if (!filename) return null;
-            const kind = type === "articles" ? "somenail" : "profile";
+            const kind = type === "articles" ? "thumbnail" : "profile";
             return `${this.bucketUrl}/${type}/${this.env}/${kind}/${filename}`;
         };
 
@@ -97,7 +97,7 @@ export class ArticlesService {
             type: "articles" | "members",
         ) => {
             if (!filename) return null;
-            const kind = type === "articles" ? "somenail" : "profile";
+            const kind = type === "articles" ? "thumbnail" : "profile";
             return `${this.bucketUrl}/${type}/${this.env}/${kind}/${filename}`;
         };
 

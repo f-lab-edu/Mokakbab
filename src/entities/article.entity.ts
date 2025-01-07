@@ -56,7 +56,7 @@ export class ArticleEntity {
             if (!value) return null;
 
             const bucketUrl = process.env["N_BUCKET_URL"];
-            return `${bucketUrl}/articles/${process.env["NODE_ENV"]}/somenail/${value}`;
+            return `${bucketUrl}/articles/${process.env["NODE_ENV"]}/thumbnail/${value}`;
         },
         { toPlainOnly: true },
     )
