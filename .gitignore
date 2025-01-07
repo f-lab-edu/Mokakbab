@@ -60,3 +60,5 @@ backup2.sql
 # typeorm
 src/database/migrations/**
 
+data-source.ts
+src/database
