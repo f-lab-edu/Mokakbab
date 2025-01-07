@@ -1,0 +1,82 @@
+version: "3.9"
+services:
+    backend:
+      image: ${NCP_CONTAINER_REGISTRY}/backend:latest
+      container_name: backend_prod
+      ports:
+          - "${BACKEND_OUTBOUND_PORT}:${BACKEND_INBOUND_PORT}"
+      depends_on:
+          - mysql-prod
+      environment:
+          - DB_TYPE=${DB_TYPE}
+          - DB_HOST=${DB_HOST}
+          - DB_PORT=${DB_PORT}
+          - DB_USERNAME=${DB_USERNAME}
+          - DB_PASSWORD=${DB_PASSWORD}
+          - DB_DATABASE=${DB_DATABASE}
+          - DB_SYNCHRONIZE=${DB_SYNCHRONIZE}
+          - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+          - JWT_ACCESS_TOKEN_EXPIRATION=${JWT_ACCESS_TOKEN_EXPIRATION}
+          - JWT_REFRESH_TOKEN_EXPIRATION=${JWT_REFRESH_TOKEN_EXPIRATION}
+          - MAIL_HOST=${MAIL_HOST}
+          - MAIL_PORT=${MAIL_PORT}
+          - MAIL_USER=${MAIL_USER}
+          - MAIL_PWD=${MAIL_PWD}
+          - API_BASE_URL=${API_BASE_URL}
+          - SERVER_PORT=${SERVER_PORT}
+          - N_ACCESS_KEY=${N_ACCESS_KEY}
+          - N_SECRET_KEY=${N_SECRET_KEY}
+          - N_ENDPOINT=${N_ENDPOINT}
+          - N_REGION=${N_REGION}
+          - N_BUCKET_NAME=${N_BUCKET_NAME}
+          - N_BUCKET_URL=${N_BUCKET_URL}
+      
+
+    backend-flame:
+      image: ${NCP_CONTAINER_REGISTRY}/backend-flame:latest
+      container_name: backend_flame
+      ports:
+          - "${BACKEND_OUTBOUND_PORT}:${BACKEND_INBOUND_PORT}"
+      environment:
+          - DB_TYPE=${DB_TYPE}
+          - DB_HOST=${DB_HOST}
+          - DB_PORT=${DB_PORT}
+          - DB_USERNAME=${DB_USERNAME}
+          - DB_PASSWORD=${DB_PASSWORD}
+          - DB_DATABASE=${DB_DATABASE}
+          - DB_SYNCHRONIZE=${DB_SYNCHRONIZE}
+          - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+          - JWT_ACCESS_TOKEN_EXPIRATION=${JWT_ACCESS_TOKEN_EXPIRATION}
+          - JWT_REFRESH_TOKEN_EXPIRATION=${JWT_REFRESH_TOKEN_EXPIRATION}
+          - MAIL_HOST=${MAIL_HOST}
+          - MAIL_PORT=${MAIL_PORT}
+          - MAIL_USER=${MAIL_USER}
+          - MAIL_PWD=${MAIL_PWD}
+          - API_BASE_URL=${API_BASE_URL}
+          - SERVER_PORT=${SERVER_PORT}
+          - N_ACCESS_KEY=${N_ACCESS_KEY}
+          - N_SECRET_KEY=${N_SECRET_KEY}
+          - N_ENDPOINT=${N_ENDPOINT}
+          - N_REGION=${N_REGION}
+          - N_BUCKET_NAME=${N_BUCKET_NAME}
+          - N_BUCKET_URL=${N_BUCKET_URL}
+      depends_on:
+        - mysql-prod
+
+    mysql-prod:
+      image: mysql:8.0
+      restart: always
+      container_name: mysql_prod
+      volumes:
+          - ./mysql-data:/var/lib/mysql
+          - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+          - ./mysql/logs:/var/log/mysql
+      ports:
+          - "${MYSQL_OUTBOUND_PORT}:${MYSQL_INBOUND_PORT}"
+      environment:
+          - MYSQL_DATABASE=${DB_DATABASE}
+          - MYSQL_USER=${DB_USERNAME}
+          - MYSQL_PASSWORD=${DB_PASSWORD}
+          - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+
