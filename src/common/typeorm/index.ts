@@ -26,7 +26,6 @@ export const TypeOrmModuleOptions = {
             password: configService.get(ENV_DB_PASSWORD) || "test",
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
-            logging: ["error", "warn"] as LogLevel[],
             extra: {
                 connectionLimit: 500,
                 waitForConnections: true,
@@ -44,10 +43,9 @@ export const TypeOrmModuleOptions = {
             //     keepAliveInitialDelay: 10000,
             // } as PoolOptions,
 
-            // ...(configService.get("NODE_ENV") === "development"
-            //     ? { retryAttempts: 10, logging: true }
-            //     : { logging: false }),
-            //connectTimeout: 30000, // 연결 타임아웃
+            ...(configService.get("NODE_ENV") === "development"
+                ? { retryAttempts: 10, logging: true }
+                : { logging: ["error", "warn"] as LogLevel[] }),
         };
 
         return option;
