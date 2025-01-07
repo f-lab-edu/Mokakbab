@@ -27,9 +27,9 @@ export class ArticlesController {
     getArticles(
         @Query("cursor", new ParseIntPipe()) cursor: number,
         @Query("limit", new ParseIntPipe()) limit: number,
-        @CurrentMemberDecorator("id") currentMemberId: number,
+        @CurrentMemberDecorator("id") _currentMemberId: number,
     ) {
-        return this.articlesService.findAll(cursor, limit, currentMemberId);
+        return this.articlesService.findAll2(_currentMemberId, cursor, limit);
     }
 
     @Get(":articleId")
@@ -47,9 +47,13 @@ export class ArticlesController {
 
     @Patch("upload-image")
     @UseInterceptors(FileInterceptor("image"))
-    patchUploadImage(@UploadedFile() file: Express.Multer.File) {
+    patchUploadImage(
+        @UploadedFile()
+        file: Express.Multer.File & { key: string; location: string },
+    ) {
         return {
-            filename: file.filename,
+            filename: file.key.split("/").at(-1) || "",
+            location: file.location,
         };
     }
 

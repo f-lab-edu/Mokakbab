@@ -5,11 +5,13 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
+    Unique,
 } from "typeorm";
 
 import { ArticleEntity } from "./article.entity";
 import { RegionEntity } from "./region.entity";
 
+@Unique(["regionId", "name"])
 @Entity("district")
 export class DistrictEntity {
     @PrimaryGeneratedColumn({ type: "int" })

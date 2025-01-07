@@ -111,14 +111,12 @@ export class MembersService {
     }
 
     findOneByEmail(email: string) {
-        return this.membersRepository.findOne({
-            where: {
-                email,
-            },
-            relations: {
-                refreshToken: true,
-            },
-        });
+        return this.membersRepository
+            .createQueryBuilder("member")
+            .leftJoinAndSelect("member.refreshToken", "refreshToken")
+            .select(["member.id", "member.email", "refreshToken.token"])
+            .where("member.email = :email", { email })
+            .getOne();
     }
 
     async updateRefreshToken(memberId: number) {

@@ -1,10 +1,9 @@
-import { BadRequestException, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import multer from "multer";
-import { extname } from "path";
 
-import { MAX_FILE_SIZE } from "@APP/common/constants/number.const";
+import { MulterBuilder } from "@APP/common/builders/multer.builder";
 import { ArticlesController } from "@APP/controllers/articles.controller";
 import { ArticleLikeEntity } from "@APP/entities/article-like.entity";
 import { ArticleEntity } from "@APP/entities/article.entity";
@@ -28,32 +27,14 @@ import { ArticlesService } from "@APP/services/articles.service";
             RegionEntity,
             ArticleLikeEntity,
         ]),
-        MulterModule.register({
-            limits: {
-                fileSize: MAX_FILE_SIZE,
+        MulterModule.registerAsync({
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => {
+                return new MulterBuilder(configService)
+                    .setResource("articles")
+                    .setPath("/thumbnail")
+                    .build();
             },
-            fileFilter: (_req, file, cb) => {
-                const ext = extname(file.originalname);
-                if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
-                    return cb(
-                        new BadRequestException(
-                            "jpg/jpeg/png 파일만 업로드 가능합니다",
-                        ),
-                        false,
-                    );
-                }
-
-                return cb(null, true);
-            },
-
-            storage: multer.diskStorage({
-                destination: function (_req, _file, cb) {
-                    cb(null, "uploads/articles/");
-                },
-                filename: function (_req, file, cb) {
-                    cb(null, `${Date.now()}-${file.originalname}`);
-                },
-            }),
         }),
     ],
     controllers: [ArticlesController],

@@ -98,15 +98,15 @@ export class MembersController {
     @UseInterceptors(FileInterceptor("image"))
     async patchProfileImage(
         @CurrentMemberDecorator("id") currentMemberId: number,
-        @UploadedFile() file: Express.Multer.File,
+        @UploadedFile()
+        file: Express.Multer.File & { key: string; location: string },
     ) {
-        await this.membersService.updateProfileImage(
-            currentMemberId,
-            file.filename,
-        );
+        const filename = file.key.split("/").at(-1) || "";
+        await this.membersService.updateProfileImage(currentMemberId, filename);
 
         return {
-            filename: file.filename,
+            filename,
+            location: file.location,
         };
     }
 }

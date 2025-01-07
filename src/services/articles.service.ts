@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { ENV_API_BASE_URL } from "@APP/common/constants/env-keys.const";
+import {
+    ENV_API_BASE_URL,
+    ENV_N_BUCKET_URL,
+} from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { ArticleErrorCode } from "@APP/common/exception/error-code";
 import { CreateArticleDto } from "@APP/dtos/create-article.dto";
@@ -14,6 +17,8 @@ import { RegionsRepository } from "@APP/repositories/regions.repository";
 
 @Injectable()
 export class ArticlesService {
+    private readonly bucketUrl: string;
+    private readonly env: string;
     constructor(
         private readonly articlesRepository: ArticlesRepository,
         private readonly categoriesRepository: CategoriesRepository,
@@ -21,75 +26,79 @@ export class ArticlesService {
         private readonly regionsRepository: RegionsRepository,
         private readonly articleLikesRepository: ArticleLikesRepository,
         private readonly configService: ConfigService,
-    ) {}
+    ) {
+        this.bucketUrl =
+            this.configService.get(ENV_N_BUCKET_URL) || "BUKET_URL";
+        this.env = this.configService.get<string>("NODE_ENV") || "default";
+    }
 
-    async findAll(cursor: number, limit: number = 10, currentMemberId: number) {
-        const query = this.articlesRepository
-            .createQueryBuilder("article")
-            .select([
-                'article.id AS "articleId"',
-                'article.title AS "title"',
-                'article.content AS "content"',
-                'article.startTime AS "startTime"',
-                'article.endTime AS "endTime"',
-                'article.articleImage AS "articleImage"',
-                'article.createdAt AS "createdAt"',
-                'article.updatedAt AS "updatedAt"',
-                'member.id AS "memberId"',
-                'member.name AS "memberName"',
-                'member.nickname AS "memberNickname"',
-                'member.profileImage AS "memberProfileImage"',
-                'category.id AS "categoryId"',
-                'category.name AS "categoryName"',
-                'region.id AS "regionId"',
-                'region.name AS "regionName"',
-                'district.id AS "districtId"',
-                'district.name AS "districtName"',
-            ])
-            .addSelect((qb) => {
-                return qb
-                    .select("COUNT(*)")
-                    .from("article_likes", "al")
-                    .where("al.articleId = article.id");
-            }, "likeCount")
-            .addSelect((qb) => {
-                return qb
-                    .select("COUNT(*)")
-                    .from("participation", "p")
-                    .where("p.articleId = article.id")
-                    .andWhere("p.status = :status", { status: "ACTIVE" });
-            }, "participantCount")
-            .addSelect((qb) => {
-                return qb
-                    .select("CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END")
-                    .from("article_likes", "al")
-                    .where("al.articleId = article.id")
-                    .andWhere("al.memberId = :currentMemberId", {
-                        currentMemberId,
-                    });
-            }, "isLiked")
-            .innerJoin("article.member", "member")
-            .innerJoin("article.category", "category")
-            .innerJoin("article.region", "region")
-            .innerJoin("article.district", "district")
-            .orderBy("article.id", "DESC")
-            .take(limit + 1);
-
-        if (cursor) {
-            query.where("article.id < :cursor", { cursor });
-        }
-
-        const articles = await query.getRawMany();
+    async findAll(currentMemberId: number, cursor: number, limit: number = 10) {
+        const articles = await this.articlesRepository.findAllV1(
+            currentMemberId,
+            cursor,
+            limit,
+        );
 
         const transformImageUrl = (
             filename: string | null,
             type: "articles" | "members",
         ) => {
             if (!filename) return null;
-            return new URL(
-                `/public/${type}/${filename}`,
-                this.configService.get(ENV_API_BASE_URL),
-            ).toString();
+            const kind = type === "articles" ? "thumbnail" : "profile";
+            return `${this.bucketUrl}/${type}/${this.env}/${kind}/${filename}`;
+        };
+
+        const transformedArticles = articles.map((article) => ({
+            ...article,
+            articleImage: transformImageUrl(article.articleImage, "articles"),
+            memberProfileImage: transformImageUrl(
+                article.memberProfileImage,
+                "members",
+            ),
+        }));
+
+        const hasNextPage = transformedArticles.length > limit;
+        const results = hasNextPage
+            ? transformedArticles.slice(0, -1)
+            : transformedArticles;
+
+        const lastItem = results[results.length - 1];
+
+        const nextUrl =
+            lastItem && hasNextPage
+                ? new URL(
+                      `${this.configService.get(ENV_API_BASE_URL)}/articles?cursor=${lastItem.id}&limit=${limit}`,
+                  )
+                : null;
+
+        return {
+            data: results,
+            cursor: {
+                after: lastItem?.id,
+            },
+            count: results.length,
+            next: nextUrl?.toString(),
+        };
+    }
+
+    async findAll2(
+        currentMemberId: number,
+        cursor: number,
+        limit: number = 10,
+    ) {
+        const articles = await this.articlesRepository.findAllV2(
+            currentMemberId,
+            cursor,
+            limit,
+        );
+
+        const transformImageUrl = (
+            filename: string | null,
+            type: "articles" | "members",
+        ) => {
+            if (!filename) return null;
+            const kind = type === "articles" ? "thumbnail" : "profile";
+            return `${this.bucketUrl}/${type}/${this.env}/${kind}/${filename}`;
         };
 
         const transformedArticles = articles.map((article) => ({

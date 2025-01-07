@@ -3,9 +3,11 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    Index,
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Unique,
 } from "typeorm";
 
 import { ParticipationStatus } from "@APP/common/enum/participation-status.enum";
@@ -13,6 +15,8 @@ import { ParticipationStatus } from "@APP/common/enum/participation-status.enum"
 import { ArticleEntity } from "./article.entity";
 import { MemberEntity } from "./member.entity";
 
+@Unique(["articleId", "memberId"])
+@Index(["status", "articleId"])
 @Entity({ name: "participation" })
 export class ParticipationEntity {
     @PrimaryGeneratedColumn({ type: "int" })

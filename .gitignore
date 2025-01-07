@@ -40,6 +40,25 @@ lerna-debug.log*
 *.env*
 # mysql
 mysql-data
+mysql
 
 # uploads
 uploads/
+
+# docker
+Dockerfile.dev
+docker-compose-dev.yml
+docker-compose.dev-bak.yml
+grafana
+prometheus
+
+.clinic
+
+clinic-report/**
+backup2.sql
+
+# typeorm
+src/database/migrations/**
+
+data-source.ts
+src/database

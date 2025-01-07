@@ -20,19 +20,13 @@ export class ParticipationsService {
         cursor: number,
         limit: number,
     ) {
-        const query = this.participationsRepository
-            .createQueryBuilder("participation")
-            .where("participation.articleId = :articleId", {
+        const participations =
+            await this.participationsRepository.findAllParticipationsByArticleId(
                 articleId,
-            })
-            .orderBy("participation.id", "ASC")
-            .take(limit + 1);
+                cursor,
+                limit,
+            );
 
-        if (cursor) {
-            query.andWhere("participation.id > :cursor", { cursor });
-        }
-
-        const participations = await query.getMany();
         const hasNextPage = participations.length > limit;
         const results = hasNextPage
             ? participations.slice(0, -1)
@@ -129,13 +123,11 @@ export class ParticipationsService {
             );
         }
 
-        const updatedParticipation = this.createParticipationEntity(
-            currentMemberId,
-            body,
-            ParticipationStatus.ACTIVE,
-        );
-
-        return this.participationsRepository.save(updatedParticipation);
+        // 기존 참여 정보가 있고 CANCELLED 상태인 경우, update를 사용
+        return this.participationsRepository.save({
+            ...participation,
+            status: ParticipationStatus.ACTIVE,
+        });
     }
 
     private createParticipationEntity(

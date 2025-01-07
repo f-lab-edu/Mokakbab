@@ -55,10 +55,8 @@ export class ArticleEntity {
         ({ value }) => {
             if (!value) return null;
 
-            return new URL(
-                `/public/articles/${value}`,
-                process.env["API_BASE_URL"],
-            ).toString();
+            const bucketUrl = process.env["N_BUCKET_URL"];
+            return `${bucketUrl}/articles/${process.env["NODE_ENV"]}/thumbnail/${value}`;
         },
         { toPlainOnly: true },
     )
