@@ -39,7 +39,7 @@ jobs:
           IMAGE_TAG: latest
         
         with:
-          file: ./Dockerfile.ecs
+          file: ./Dockerfile
           context: .
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_CONTAINER_REGISTRY }}:latest
