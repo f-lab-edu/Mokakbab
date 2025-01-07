@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
-import * as crypto from "crypto";
 
 import {
     ENV_JWT_ACCESS_TOKEN_EXPIRATION,
@@ -82,9 +81,6 @@ export class AuthService {
     }
 
     async registerByEmail(dto: RegisterMemberDto) {
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
-        const verificationCode = this.generateVerificationCode();
-
         const existMember = await this.membersService.existByEmail(dto.email);
 
         if (existMember) {
@@ -92,6 +88,9 @@ export class AuthService {
                 MemberErrorCode.EMAIL_ALREADY_EXISTS,
             );
         }
+
+        const hashedPassword = await bcrypt.hash(dto.password, 10);
+        const verificationCode = this.generateVerificationCode();
 
         const newMember = await this.membersService.createMember(
             {
@@ -113,19 +112,23 @@ export class AuthService {
     }
 
     private async signInMember(member: Pick<MemberEntity, "email" | "id">) {
-        const tokens = {
-            accessToken: this.signToken(member, false),
-            refreshToken: this.signToken(member, true),
-        };
+        const accessTokenPromise = this.signToken(member, false);
+        const refreshTokenPromise = this.signToken(member, true);
 
-        const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, 10);
+        const hashedAndSavedRefreshTokenPromise = refreshTokenPromise
+            .then((refreshToken) => bcrypt.hash(refreshToken, 10))
+            .then((hashedToken) =>
+                this.membersService.saveRefreshToken(member.id, hashedToken),
+            );
 
-        void this.membersService.saveRefreshToken(
-            member.id,
-            hashedRefreshToken,
-        );
+        // 한번에 처리
+        const [accessToken, refreshToken] = await Promise.all([
+            accessTokenPromise,
+            refreshTokenPromise,
+            hashedAndSavedRefreshTokenPromise,
+        ]);
 
-        return tokens;
+        return { accessToken, refreshToken };
     }
 
     private signToken(
@@ -138,7 +141,7 @@ export class AuthService {
             type: isRefreshToken ? "refresh" : "access",
         };
 
-        return this.jwtService.sign(payload, {
+        return this.jwtService.signAsync(payload, {
             expiresIn: isRefreshToken
                 ? this.configService.get<string>(
                       ENV_JWT_REFRESH_TOKEN_EXPIRATION,
@@ -184,6 +187,15 @@ export class AuthService {
     }
 
     private generateVerificationCode(): string {
-        return crypto.randomBytes(3).toString("hex").toUpperCase();
+        const length = 6; // 6자리 인증 코드
+        const characters = "0123456789ABCDEF"; // 16진수 문자
+        let result = "";
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters[randomIndex];
+        }
+
+        return result;
     }
 }
