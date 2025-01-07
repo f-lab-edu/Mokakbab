@@ -3,7 +3,7 @@ name: auto deploy
 on:
   push:
     branches:
-      - feature/75-server-scale-out-nginx
+      - main
       
 jobs:
   push_to_registry:
