@@ -7,7 +7,6 @@ import path from "path";
 
 import { TypeOrmModuleOptions } from "@APP/common/typeorm";
 
-import { AppController } from "./app.controller";
 import { EmailOptions } from "./common/config/email-config";
 import { AccessTokenGuard } from "./common/guards/bearer-token.guard";
 import { ArticlesModule } from "./modules/articles.module";
@@ -30,7 +29,7 @@ import { ParticipationsModule } from "./modules/participations.module";
         ArticlesModule,
         ParticipationsModule,
     ],
-    controllers: [AppController],
+    controllers: [],
     providers: [
         {
             provide: APP_INTERCEPTOR,
