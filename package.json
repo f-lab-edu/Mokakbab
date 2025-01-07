@@ -15,10 +15,7 @@
         "eslint:fix": "eslint src --fix",
         "prettier": "prettier . -c",
         "prettier:fix": "prettier . -w",
-        "prepare": "husky",
-        "--------------------------------------------": "",
-        "seed": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs -d ./data-source.ts seed:run --name",
-        "seed:dev": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs -d ./data-source.ts seed:run --name"
+        "prepare": "husky"
     },
     "dependencies": {
         "@nestjs-modules/mailer": "^2.0.2",
@@ -41,8 +38,7 @@
         "nodemailer": "^6.9.16",
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.1",
-        "typeorm": "^0.3.20",
-        "typeorm-extension": "^3.6.3"
+        "typeorm": "^0.3.20"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.4.7",
