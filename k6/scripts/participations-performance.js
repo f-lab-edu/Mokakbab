@@ -1,60 +1,23 @@
 import { check, sleep } from "k6";
 import http from "k6/http";
-import { Trend } from "k6/metrics";
+import { Rate, Trend } from "k6/metrics";
 
 const dataReceivedTrend = new Trend("data_received_size", true);
-
-// export const options = {
-//     scenarios: {
-//         simple_rps_test: {
-//             executor: "constant-arrival-rate",
-//             rate: 500,
-//             timeUnit: "1s",
-//             duration: "1m",
-//             preAllocatedVUs: 1500,
-//             maxVUs: 1500,
-//         },
-//     },
-//     // 태그 추가
-//     tags: {
-//         testName: "v2-participations-application",
-//         testType: "performance",
-//         component: "participations",
-//         version: "2.0",
-//     },
-//     thresholds: {
-//         http_req_failed: [{ threshold: "rate<0.05" }],
-//         dropped_iterations: [{ threshold: "rate<0.05" }],
-//         http_req_duration: [{ threshold: "p(95)<3000" }],
-//     },
-// };
+// 에러율 추적을 위한 메트릭 추가
+const errorRate = new Rate("errors");
+const requestFailRate = new Rate("request_fails");
 
 export const options = {
-    scenarios: {
-        gradual_rps_test: {
-            executor: "ramping-arrival-rate",
-            startRate: 50, // 시작 RPS
-            timeUnit: "1s",
-            preAllocatedVUs: 800,
-            maxVUs: 1000,
-            stages: [
-                { target: 100, duration: "30s" }, // 30초 동안 100 RPS로 증가
-                { target: 300, duration: "30s" }, // 30초 동안 300 RPS로 증가
-                { target: 500, duration: "1m" }, // 1분 동안 500 RPS 유지
-                { target: 0, duration: "30s" }, // 30초 동안 RPS를 0으로 감소
-            ],
-        },
-    },
+    //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
+    stages: [
+        { duration: "2m", target: 2000 }, // 최대 부하 유지
+        { duration: "1m", target: 0 }, // 빠르게 부하 감소
+    ],
     tags: {
-        testName: "v2-participations-application",
-        testType: "performance",
+        testName: "prod-spike-participations",
+        testType: "spike",
         component: "participations",
-        version: "2.0",
-    },
-    thresholds: {
-        http_req_failed: [{ threshold: "rate<0.05" }],
-        dropped_iterations: [{ threshold: "rate<0.05" }],
-        http_req_duration: [{ threshold: "p(95)<3000" }],
+        version: "1.0",
     },
 };
 
@@ -82,9 +45,19 @@ export default function () {
     if (participationsResponse.body)
         dataReceivedTrend.add(participationsResponse.body.length);
 
-    check(participationsResponse, {
+    // 응답 상태 체크 및 에러율 기록
+    const isSuccessful = check(participationsResponse, {
         "participations status is 200": (r) => r.status === 200,
     });
+
+    if (!isSuccessful) {
+        errorRate.add(1);
+        requestFailRate.add(1);
+    }
+
+    if (participationsResponse.status >= 400) {
+        requestFailRate.add(1);
+    }
 
     sleep(1);
 }

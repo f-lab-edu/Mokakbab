@@ -3,7 +3,7 @@ name: AWS deploy
 on:
   push:
     branches:
-      - feature/76-infra-change-aws
+      - disabled
       
 
 jobs:
