@@ -10,11 +10,11 @@ const requestFailRate = new Rate("request_fails");
 export const options = {
     //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
     stages: [
-        { duration: "2m", target: 2000 }, // 최대 부하 유지
+        { duration: "2m", target: 3000 }, // 최대 부하 유지
         { duration: "1m", target: 0 }, // 빠르게 부하 감소
     ],
     tags: {
-        testName: "prod-spike-participations",
+        testName: "prod2-spike-participations-2",
         testType: "spike",
         component: "participations",
         version: "1.0",

@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { QueryRunner } from "typeorm";
 
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { MemberErrorCode } from "@APP/common/exception/error-code";
@@ -84,30 +85,28 @@ export class MembersService {
         return verifyCodeExists;
     }
 
-    async createMember(dto: RegisterMemberDto, verificationCode: string) {
-        const newVerificationCode = this.verificationCodeRepository.create({
-            code: verificationCode,
-        });
-
+    async createMember(
+        dto: RegisterMemberDto,
+        verificationCode: string,
+        queryRunner?: QueryRunner,
+    ) {
         const savedVerificationCode =
-            await this.verificationCodeRepository.save(newVerificationCode);
+            await this.verificationCodeRepository.saveVerificationCode(
+                verificationCode,
+                queryRunner,
+            );
 
-        const newMember = this.membersRepository.create({
-            ...dto,
-            verificationCode: {
-                id: savedVerificationCode.id,
-            },
-        });
+        const member = await this.membersRepository.createMember(
+            dto,
+            savedVerificationCode,
+            queryRunner,
+        );
 
-        return this.membersRepository.save(newMember);
+        return member;
     }
 
     existByEmail(email: string) {
-        return this.membersRepository.exists({
-            where: {
-                email,
-            },
-        });
+        return this.membersRepository.existByEmail(email);
     }
 
     findOneByEmail(email: string) {
@@ -140,43 +139,22 @@ export class MembersService {
     }
 
     async saveRefreshToken(memberId: number, refreshToken: string) {
-        const foundMember = await this.membersRepository.findOneOrFail({
-            where: {
-                id: memberId,
-            },
-            relations: {
-                refreshToken: true,
-            },
-        });
+        const { refreshTokenId } =
+            await this.membersRepository.findMemberWithRefreshTokenId(memberId);
 
-        if (foundMember.refreshToken?.token) {
-            return this.refreshTokenRepository.update(
-                {
-                    id: foundMember.refreshToken.id,
-                },
-                {
-                    token: refreshToken,
-                },
+        if (refreshTokenId) {
+            return this.refreshTokenRepository.updateRefreshToken(
+                refreshTokenId,
+                refreshToken,
             );
         }
 
-        const newRefreshToken = this.refreshTokenRepository.create({
-            token: refreshToken,
-        });
-
         const savedRefreshToken =
-            await this.refreshTokenRepository.save(newRefreshToken);
+            await this.refreshTokenRepository.saveRefreshToken(refreshToken);
 
-        return this.membersRepository.update(
-            {
-                id: memberId,
-            },
-            {
-                refreshToken: {
-                    id: savedRefreshToken.id,
-                },
-            },
-        );
+        return this.membersRepository.updateMember(memberId, {
+            refreshTokenId: savedRefreshToken,
+        });
     }
 
     updateProfileImage(memberId: number, filename: string) {

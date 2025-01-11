@@ -68,6 +68,12 @@ export class MemberEntity {
     @Column({ type: "varchar", length: 2048, nullable: true })
     profileImage?: string | null;
 
+    /**
+     * 불필요한 조인을 줄이고 fk만 조회하기 위해서 추가 하였습니다.
+     */
+    @Column({ type: "int", nullable: true })
+    refreshTokenId?: number;
+
     @OneToOne(() => RefreshTokenEntity, (refreshToken) => refreshToken.member)
     @JoinColumn()
     refreshToken?: RefreshTokenEntity; // 리프레시토큰

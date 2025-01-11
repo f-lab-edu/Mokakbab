@@ -9,13 +9,13 @@ const requestFailRate = new Rate("request_fails");
 
 export const options = {
     stages: [
-        { duration: "2m", target: 2000 }, // 최대 부하 유지
+        { duration: "2m", target: 1500 }, // 최대 부하 유지
         { duration: "1m", target: 0 }, // 빠르게 부하 감소
     ],
     tags: {
-        testName: "prod-spike-participations",
+        testName: "prod6-spike-signup6",
         testType: "spike",
-        component: "participations",
+        component: "signup",
         version: "1.0",
     },
 };
@@ -27,12 +27,19 @@ export default function () {
     const randomValue = Math.random().toString(36).substring(2, 15);
     const uniqueId = `${timestamp}-${randomValue}`;
 
-    const signupResponse = http.post(`${BASE_URL}/auth/sign-up`, {
-        email: `user-${uniqueId}@test.com`,
-        password: "123456",
-        name: `user-${uniqueId}`.substring(0, 6),
-        nickname: `nickname-${uniqueId}`.substring(0, 6),
-    });
+    const signupResponse = http.post(
+        `${BASE_URL}/auth/sign-up`,
+        {
+            email: `user-${uniqueId}@test.com`,
+            password: "123456",
+            name: `user-${uniqueId}`.substring(0, 6),
+            nickname: `nickname-${uniqueId}`.substring(0, 6),
+        },
+        {
+            timeout: "60s",
+            tags: { name: "signup" },
+        },
+    );
 
     if (signupResponse.body) dataReceivedTrend.add(signupResponse.body.length);
 

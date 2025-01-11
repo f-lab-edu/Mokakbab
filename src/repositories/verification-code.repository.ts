@@ -20,4 +20,17 @@ export class VerificationCodeRepository extends Repository<VerificationCodeEntit
               )
             : this.repository;
     }
+
+    async saveVerificationCode(code: string, queryRunner?: QueryRunner) {
+        const insertResult = await this.getRepository(queryRunner)
+            .createQueryBuilder()
+            .insert()
+            .into(VerificationCodeEntity)
+            .updateEntity(false)
+            .values({ code })
+            .useTransaction(true)
+            .execute();
+
+        return insertResult.raw.insertId;
+    }
 }

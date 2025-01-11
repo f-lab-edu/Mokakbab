@@ -15,11 +15,11 @@ const imageFiles = [
 
 export const options = {
     stages: [
-        { duration: "2m", target: 2000 }, // 최대 부하 유지
-        { duration: "1m", target: 0 }, // 빠르게 부하 감소
+        { duration: "30s", target: 300 }, // 최대 부하 유지
+        { duration: "30s", target: 0 }, // 빠르게 부하 감소
     ],
     tags: {
-        testName: "spike-upload-image",
+        testName: "prod-spike-upload-image-15",
         testType: "spike",
         component: "upload-image",
         version: "1.0",

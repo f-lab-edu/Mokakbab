@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
+import { QueryRunner } from "typeorm";
 
 import {
     ENV_JWT_ACCESS_TOKEN_EXPIRATION,
@@ -80,7 +81,7 @@ export class AuthService {
         return this.signInMember(existMember);
     }
 
-    async registerByEmail(dto: RegisterMemberDto) {
+    async registerByEmail(dto: RegisterMemberDto, queryRunner?: QueryRunner) {
         const existMember = await this.membersService.existByEmail(dto.email);
 
         if (existMember) {
@@ -89,16 +90,8 @@ export class AuthService {
             );
         }
 
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
+        const hashedPassword = await bcrypt.hash(dto.password, 2);
         const verificationCode = this.generateVerificationCode();
-
-        const newMember = await this.membersService.createMember(
-            {
-                ...dto,
-                password: hashedPassword,
-            },
-            verificationCode,
-        );
 
         /**
          * 테스트를 위해서 잠시 보류
@@ -108,7 +101,46 @@ export class AuthService {
         //     verificationCode,
         // );
 
-        return this.signInMember(newMember);
+        return this.membersService.createMember(
+            {
+                ...dto,
+                password: hashedPassword,
+            },
+            verificationCode,
+            queryRunner,
+        );
+
+        /**
+         * 로그인 처리 부분을 분리하여 처리
+         */
+        // return this.signInMember(
+        //     await this.membersService.createMember(
+        //         {
+        //             ...dto,
+        //             password: hashedPassword,
+        //         },
+        //         verificationCode,
+        //     ),
+        // );
+    }
+
+    async registerByEmail2(dto: RegisterMemberDto) {
+        const existMember = await this.membersService.existByEmail(dto.email);
+
+        if (existMember) {
+            throw new BusinessErrorException(
+                MemberErrorCode.EMAIL_ALREADY_EXISTS,
+            );
+        }
+
+        const verificationCode = this.generateVerificationCode();
+
+        return this.membersService.createMember(
+            {
+                ...dto,
+            },
+            verificationCode,
+        );
     }
 
     private async signInMember(member: Pick<MemberEntity, "email" | "id">) {
@@ -116,7 +148,7 @@ export class AuthService {
         const refreshTokenPromise = this.signToken(member, true);
 
         const hashedAndSavedRefreshTokenPromise = refreshTokenPromise
-            .then((refreshToken) => bcrypt.hash(refreshToken, 10))
+            .then((refreshToken) => bcrypt.hash(refreshToken, 2))
             .then((hashedToken) =>
                 this.membersService.saveRefreshToken(member.id, hashedToken),
             );
