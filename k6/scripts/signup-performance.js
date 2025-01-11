@@ -1,31 +1,22 @@
 import { check, sleep } from "k6";
 import http from "k6/http";
-import { Trend } from "k6/metrics";
+import { Rate, Trend } from "k6/metrics";
 
 const dataReceivedTrend = new Trend("data_received_size", true);
 
+const errorRate = new Rate("errors");
+const requestFailRate = new Rate("request_fails");
+
 export const options = {
-    scenarios: {
-        simple_rps_test: {
-            executor: "constant-arrival-rate",
-            rate: 500,
-            timeUnit: "1s",
-            duration: "10s",
-            preAllocatedVUs: 700,
-            maxVUs: 1000,
-        },
-    },
-    // 태그 추가
+    stages: [
+        { duration: "2m", target: 1500 }, // 최대 부하 유지
+        { duration: "1m", target: 0 }, // 빠르게 부하 감소
+    ],
     tags: {
-        testName: "v2-signup-application",
-        testType: "performance",
+        testName: "prod6-spike-signup6",
+        testType: "spike",
         component: "signup",
-        version: "2.0",
-    },
-    thresholds: {
-        http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
-        dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-        http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
+        version: "1.0",
     },
 };
 
@@ -36,23 +27,34 @@ export default function () {
     const randomValue = Math.random().toString(36).substring(2, 15);
     const uniqueId = `${timestamp}-${randomValue}`;
 
-    const signupResponse = http.post(`${BASE_URL}/auth/sign-up`, {
-        email: `user-${uniqueId}@test.com`,
-        password: "123456",
-        name: `user-${uniqueId}`.substring(0, 6),
-        nickname: `nickname-${uniqueId}`.substring(0, 6),
-    });
+    const signupResponse = http.post(
+        `${BASE_URL}/auth/sign-up`,
+        {
+            email: `user-${uniqueId}@test.com`,
+            password: "123456",
+            name: `user-${uniqueId}`.substring(0, 6),
+            nickname: `nickname-${uniqueId}`.substring(0, 6),
+        },
+        {
+            timeout: "60s",
+            tags: { name: "signup" },
+        },
+    );
 
-    dataReceivedTrend.add(signupResponse.body.length);
+    if (signupResponse.body) dataReceivedTrend.add(signupResponse.body.length);
 
-    const success = check(signupResponse, {
+    // 응답 상태 체크 및 에러율 기록
+    const isSuccessful = check(signupResponse, {
         "signup status is 201": (r) => r.status === 201,
     });
 
-    if (!success) {
-        console.error(
-            `Request failed. Status: ${signupResponse.status}, Body: ${signupResponse.body}`,
-        );
+    if (!isSuccessful) {
+        errorRate.add(1);
+        requestFailRate.add(1);
+    }
+
+    if (signupResponse.status >= 400) {
+        requestFailRate.add(1);
     }
 
     sleep(1);

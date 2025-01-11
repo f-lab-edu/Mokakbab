@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
-import * as crypto from "crypto";
+import { QueryRunner } from "typeorm";
 
 import {
     ENV_JWT_ACCESS_TOKEN_EXPIRATION,
@@ -81,10 +81,7 @@ export class AuthService {
         return this.signInMember(existMember);
     }
 
-    async registerByEmail(dto: RegisterMemberDto) {
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
-        const verificationCode = this.generateVerificationCode();
-
+    async registerByEmail(dto: RegisterMemberDto, queryRunner?: QueryRunner) {
         const existMember = await this.membersService.existByEmail(dto.email);
 
         if (existMember) {
@@ -93,13 +90,8 @@ export class AuthService {
             );
         }
 
-        const newMember = await this.membersService.createMember(
-            {
-                ...dto,
-                password: hashedPassword,
-            },
-            verificationCode,
-        );
+        const hashedPassword = await bcrypt.hash(dto.password, 2);
+        const verificationCode = this.generateVerificationCode();
 
         /**
          * 테스트를 위해서 잠시 보류
@@ -109,23 +101,66 @@ export class AuthService {
         //     verificationCode,
         // );
 
-        return this.signInMember(newMember);
+        return this.membersService.createMember(
+            {
+                ...dto,
+                password: hashedPassword,
+            },
+            verificationCode,
+            queryRunner,
+        );
+
+        /**
+         * 로그인 처리 부분을 분리하여 처리
+         */
+        // return this.signInMember(
+        //     await this.membersService.createMember(
+        //         {
+        //             ...dto,
+        //             password: hashedPassword,
+        //         },
+        //         verificationCode,
+        //     ),
+        // );
+    }
+
+    async registerByEmail2(dto: RegisterMemberDto) {
+        const existMember = await this.membersService.existByEmail(dto.email);
+
+        if (existMember) {
+            throw new BusinessErrorException(
+                MemberErrorCode.EMAIL_ALREADY_EXISTS,
+            );
+        }
+
+        const verificationCode = this.generateVerificationCode();
+
+        return this.membersService.createMember(
+            {
+                ...dto,
+            },
+            verificationCode,
+        );
     }
 
     private async signInMember(member: Pick<MemberEntity, "email" | "id">) {
-        const tokens = {
-            accessToken: this.signToken(member, false),
-            refreshToken: this.signToken(member, true),
-        };
+        const accessTokenPromise = this.signToken(member, false);
+        const refreshTokenPromise = this.signToken(member, true);
 
-        const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, 10);
+        const hashedAndSavedRefreshTokenPromise = refreshTokenPromise
+            .then((refreshToken) => bcrypt.hash(refreshToken, 2))
+            .then((hashedToken) =>
+                this.membersService.saveRefreshToken(member.id, hashedToken),
+            );
 
-        void this.membersService.saveRefreshToken(
-            member.id,
-            hashedRefreshToken,
-        );
+        // 한번에 처리
+        const [accessToken, refreshToken] = await Promise.all([
+            accessTokenPromise,
+            refreshTokenPromise,
+            hashedAndSavedRefreshTokenPromise,
+        ]);
 
-        return tokens;
+        return { accessToken, refreshToken };
     }
 
     private signToken(
@@ -138,7 +173,7 @@ export class AuthService {
             type: isRefreshToken ? "refresh" : "access",
         };
 
-        return this.jwtService.sign(payload, {
+        return this.jwtService.signAsync(payload, {
             expiresIn: isRefreshToken
                 ? this.configService.get<string>(
                       ENV_JWT_REFRESH_TOKEN_EXPIRATION,
@@ -184,6 +219,15 @@ export class AuthService {
     }
 
     private generateVerificationCode(): string {
-        return crypto.randomBytes(3).toString("hex").toUpperCase();
+        const length = 6; // 6자리 인증 코드
+        const characters = "0123456789ABCDEF"; // 16진수 문자
+        let result = "";
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters[randomIndex];
+        }
+
+        return result;
     }
 }

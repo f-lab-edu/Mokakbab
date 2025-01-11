@@ -27,7 +27,7 @@ export const TypeOrmModuleOptions = {
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             extra: {
-                connectionLimit: 500,
+                connectionLimit: 400,
                 waitForConnections: true,
                 queueLimit: 0,
                 enableKeepAlive: true,
@@ -44,7 +44,10 @@ export const TypeOrmModuleOptions = {
             // } as PoolOptions,
 
             ...(configService.get("NODE_ENV") === "development"
-                ? { retryAttempts: 10, logging: true }
+                ? {
+                      retryAttempts: 10,
+                      logging: ["query", "error", "warn"] as LogLevel[],
+                  }
                 : { logging: ["error", "warn"] as LogLevel[] }),
         };
 

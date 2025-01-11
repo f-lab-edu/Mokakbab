@@ -1,4 +1,5 @@
 import { Body, Controller, Headers, Post, UseGuards } from "@nestjs/common";
+import { DataSource } from "typeorm";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
 import { IsPublicDecorator } from "@APP/common/decorators/is-public.decorator";
@@ -11,7 +12,10 @@ import { AuthService } from "@APP/services/auth.service";
 
 @Controller("auth")
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(
+        private readonly authService: AuthService,
+        private readonly dataSource: DataSource,
+    ) {}
 
     @IsPublicDecorator(IsPublicEnum.PUBLIC)
     @UseGuards(BasicTokenGuard)
@@ -26,8 +30,36 @@ export class AuthController {
 
     @IsPublicDecorator(IsPublicEnum.PUBLIC)
     @Post("sign-up")
-    signUp(@Body() dto: RegisterMemberDto) {
-        return this.authService.registerByEmail(dto);
+    async signUp(@Body() dto: RegisterMemberDto) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            const result = await this.authService.registerByEmail(
+                dto,
+                queryRunner,
+            );
+
+            await queryRunner.commitTransaction();
+
+            return result;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    /**
+     *
+     * bcypt를 사용하지 않는 api 테스트를 위해서 추가
+     */
+    @IsPublicDecorator(IsPublicEnum.PUBLIC)
+    @Post("sign-up2")
+    signUp2(@Body() dto: RegisterMemberDto) {
+        return this.authService.registerByEmail2(dto);
     }
 
     @Post("sign-out")

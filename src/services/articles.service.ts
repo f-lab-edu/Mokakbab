@@ -135,9 +135,7 @@ export class ArticlesService {
     }
 
     async findById(articleId: number) {
-        const article = await this.articlesRepository.findOne({
-            where: { id: articleId },
-        });
+        const article = await this.articlesRepository.findById(articleId);
 
         if (!article) {
             throw new BusinessErrorException(

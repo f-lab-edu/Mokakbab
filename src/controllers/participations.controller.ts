@@ -44,12 +44,12 @@ export class ParticipationsController {
     }
 
     @Get()
-    async getParticipations(
+    getParticipations(
         @CurrentMemberDecorator("id") currentMemberId: number,
         @Query("cursor", new ParseIntPipe()) cursor: number,
         @Query("limit", new ParseIntPipe()) limit: number,
     ) {
-        return await this.participationsService.getParticipations(
+        return this.participationsService.getParticipations(
             currentMemberId,
             cursor,
             limit,

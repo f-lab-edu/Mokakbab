@@ -19,6 +19,23 @@ export class ArticlesRepository extends Repository<ArticleEntity> {
             : this.repository;
     }
 
+    findById(articleId: number) {
+        return this.repository
+            .createQueryBuilder("article")
+            .select([
+                "article.id",
+                "article.title",
+                "article.content",
+                "article.startTime",
+                "article.endTime",
+                "article.articleImage",
+                "article.createdAt",
+                "article.updatedAt",
+            ])
+            .where("article.id = :articleId", { articleId })
+            .getOne();
+    }
+
     findAllV1(currentMemberId: number, cursor: number, limit: number = 10) {
         // 해당 아티클의 좋아요 총갯수
         // 모각밥 참여자 갯수
