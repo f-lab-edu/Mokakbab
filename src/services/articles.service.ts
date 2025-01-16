@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 
 import {
     ENV_API_BASE_URL,
-    ENV_N_BUCKET_URL,
+    ENV_AWS_S3_BUCKET_URL,
 } from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { ArticleErrorCode } from "@APP/common/exception/error-code";
@@ -28,7 +28,7 @@ export class ArticlesService {
         private readonly configService: ConfigService,
     ) {
         this.bucketUrl =
-            this.configService.get(ENV_N_BUCKET_URL) || "BUKET_URL";
+            this.configService.get(ENV_AWS_S3_BUCKET_URL) || "BUKET_URL";
         this.env = this.configService.get<string>("NODE_ENV") || "default";
     }
 

@@ -57,5 +57,5 @@ export default function () {
         requestFailRate.add(1);
     }
 
-    sleep(1);
+    sleep(0.01);
 }

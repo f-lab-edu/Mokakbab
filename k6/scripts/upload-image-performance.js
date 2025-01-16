@@ -14,10 +14,18 @@ const imageFiles = [
 ];
 
 export const options = {
-    stages: [
-        { duration: "30s", target: 300 }, // 최대 부하 유지
-        { duration: "30s", target: 0 }, // 빠르게 부하 감소
-    ],
+    scenarios: {
+        ramping_requests: {
+            executor: "ramping-arrival-rate",
+            timeUnit: "1s",
+            stages: [
+                { duration: "2m", target: 100 },
+                { duration: "1m", target: 0 },
+            ],
+            preAllocatedVUs: 50, // 초기 VU
+            maxVUs: 100, // 필요에 따라 동적으로 추가
+        },
+    },
     tags: {
         testName: "prod-spike-upload-image-15",
         testType: "spike",
@@ -67,5 +75,5 @@ export default function () {
         requestFailRate.add(1);
     }
 
-    sleep(1);
+    sleep(0.01);
 }
