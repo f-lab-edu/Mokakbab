@@ -14,7 +14,7 @@ export const options = {
             executor: "ramping-arrival-rate",
             timeUnit: "1s",
             stages: [
-                { duration: "2m", target: 1000 },
+                { duration: "1m", target: 1000 },
                 { duration: "1m", target: 0 },
             ],
             preAllocatedVUs: 100, // 초기 VU
@@ -22,7 +22,7 @@ export const options = {
         },
     },
     tags: {
-        testName: "prod4-spike-participations-4",
+        testName: "prod-spike-participations-36",
         testType: "spike",
         component: "participations",
         version: "1.0",

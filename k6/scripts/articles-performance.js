@@ -14,15 +14,15 @@ export const options = {
             executor: "ramping-arrival-rate",
             timeUnit: "1s",
             stages: [
-                { duration: "2m", target: 800 },
+                { duration: "1m", target: 1000 },
                 { duration: "1m", target: 0 },
             ],
             preAllocatedVUs: 100, // 초기 VU
-            maxVUs: 400, // 필요에 따라 동적으로 추가
+            maxVUs: 230, // 필요에 따라 동적으로 추가
         },
     },
     tags: {
-        testName: "prod-spike-articles-22",
+        testName: "prod-spike-articles-50",
         testType: "spike",
         component: "articles",
         version: "1.0",

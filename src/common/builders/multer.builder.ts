@@ -1,8 +1,10 @@
 import { S3Client } from "@aws-sdk/client-s3";
+import { NodeHttpHandler } from "@aws-sdk/node-http-handler";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { MulterModuleOptions } from "@nestjs/platform-express";
 import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
+import { Agent } from "https";
 import multerS3 from "multer-s3";
 import { extname } from "path";
 
@@ -41,6 +43,12 @@ export class MulterBuilder {
                     this.configService.get<string>(ENV_AWS_SECRET_ACCESS_KEY) ||
                     "SecretKey",
             },
+            requestHandler: new NodeHttpHandler({
+                connectionTimeout: 3000, // 연결 시간 제한
+                socketTimeout: 5000, // 소켓 시간 제한
+                httpAgent: new Agent({ keepAlive: true, maxSockets: 300 }), // Keep-Alive 설정
+            }),
+            cacheMiddleware: true,
         });
 
         this.bucketName =

@@ -14,20 +14,22 @@ const imageFiles = [
 ];
 
 export const options = {
+    //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
     scenarios: {
         ramping_requests: {
             executor: "ramping-arrival-rate",
             timeUnit: "1s",
             stages: [
-                { duration: "2m", target: 100 },
-                { duration: "1m", target: 0 },
+                { duration: "30s", target: 200 },
+                { duration: "30s", target: 200 },
+                { duration: "30s", target: 0 },
             ],
-            preAllocatedVUs: 50, // 초기 VU
-            maxVUs: 100, // 필요에 따라 동적으로 추가
+            preAllocatedVUs: 10, // 초기 VU
+            maxVUs: 50, // 필요에 따라 동적으로 추가
         },
     },
     tags: {
-        testName: "prod-spike-upload-image-15",
+        testName: "prod-spike-upload-image-57",
         testType: "spike",
         component: "upload-image",
         version: "1.0",
