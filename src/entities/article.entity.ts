@@ -103,6 +103,12 @@ export class ArticleEntity {
     @OneToMany(() => ArticleLikeEntity, (articleLike) => articleLike.article)
     articleLikes!: ArticleLikeEntity[];
 
+    /**
+     * 좋아요 수의 Join을 줄이기 위해서 총 좋아요 수 칼럼을 추가 했습니다
+     */
+    @Column({ type: "int", default: 0 })
+    articleLikeCount!: number;
+
     @OneToMany(
         () => ParticipationEntity,
         (participation) => participation.article,

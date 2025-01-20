@@ -18,11 +18,11 @@ export const options = {
                 { duration: "1m", target: 0 },
             ],
             preAllocatedVUs: 100, // 초기 VU
-            maxVUs: 230, // 필요에 따라 동적으로 추가
+            maxVUs: 210, // 필요에 따라 동적으로 추가
         },
     },
     tags: {
-        testName: "prod-spike-articles-50",
+        testName: "prod-spike-articles-54",
         testType: "spike",
         component: "articles",
         version: "1.0",

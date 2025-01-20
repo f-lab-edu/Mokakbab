@@ -96,11 +96,7 @@ export class ArticlesRepository extends Repository<ArticleEntity> {
         return query.getRawMany();
     }
 
-    async findAllV2(
-        currentMemberId: number,
-        cursor: number,
-        limit: number = 10,
-    ): Promise<any[]> {
+    async findAllV2(cursor: number, limit: number = 10): Promise<any[]> {
         const articles = await this.repository.query(
             `
         WITH filtered_articles AS (
@@ -119,6 +115,7 @@ export class ArticlesRepository extends Repository<ArticleEntity> {
             article.articleImage           AS "articleImage",
             article.createdAt              AS "createdAt",
             article.updatedAt              AS "updatedAt",
+            article.articleLikeCount       AS "articleLikeCount",
             member.id                      AS "memberId",
             member.name                    AS "memberName",
             member.nickname                AS "memberNickname",
@@ -145,56 +142,25 @@ export class ArticlesRepository extends Repository<ArticleEntity> {
             (article: { articleId: number }) => article.articleId,
         );
 
-        const [likeCounts, participantCounts, likedArticles] =
-            await Promise.all([
-                this.repository.query(
-                    `
-                SELECT 
-                    articleId,
-                    COUNT(*) as "likeCount"
-                FROM article_likes
-                WHERE articleId IN (?)
-                GROUP BY articleId
-                `,
-                    [articleIds],
-                ),
-                this.repository.query(
-                    `
-                SELECT 
-                    articleId,
-                    COUNT(*) as "participantCount"
-                FROM participation
-                WHERE status = 'ACTIVE' AND articleId IN (?)
-                GROUP BY articleId
-                `,
-                    [articleIds],
-                ),
-                this.repository.query(
-                    `
-                SELECT DISTINCT articleId
-                FROM article_likes
-                WHERE memberId = ? AND articleId IN (?)
-                `,
-                    [currentMemberId, articleIds],
-                ),
-            ]);
+        const participantCounts = await this.repository.query(
+            `
+            SELECT 
+                articleId,
+                COUNT(*) as "participantCount"
+            FROM participation
+            WHERE status = 'ACTIVE' AND articleId IN (?)
+            GROUP BY articleId
+            `,
+            [articleIds],
+        );
 
         return articles.map((article: { articleId: number }) => ({
             ...article,
-            likeCount:
-                likeCounts.find(
-                    (lc: { articleId: number }) =>
-                        lc.articleId === article.articleId,
-                )?.likeCount || 0,
             participantCount:
                 participantCounts.find(
                     (pc: { articleId: number }) =>
                         pc.articleId === article.articleId,
                 )?.participantCount || 0,
-            isLiked: likedArticles.some(
-                (la: { articleId: number }) =>
-                    la.articleId === article.articleId,
-            ),
         }));
     }
 }
