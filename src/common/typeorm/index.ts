@@ -46,7 +46,7 @@ export const TypeOrmModuleOptions = {
             ...(configService.get("NODE_ENV") === "development"
                 ? {
                       retryAttempts: 10,
-                      logging: ["query", "error", "warn"] as LogLevel[],
+                      logging: ["error", "warn"] as LogLevel[],
                   }
                 : { logging: ["error", "warn"] as LogLevel[] }),
         };

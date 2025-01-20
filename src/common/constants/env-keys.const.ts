@@ -26,10 +26,9 @@ export const ENV_MAIL_PORT = "MAIL_PORT" as const;
 export const ENV_MAIL_USER = "MAIL_USER" as const;
 export const ENV_MAIL_PWD = "MAIL_PWD" as const;
 
-// ncloud
-export const ENV_N_ACCESS_KEY = "N_ACCESS_KEY" as const;
-export const ENV_N_SECRET_KEY = "N_SECRET_KEY" as const;
-export const ENV_N_ENDPOINT = "N_ENDPOINT" as const;
-export const ENV_N_REGION = "N_REGION" as const;
-export const ENV_N_BUCKET_NAME = "N_BUCKET_NAME" as const;
-export const ENV_N_BUCKET_URL = "N_BUCKET_URL" as const;
+// aws
+export const ENV_AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID" as const;
+export const ENV_AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY" as const;
+export const ENV_AWS_REGION = "AWS_REGION" as const;
+export const ENV_AWS_S3_BUCKET_NAME = "AWS_S3_BUCKET_NAME" as const;
+export const ENV_AWS_S3_BUCKET_URL = "AWS_S3_BUCKET_URL" as const;
