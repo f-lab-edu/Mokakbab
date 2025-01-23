@@ -1,7 +1,6 @@
 import {
     INestApplication,
-    NestApplicationOptions,
-    ValidationPipe,
+    NestApplicationOptions, //ValidationPipe,
 } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import dotenv from "dotenv";
@@ -33,17 +32,6 @@ export namespace Backend {
             .useGlobalFilters(
                 new GlobalExceptionFilter(),
                 new BusinessErrorFilter(),
-            )
-            .useGlobalPipes(
-                new ValidationPipe({
-                    transform: true,
-                    transformOptions: {
-                        enableImplicitConversion: false,
-                    },
-                    stopAtFirstError: true,
-                    whitelist: true,
-                    forbidNonWhitelisted: true,
-                }),
             )
             .listen(process.env[ENV_SERVER_PORT]!);
 

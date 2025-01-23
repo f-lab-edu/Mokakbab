@@ -1,4 +1,4 @@
-import { check, sleep } from "k6";
+import { check } from "k6";
 import http from "k6/http";
 import { Rate, Trend } from "k6/metrics";
 
@@ -8,26 +8,23 @@ const errorRate = new Rate("errors");
 const requestFailRate = new Rate("request_fails");
 
 export const options = {
-    userAgent: __ENV.MY_USER_AGENT,
     //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
     scenarios: {
-        spike_test: {
-            executor: "ramping-vus",
-            startVUs: 0,
+        ramping_requests: {
+            executor: "ramping-arrival-rate",
+            timeUnit: "1s",
             stages: [
-                { duration: "2m", target: 300 }, // 1분 동안 VUs를 2000으로 증가
-                { duration: "1m", target: 0 }, // 30초 동안 VUs를 0으로 감소
+                { duration: "2m", target: 2000 },
+                { duration: "1m", target: 0 },
             ],
+            preAllocatedVUs: 200, // 초기 VU
+            maxVUs: 400, // 필요에 따라 동적으로 추가
         },
     },
-    thresholds: {
-        http_req_failed: ["rate<0.01"],
-        http_req_duration: ["p(95)<2000"],
-    },
     tags: {
-        testName: "prod-spike-participations-120",
+        testName: "hello2",
         testType: "spike",
-        component: "participations",
+        component: "hello",
         version: "1.0",
     },
 };
@@ -36,21 +33,13 @@ export default function () {
     const BASE_URL = __ENV.BASE_URL || "http://localhost:4000";
     const ACCESS_TOKEN = __ENV.ACCESS_TOKEN || "access_token";
 
-    const cursors = [12001, 23000, 30000, 40000, 50000];
-    const cursor = cursors[Math.floor(Math.random() * cursors.length)];
-    const limit = 10;
-
-    const articleIds = [23640, 12714, 11621, 43514];
-
-    const participationsResponse = http.get(
-        `${BASE_URL}/participations/articles/${articleIds[Math.floor(Math.random() * articleIds.length)]}?cursor=${cursor}&limit=${limit}`,
-        {
-            headers: {
-                Authorization: `Bearer ${ACCESS_TOKEN}`,
-            },
-            tags: { name: "participations" },
+    const participationsResponse = http.get(`${BASE_URL}`, {
+        headers: {
+            Authorization: `Bearer ${ACCESS_TOKEN}`,
         },
-    );
+        timeout: "60s",
+        tags: { name: "hello" },
+    });
 
     if (participationsResponse.body)
         dataReceivedTrend.add(participationsResponse.body.length);
@@ -68,6 +57,4 @@ export default function () {
     if (participationsResponse.status >= 400) {
         requestFailRate.add(1);
     }
-
-    sleep(0.1);
 }

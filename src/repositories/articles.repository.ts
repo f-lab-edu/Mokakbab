@@ -25,7 +25,6 @@ export class ArticlesRepository extends Repository<ArticleEntity> {
             .select([
                 "article.id",
                 "article.title",
-                "article.content",
                 "article.startTime",
                 "article.endTime",
                 "article.articleImage",

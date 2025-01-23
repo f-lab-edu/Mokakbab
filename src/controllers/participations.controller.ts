@@ -8,9 +8,11 @@ import {
     ParseIntPipe,
     Post,
     Query,
+    UseGuards,
 } from "@nestjs/common";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
+import { TokenOnlyGuard } from "@APP/common/guards/token-only.guard";
 import { CreateParticipationDto } from "@APP/dtos/create-participation.dto";
 import { ArticlesService } from "@APP/services/articles.service";
 import { ParticipationsService } from "@APP/services/participations.service";
@@ -22,20 +24,25 @@ export class ParticipationsController {
         private readonly articlesService: ArticlesService,
     ) {}
 
+    @UseGuards(TokenOnlyGuard)
     @Get("articles/:articleId")
     async getParticipationsByArticle(
         @Param("articleId", new ParseIntPipe()) articleId: number,
         @Query("cursor", new ParseIntPipe()) cursor: number,
         @Query("limit", new ParseIntPipe()) limit: number,
     ) {
-        const [article, participation] = await Promise.all([
-            this.articlesService.findById(articleId),
-            this.participationsService.getParticipationsByArticleId(
+        /**
+         * 쿼리를 병렬 처리하는것은 쿼리 개수 n만큼의 커넥션풀을 사용하여 높은 RPS에서 오히려 더 성능저하 되었습니다.
+         * 쿼리를 순차적으로 처리하는것이 더 성능이 좋았습니다.
+         */
+        const participation =
+            await this.participationsService.getParticipationsByArticleId(
                 articleId,
                 cursor,
                 limit,
-            ),
-        ]);
+            );
+
+        const article = await this.articlesService.findById(articleId);
 
         return {
             ...participation,

@@ -7,7 +7,7 @@
 - 📐 Project Structure
 - [📊 ERD (Entity Relationship Diagram)](<https://github.com/f-lab-edu/Mokakbab/wiki/%F0%9F%93%8A-ERD-(Entity-Relationship-Diagram)>)
 - 🚀 Conventions
-- [🔍 Query Patterns](https://www.notion.so/181135d46c8f80a1a748f6eca2d7c381)
+- [🔍 Query Patterns](https://curvy-wood-aa3.notion.site/181135d46c8f80a1a748f6eca2d7c381?pvs=4)
 
 ## 📖 프로젝트 개요
 
