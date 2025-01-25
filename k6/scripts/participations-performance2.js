@@ -8,7 +8,7 @@ const errorRate = new Rate("errors");
 const requestFailRate = new Rate("request_fails");
 
 /**
- * Promise.all 제거
+ * Promise.all
  */
 export const options = {
     userAgent: __ENV.MY_USER_AGENT,
@@ -28,7 +28,7 @@ export const options = {
         http_req_duration: ["p(95)<2000"],
     },
     tags: {
-        testName: "no-participations-708",
+        testName: "promise-all-participations-703",
         testType: "spike",
         component: "participations",
         version: "1.0",
@@ -46,7 +46,7 @@ export default function () {
     const articleIds = [23640, 12714, 11621, 43514];
 
     const participationsResponse = http.get(
-        `${BASE_URL}/participations/articles/${articleIds[Math.floor(Math.random() * articleIds.length)]}?cursor=${cursor}&limit=${limit}`,
+        `${BASE_URL}/participations/articles2/${articleIds[Math.floor(Math.random() * articleIds.length)]}?cursor=${cursor}&limit=${limit}`,
         {
             headers: {
                 Authorization: `Bearer ${ACCESS_TOKEN}`,
