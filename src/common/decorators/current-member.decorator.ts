@@ -4,7 +4,7 @@ import {
     createParamDecorator,
 } from "@nestjs/common";
 
-import { MemberEntity } from "@APP/entities/member.entity";
+import { MemberEntity } from "@APP/members/entities/member.entity";
 
 export const CurrentMemberDecorator = createParamDecorator(
     (data: keyof MemberEntity, ctx: ExecutionContext) => {

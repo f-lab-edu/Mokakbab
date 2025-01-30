@@ -39,7 +39,7 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
                 enableKeepAlive: true,
                 keepAliveInitialDelay: 10000,
                 idleTimeout: 240000,
-            } as PoolOptions,
+            } satisfies PoolOptions,
 
             maxQueryExecutionTime: 1000,
             // extra: {

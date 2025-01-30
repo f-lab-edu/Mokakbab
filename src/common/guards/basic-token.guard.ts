@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 
-import { AuthService } from "@APP/services/auth.service";
+import { AuthService } from "@APP/auth/auth.service";
 
 import { BusinessErrorException } from "../exception/business-error.exception";
 import { MemberErrorCode } from "../exception/error-code";
