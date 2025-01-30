@@ -1,23 +1,24 @@
+import { S3Client } from "@aws-sdk/client-s3";
+import { NodeHttpHandler } from "@aws-sdk/node-http-handler";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { MulterModuleOptions } from "@nestjs/platform-express";
 import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
-import AWS from "aws-sdk";
+import { Agent } from "https";
 import multerS3 from "multer-s3";
 import { extname } from "path";
 
 import {
-    ENV_N_ACCESS_KEY,
-    ENV_N_BUCKET_NAME,
-    ENV_N_ENDPOINT,
-    ENV_N_REGION,
-    ENV_N_SECRET_KEY,
+    ENV_AWS_ACCESS_KEY_ID,
+    ENV_AWS_REGION,
+    ENV_AWS_S3_BUCKET_NAME,
+    ENV_AWS_SECRET_ACCESS_KEY,
 } from "../constants/env-keys.const";
 import { MAX_FILE_SIZE } from "../constants/number.const";
 
 @Injectable()
 export class MulterBuilder {
-    private readonly s3: AWS.S3;
+    private readonly s3: S3Client;
     private readonly bucketName: string;
 
     private options: Partial<MulterModuleOptions>;
@@ -32,22 +33,27 @@ export class MulterBuilder {
             fileFilter: this.defaultFileFilter,
         };
 
-        this.s3 = new AWS.S3({
-            endpoint:
-                this.configService.get<string>(ENV_N_ENDPOINT) || "Endpoint",
-            region: this.configService.get<string>(ENV_N_REGION) || "Region",
+        this.s3 = new S3Client({
+            region: this.configService.get<string>(ENV_AWS_REGION) || "Region",
             credentials: {
                 accessKeyId:
-                    this.configService.get<string>(ENV_N_ACCESS_KEY) ||
+                    this.configService.get<string>(ENV_AWS_ACCESS_KEY_ID) ||
                     "AccessKey",
                 secretAccessKey:
-                    this.configService.get<string>(ENV_N_SECRET_KEY) ||
+                    this.configService.get<string>(ENV_AWS_SECRET_ACCESS_KEY) ||
                     "SecretKey",
             },
+            requestHandler: new NodeHttpHandler({
+                connectionTimeout: 3000, // 연결 시간 제한
+                socketTimeout: 5000, // 소켓 시간 제한
+                httpAgent: new Agent({ keepAlive: true, maxSockets: 300 }), // Keep-Alive 설정
+            }),
+            cacheMiddleware: true,
         });
 
         this.bucketName =
-            this.configService.get<string>(ENV_N_BUCKET_NAME) || "BucketName";
+            this.configService.get<string>(ENV_AWS_S3_BUCKET_NAME) ||
+            "BucketName";
     }
 
     private defaultFileFilter: MulterOptions["fileFilter"] = (
@@ -107,19 +113,24 @@ export class MulterBuilder {
                 acl: "public-read",
                 contentType: multerS3.AUTO_CONTENT_TYPE,
                 key: (_req, file, cb) => {
-                    const splitedFileNames = file.originalname.split(".");
-                    const extension = splitedFileNames.at(
-                        splitedFileNames.length - 1,
-                    );
+                    try {
+                        const splitedFileNames = file.originalname.split(".");
+                        const extension = splitedFileNames.at(
+                            splitedFileNames.length - 1,
+                        );
 
-                    const env =
-                        this.configService.get<string>("NODE_ENV") || "default";
+                        const env =
+                            this.configService.get<string>("NODE_ENV") ||
+                            "default";
 
-                    const filename = this.path
-                        ? `${env}${this.path}/${new Date().getTime()}.${extension}`
-                        : `${env}${new Date().getTime()}.${extension}`;
+                        const filename = this.path
+                            ? `${env}${this.path}/${new Date().getTime()}.${extension}`
+                            : `${env}${new Date().getTime()}.${extension}`;
 
-                    cb(null, encodeURI(`${this.resource}/${filename}`));
+                        cb(null, encodeURI(`${this.resource}/${filename}`));
+                    } catch (error) {
+                        cb(error);
+                    }
                 },
             }),
         };

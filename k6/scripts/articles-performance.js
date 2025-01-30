@@ -9,12 +9,20 @@ const requestFailRate = new Rate("request_fails");
 
 export const options = {
     //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
-    stages: [
-        { duration: "2m", target: 3000 }, // 최대 부하 유지
-        { duration: "1m", target: 0 }, // 빠르게 부하 감소
-    ],
+    scenarios: {
+        ramping_requests: {
+            executor: "ramping-arrival-rate",
+            timeUnit: "1s",
+            stages: [
+                { duration: "1m", target: 1000 },
+                { duration: "1m", target: 0 },
+            ],
+            preAllocatedVUs: 100, // 초기 VU
+            maxVUs: 230, // 필요에 따라 동적으로 추가
+        },
+    },
     tags: {
-        testName: "prod-spike-articles-10",
+        testName: "prod-spike-articles-50",
         testType: "spike",
         component: "articles",
         version: "1.0",
@@ -57,5 +65,5 @@ export default function () {
         requestFailRate.add(1);
     }
 
-    sleep(1);
+    sleep(0.01);
 }
