@@ -18,4 +18,28 @@ export class RefreshTokenRepository extends Repository<RefreshTokenEntity> {
             ? qr.manager.getRepository<RefreshTokenEntity>(RefreshTokenEntity)
             : this.repository;
     }
+
+    updateRefreshToken(refreshTokenId: number, refreshToken: string) {
+        return this.repository.update(
+            {
+                id: refreshTokenId,
+            },
+            {
+                token: refreshToken,
+            },
+        );
+    }
+
+    async saveRefreshToken(refreshToken: string) {
+        const insertResult = await this.repository
+            .createQueryBuilder()
+            .insert()
+            .into(RefreshTokenEntity)
+            .updateEntity(false)
+            .values({ token: refreshToken })
+            .useTransaction(true)
+            .execute();
+
+        return insertResult.raw.insertId;
+    }
 }
