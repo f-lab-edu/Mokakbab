@@ -7,6 +7,7 @@ import {
     ENV_JWT_ACCESS_TOKEN_EXPIRATION,
     ENV_JWT_SECRET_KEY,
 } from "@APP/common/constants/env-keys.const";
+import { TokenOnlyGuard } from "@APP/common/guards/token-only.guard";
 import { AuthController } from "@APP/controllers/auth.controller";
 import { AuthService } from "@APP/services/auth.service";
 import { MailsService } from "@APP/services/mails.service";
@@ -37,7 +38,7 @@ import { MembersModule } from "./members.module";
         MembersModule,
     ],
     controllers: [AuthController],
-    providers: [AuthService, MailsService],
-    exports: [AuthService],
+    providers: [AuthService, MailsService, TokenOnlyGuard],
+    exports: [AuthService, TokenOnlyGuard, MembersModule],
 })
 export class AuthModule {}

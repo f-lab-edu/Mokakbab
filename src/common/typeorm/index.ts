@@ -1,4 +1,8 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import {
+    TypeOrmModuleAsyncOptions,
+    TypeOrmModuleOptions as TypeOrmModuleOptionsType,
+} from "@nestjs/typeorm";
 import { PoolOptions } from "mysql2";
 import path from "path";
 import { LogLevel } from "typeorm";
@@ -13,10 +17,12 @@ import {
     ENV_DB_USERNAME,
 } from "../constants/env-keys.const";
 
-export const TypeOrmModuleOptions = {
+export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
     imports: [ConfigModule],
     inject: [ConfigService],
-    useFactory: async (configService: ConfigService) => {
+    useFactory: async (
+        configService: ConfigService,
+    ): Promise<TypeOrmModuleOptionsType> => {
         const option = {
             type: configService.get(ENV_DB_TYPE) || "mysql",
             host: configService.get(ENV_DB_HOST) || "localhost",
@@ -27,12 +33,15 @@ export const TypeOrmModuleOptions = {
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             extra: {
-                connectionLimit: 400,
+                connectionLimit: 50,
                 waitForConnections: true,
                 queueLimit: 0,
                 enableKeepAlive: true,
                 keepAliveInitialDelay: 10000,
+                idleTimeout: 240000,
             } as PoolOptions,
+
+            maxQueryExecutionTime: 1000,
             // extra: {
             //     waitForConnections: true,
             //     connectionLimit: 200, // MySQL max_connections의 약 20%
@@ -46,7 +55,7 @@ export const TypeOrmModuleOptions = {
             ...(configService.get("NODE_ENV") === "development"
                 ? {
                       retryAttempts: 10,
-                      logging: ["error", "warn"] as LogLevel[],
+                      logging: ["query", "error", "warn"] as LogLevel[],
                   }
                 : { logging: ["error", "warn"] as LogLevel[] }),
         };

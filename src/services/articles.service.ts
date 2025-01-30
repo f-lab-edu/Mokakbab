@@ -81,16 +81,8 @@ export class ArticlesService {
         };
     }
 
-    async findAll2(
-        currentMemberId: number,
-        cursor: number,
-        limit: number = 10,
-    ) {
-        const articles = await this.articlesRepository.findAllV2(
-            currentMemberId,
-            cursor,
-            limit,
-        );
+    async findAll2(cursor: number, limit: number = 10) {
+        const articles = await this.articlesRepository.findAllV2(cursor, limit);
 
         const transformImageUrl = (
             filename: string | null,

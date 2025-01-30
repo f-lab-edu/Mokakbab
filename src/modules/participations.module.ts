@@ -7,9 +7,14 @@ import { ParticipationsRepository } from "@APP/repositories/participations.repos
 import { ParticipationsService } from "@APP/services/participations.service";
 
 import { ArticlesModule } from "./articles.module";
+import { AuthModule } from "./auth.module";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ParticipationEntity]), ArticlesModule],
+    imports: [
+        TypeOrmModule.forFeature([ParticipationEntity]),
+        ArticlesModule,
+        AuthModule,
+    ],
     controllers: [ParticipationsController],
     providers: [ParticipationsService, ParticipationsRepository],
     exports: [],

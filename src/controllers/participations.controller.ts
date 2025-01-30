@@ -8,9 +8,11 @@ import {
     ParseIntPipe,
     Post,
     Query,
+    UseGuards,
 } from "@nestjs/common";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
+import { TokenOnlyGuard } from "@APP/common/guards/token-only.guard";
 import { CreateParticipationDto } from "@APP/dtos/create-participation.dto";
 import { ArticlesService } from "@APP/services/articles.service";
 import { ParticipationsService } from "@APP/services/participations.service";
@@ -22,13 +24,44 @@ export class ParticipationsController {
         private readonly articlesService: ArticlesService,
     ) {}
 
+    @UseGuards(TokenOnlyGuard)
     @Get("articles/:articleId")
     async getParticipationsByArticle(
         @Param("articleId", new ParseIntPipe()) articleId: number,
         @Query("cursor", new ParseIntPipe()) cursor: number,
         @Query("limit", new ParseIntPipe()) limit: number,
     ) {
-        const [article, participation] = await Promise.all([
+        // 28.514ms
+        console.time("getParticipationsByArticle");
+        const participation =
+            await this.participationsService.getParticipationsByArticleId(
+                articleId,
+                cursor,
+                limit,
+            );
+
+        const article = await this.articlesService.findById(articleId);
+
+        const article2 = await this.articlesService.findById(articleId);
+        console.timeEnd("getParticipationsByArticle");
+        return {
+            ...participation,
+            article,
+            article2,
+        };
+    }
+
+    @UseGuards(TokenOnlyGuard)
+    @Get("articles2/:articleId")
+    async getParticipationsByArticle2(
+        @Param("articleId", new ParseIntPipe()) articleId: number,
+        @Query("cursor", new ParseIntPipe()) cursor: number,
+        @Query("limit", new ParseIntPipe()) limit: number,
+    ) {
+        // 8.43ms
+        console.time("getParticipationsByArticle2");
+        const [article, article2, participations] = await Promise.all([
+            this.articlesService.findById(articleId),
             this.articlesService.findById(articleId),
             this.participationsService.getParticipationsByArticleId(
                 articleId,
@@ -36,10 +69,11 @@ export class ParticipationsController {
                 limit,
             ),
         ]);
-
+        console.timeEnd("getParticipationsByArticle2");
         return {
-            ...participation,
+            ...participations,
             article,
+            article2,
         };
     }
 

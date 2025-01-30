@@ -8,21 +8,32 @@ const errorRate = new Rate("errors");
 const requestFailRate = new Rate("request_fails");
 
 export const options = {
-    //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
+    // //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
+    // scenarios: {
+    //     ramping_requests: {
+    //         executor: "ramping-arrival-rate",
+    //         timeUnit: "1s",
+    //         stages: [
+    //             { duration: "1m", target: 1000 },
+    //             { duration: "1m", target: 0 },
+    //         ],
+    //         preAllocatedVUs: 100, // 초기 VU
+    //         maxVUs: 210, // 필요에 따라 동적으로 추가
+    //     },
+    // },
     scenarios: {
-        ramping_requests: {
-            executor: "ramping-arrival-rate",
-            timeUnit: "1s",
-            stages: [
-                { duration: "1m", target: 1000 },
-                { duration: "1m", target: 0 },
-            ],
-            preAllocatedVUs: 100, // 초기 VU
-            maxVUs: 230, // 필요에 따라 동적으로 추가
+        stress_test: {
+            executor: "ramping-vus",
+            startVUs: 0,
+            stages: [{ duration: "5m", target: 500 }],
         },
     },
+    thresholds: {
+        http_req_failed: ["rate<0.01"], // 실패율 < 1%
+        http_req_duration: ["p(95)<2000"], // 95% 응답 시간 < 2000ms
+    },
     tags: {
-        testName: "prod-spike-articles-50",
+        testName: "prod-spike-articles-54",
         testType: "spike",
         component: "articles",
         version: "1.0",
