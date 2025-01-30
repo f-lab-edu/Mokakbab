@@ -2,13 +2,14 @@ import { Injectable } from "@nestjs/common";
 
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { MemberErrorCode } from "@APP/common/exception/error-code";
-import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
-import { UpdateMemberDto } from "@APP/dtos/update-member.dto";
-import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
-import { BlackListRepository } from "@APP/repositories/black-list.repository";
-import { MembersRepository } from "@APP/repositories/members.repository";
-import { RefreshTokenRepository } from "@APP/repositories/refresh-token.repository";
-import { VerificationCodeRepository } from "@APP/repositories/verification-code.repository";
+
+import { RegisterMemberDto } from "./dtos/register-member.dto";
+import { UpdateMemberDto } from "./dtos/update-member.dto";
+import { VerifyEmailDto } from "./dtos/verify-email.dto";
+import { BlackListRepository } from "./repositories/black-list.repository";
+import { MembersRepository } from "./repositories/members.repository";
+import { RefreshTokenRepository } from "./repositories/refresh-token.repository";
+import { VerificationCodeRepository } from "./repositories/verification-code.repository";
 
 @Injectable()
 export class MembersService {
@@ -159,11 +160,7 @@ export class MembersService {
     }
 
     findBlacks(memberId: number) {
-        return this.blackListRepository.find({
-            where: {
-                blackerId: memberId,
-            },
-        });
+        return this.blackListRepository.findBlacks(memberId);
     }
 
     createBlack(blackerId: number, blackedId: number) {

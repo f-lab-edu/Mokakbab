@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { QueryRunner, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
-import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
-import { MemberEntity } from "@APP/entities/member.entity";
+import { RegisterMemberDto } from "../dtos/register-member.dto";
+import { MemberEntity } from "../entities/member.entity";
 
 @Injectable()
 export class MembersRepository extends Repository<MemberEntity> {
@@ -12,12 +12,6 @@ export class MembersRepository extends Repository<MemberEntity> {
         private readonly repository: Repository<MemberEntity>,
     ) {
         super(repository.target, repository.manager, repository.queryRunner);
-    }
-
-    getRepository(qr?: QueryRunner) {
-        return qr
-            ? qr.manager.getRepository<MemberEntity>(MemberEntity)
-            : this.repository;
     }
 
     async existByEmail(email: string) {
@@ -32,9 +26,8 @@ export class MembersRepository extends Repository<MemberEntity> {
     async createMember(
         dto: RegisterMemberDto,
         verificationCodeId: number,
-        queryRunner?: QueryRunner,
     ): Promise<Pick<MemberEntity, "id" | "email">> {
-        const insertResult = await this.getRepository(queryRunner)
+        const insertResult = await this.repository
             .createQueryBuilder()
             .insert()
             .into(MemberEntity)

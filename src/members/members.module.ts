@@ -4,16 +4,17 @@ import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { MulterBuilder } from "@APP/common/builders/multer.builder";
-import { MembersController } from "@APP/controllers/members.controller";
-import { BlackListEntity } from "@APP/entities/black-list.entity";
-import { MemberEntity } from "@APP/entities/member.entity";
-import { RefreshTokenEntity } from "@APP/entities/refresh-token.entity";
-import { VerificationCodeEntity } from "@APP/entities/verification-code.entity";
-import { BlackListRepository } from "@APP/repositories/black-list.repository";
-import { MembersRepository } from "@APP/repositories/members.repository";
-import { RefreshTokenRepository } from "@APP/repositories/refresh-token.repository";
-import { VerificationCodeRepository } from "@APP/repositories/verification-code.repository";
-import { MembersService } from "@APP/services/members.service";
+
+import { BlackListEntity } from "./entities/black-list.entity";
+import { MemberEntity } from "./entities/member.entity";
+import { RefreshTokenEntity } from "./entities/refresh-token.entity";
+import { VerificationCodeEntity } from "./entities/verification-code.entity";
+import { MembersController } from "./members.controller";
+import { MembersService } from "./members.service";
+import { BlackListRepository } from "./repositories/black-list.repository";
+import { MembersRepository } from "./repositories/members.repository";
+import { RefreshTokenRepository } from "./repositories/refresh-token.repository";
+import { VerificationCodeRepository } from "./repositories/verification-code.repository";
 
 @Module({
     imports: [

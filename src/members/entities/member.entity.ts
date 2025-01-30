@@ -17,11 +17,11 @@ import {
     UpdateDateColumn,
 } from "typeorm";
 
+import { ArticleLikeEntity } from "@APP/articles/entities/article-like.entity";
+import { ArticleEntity } from "@APP/articles/entities/article.entity";
 import { PASSWORD_HASH_LENGTH } from "@APP/common/constants/number.const";
+import { ParticipationEntity } from "@APP/participations/entities/participation.entity";
 
-import { ArticleLikeEntity } from "./article-like.entity";
-import { ArticleEntity } from "./article.entity";
-import { ParticipationEntity } from "./participation.entity";
 import { RefreshTokenEntity } from "./refresh-token.entity";
 import { VerificationCodeEntity } from "./verification-code.entity";
 

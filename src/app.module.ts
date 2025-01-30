@@ -7,11 +7,11 @@ import path from "path";
 import { TypeOrmModuleOptions } from "@APP/common/typeorm";
 
 import { AppController } from "./app.controller";
+import { ArticlesModule } from "./articles/articles.module";
+import { AuthModule } from "./auth/auth.module";
 import { EmailOptions } from "./common/config/email-config";
-import { ArticlesModule } from "./modules/articles.module";
-import { AuthModule } from "./modules/auth.module";
-import { MembersModule } from "./modules/members.module";
-import { ParticipationsModule } from "./modules/participations.module";
+import { MembersModule } from "./members/members.module";
+import { ParticipationsModule } from "./participations/participations.module";
 
 @Module({
     imports: [

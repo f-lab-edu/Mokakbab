@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { QueryRunner, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
-import { RefreshTokenEntity } from "@APP/entities/refresh-token.entity";
+import { RefreshTokenEntity } from "../entities/refresh-token.entity";
 
 @Injectable()
 export class RefreshTokenRepository extends Repository<RefreshTokenEntity> {
@@ -11,12 +11,6 @@ export class RefreshTokenRepository extends Repository<RefreshTokenEntity> {
         private readonly repository: Repository<RefreshTokenEntity>,
     ) {
         super(repository.target, repository.manager, repository.queryRunner);
-    }
-
-    getRepository(qr?: QueryRunner) {
-        return qr
-            ? qr.manager.getRepository<RefreshTokenEntity>(RefreshTokenEntity)
-            : this.repository;
     }
 
     updateRefreshToken(refreshTokenId: number, refreshToken: string) {

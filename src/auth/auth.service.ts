@@ -9,12 +9,12 @@ import {
 } from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { MemberErrorCode } from "@APP/common/exception/error-code";
-import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
-import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
-import { MemberEntity } from "@APP/entities/member.entity";
+import { RegisterMemberDto } from "@APP/members/dtos/register-member.dto";
+import { VerifyEmailDto } from "@APP/members/dtos/verify-email.dto";
+import { MemberEntity } from "@APP/members/entities/member.entity";
+import { MembersService } from "@APP/members/members.service";
 
 //import { MailsService } from "./mails.service";
-import { MembersService } from "./members.service";
 
 @Injectable()
 export class AuthService {

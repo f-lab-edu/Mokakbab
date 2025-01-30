@@ -5,9 +5,10 @@ import { IsPublicDecorator } from "@APP/common/decorators/is-public.decorator";
 import { IsPublicEnum } from "@APP/common/enum/is-public.enum";
 import { BasicTokenGuard } from "@APP/common/guards/basic-token.guard";
 import { RefreshTokenGuard } from "@APP/common/guards/bearer-token.guard";
-import { RegisterMemberDto } from "@APP/dtos/register-member.dto";
-import { VerifyEmailDto } from "@APP/dtos/verify-email.dto";
-import { AuthService } from "@APP/services/auth.service";
+import { RegisterMemberDto } from "@APP/members/dtos/register-member.dto";
+import { VerifyEmailDto } from "@APP/members/dtos/verify-email.dto";
+
+import { AuthService } from "./auth.service";
 
 @Controller("auth")
 export class AuthController {

@@ -8,11 +8,11 @@ import {
     ENV_JWT_SECRET_KEY,
 } from "@APP/common/constants/env-keys.const";
 import { TokenOnlyGuard } from "@APP/common/guards/token-only.guard";
-import { AuthController } from "@APP/controllers/auth.controller";
-import { AuthService } from "@APP/services/auth.service";
-import { MailsService } from "@APP/services/mails.service";
+import { MailsService } from "@APP/mails/mails.service";
+import { MembersModule } from "@APP/members/members.module";
 
-import { MembersModule } from "./members.module";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
 
 @Module({
     imports: [

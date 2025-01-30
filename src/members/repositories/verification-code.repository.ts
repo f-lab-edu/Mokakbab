@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { QueryRunner, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
-import { VerificationCodeEntity } from "@APP/entities/verification-code.entity";
+import { VerificationCodeEntity } from "../entities/verification-code.entity";
 
 @Injectable()
 export class VerificationCodeRepository extends Repository<VerificationCodeEntity> {
@@ -13,22 +13,14 @@ export class VerificationCodeRepository extends Repository<VerificationCodeEntit
         super(repository.target, repository.manager, repository.queryRunner);
     }
 
-    getRepository(qr?: QueryRunner) {
-        return qr
-            ? qr.manager.getRepository<VerificationCodeEntity>(
-                  VerificationCodeEntity,
-              )
-            : this.repository;
-    }
-
-    async saveVerificationCode(code: string, queryRunner?: QueryRunner) {
-        const insertResult = await this.getRepository(queryRunner)
+    async saveVerificationCode(code: string) {
+        const insertResult = await this.repository
             .createQueryBuilder()
             .insert()
             .into(VerificationCodeEntity)
             .updateEntity(false)
             .values({ code })
-            .useTransaction(true)
+            .useTransaction(false)
             .execute();
 
         return insertResult.raw.insertId;

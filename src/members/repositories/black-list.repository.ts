@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { QueryRunner, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
-import { BlackListEntity } from "@APP/entities/black-list.entity";
+import { BlackListEntity } from "../entities/black-list.entity";
 
 @Injectable()
 export class BlackListRepository extends Repository<BlackListEntity> {
@@ -13,9 +13,15 @@ export class BlackListRepository extends Repository<BlackListEntity> {
         super(repository.target, repository.manager, repository.queryRunner);
     }
 
-    getRepository(qr?: QueryRunner) {
-        return qr
-            ? qr.manager.getRepository<BlackListEntity>(BlackListEntity)
-            : this.repository;
+    findBlacks(memberId: number) {
+        return this.repository.find({
+            select: {
+                blackerId: true,
+                blackedId: true,
+            },
+            where: {
+                blackerId: memberId,
+            },
+        });
     }
 }
