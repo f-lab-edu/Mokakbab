@@ -7,13 +7,14 @@ import {
 } from "@APP/common/constants/env-keys.const";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { ArticleErrorCode } from "@APP/common/exception/error-code";
-import { CreateArticleDto } from "@APP/dtos/create-article.dto";
-import { UpdateArticleDto } from "@APP/dtos/update-article.dto";
-import { ArticleLikesRepository } from "@APP/repositories/article-likes.repository";
-import { ArticlesRepository } from "@APP/repositories/articles.repository";
-import { CategoriesRepository } from "@APP/repositories/categories.repository";
-import { DistrictsRepository } from "@APP/repositories/districts.repository";
-import { RegionsRepository } from "@APP/repositories/regions.repository";
+
+import { CreateArticleDto } from "./dtos/create-article.dto";
+import { UpdateArticleDto } from "./dtos/update-article.dto";
+import { ArticleLikesRepository } from "./repositories/article-likes.repository";
+import { ArticlesRepository } from "./repositories/articles.repository";
+import { CategoriesRepository } from "./repositories/categories.repository";
+import { DistrictsRepository } from "./repositories/districts.repository";
+import { RegionsRepository } from "./repositories/regions.repository";
 
 @Injectable()
 export class ArticlesService {

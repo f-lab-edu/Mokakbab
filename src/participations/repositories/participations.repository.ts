@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { QueryRunner, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { ParticipationStatus } from "@APP/common/enum/participation-status.enum";
-import { ParticipationEntity } from "@APP/entities/participation.entity";
+
+import { ParticipationEntity } from "../entities/participation.entity";
 
 @Injectable()
 export class ParticipationsRepository extends Repository<ParticipationEntity> {
@@ -12,12 +13,6 @@ export class ParticipationsRepository extends Repository<ParticipationEntity> {
         private readonly repository: Repository<ParticipationEntity>,
     ) {
         super(repository.target, repository.manager, repository.queryRunner);
-    }
-
-    getRepository(qr?: QueryRunner) {
-        return qr
-            ? qr.manager.getRepository<ParticipationEntity>(ParticipationEntity)
-            : this.repository;
     }
 
     findAllParticipationsByArticleId(

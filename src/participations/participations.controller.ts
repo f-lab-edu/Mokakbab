@@ -11,11 +11,12 @@ import {
     UseGuards,
 } from "@nestjs/common";
 
+import { ArticlesService } from "@APP/articles/articles.service";
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
 import { TokenOnlyGuard } from "@APP/common/guards/token-only.guard";
-import { CreateParticipationDto } from "@APP/dtos/create-participation.dto";
-import { ArticlesService } from "@APP/services/articles.service";
-import { ParticipationsService } from "@APP/services/participations.service";
+
+import { CreateParticipationDto } from "./dtos/create-participation.dto";
+import { ParticipationsService } from "./participations.service";
 
 @Controller("participations")
 export class ParticipationsController {

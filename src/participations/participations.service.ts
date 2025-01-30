@@ -5,8 +5,9 @@ import { ENV_API_BASE_URL } from "@APP/common/constants/env-keys.const";
 import { ParticipationStatus } from "@APP/common/enum/participation-status.enum";
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { ParticipationErrorCode } from "@APP/common/exception/error-code";
-import { CreateParticipationDto } from "@APP/dtos/create-participation.dto";
-import { ParticipationsRepository } from "@APP/repositories/participations.repository";
+
+import { CreateParticipationDto } from "./dtos/create-participation.dto";
+import { ParticipationsRepository } from "./repositories/participations.repository";
 
 @Injectable()
 export class ParticipationsService {

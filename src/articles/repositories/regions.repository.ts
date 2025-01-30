@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { QueryRunner, Repository } from "typeorm";
 
-import { RegionEntity } from "@APP/entities/region.entity";
+import { RegionEntity } from "../entities/region.entity";
 
 @Injectable()
 export class RegionsRepository extends Repository<RegionEntity> {

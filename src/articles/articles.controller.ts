@@ -15,9 +15,10 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
-import { CreateArticleDto } from "@APP/dtos/create-article.dto";
-import { UpdateArticleDto } from "@APP/dtos/update-article.dto";
-import { ArticlesService } from "@APP/services/articles.service";
+
+import { ArticlesService } from "./articles.service";
+import { CreateArticleDto } from "./dtos/create-article.dto";
+import { UpdateArticleDto } from "./dtos/update-article.dto";
 
 @Controller("articles")
 export class ArticlesController {

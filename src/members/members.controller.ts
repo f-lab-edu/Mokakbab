@@ -16,9 +16,10 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import * as bcrypt from "bcrypt";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
-import { CreateBlackListDto } from "@APP/dtos/create-black-list.dto";
-import { UpdateMemberDto } from "@APP/dtos/update-member.dto";
-import { MembersService } from "@APP/services/members.service";
+
+import { CreateBlackListDto } from "./dtos/create-black-list.dto";
+import { UpdateMemberDto } from "./dtos/update-member.dto";
+import { MembersService } from "./members.service";
 
 @Controller("members")
 export class MembersController {

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { QueryRunner, Repository } from "typeorm";
 
-import { ArticleEntity } from "@APP/entities/article.entity";
+import { ArticleEntity } from "../entities/article.entity";
 
 @Injectable()
 export class ArticlesRepository extends Repository<ArticleEntity> {

@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { ParticipationsController } from "@APP/controllers/participations.controller";
-import { ParticipationEntity } from "@APP/entities/participation.entity";
-import { ParticipationsRepository } from "@APP/repositories/participations.repository";
-import { ParticipationsService } from "@APP/services/participations.service";
+import { ArticlesModule } from "@APP/articles/articles.module";
+import { AuthModule } from "@APP/auth/auth.module";
 
-import { ArticlesModule } from "./articles.module";
-import { AuthModule } from "./auth.module";
+import { ParticipationEntity } from "./entities/participation.entity";
+import { ParticipationsController } from "./participations.controller";
+import { ParticipationsService } from "./participations.service";
+import { ParticipationsRepository } from "./repositories/participations.repository";
 
 @Module({
     imports: [

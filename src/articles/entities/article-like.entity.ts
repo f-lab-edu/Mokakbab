@@ -1,7 +1,8 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
+import { MemberEntity } from "@APP/members/entities/member.entity";
+
 import { ArticleEntity } from "./article.entity";
-import { MemberEntity } from "./member.entity";
 
 @Entity("article_likes")
 export class ArticleLikeEntity {

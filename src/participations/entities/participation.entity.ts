@@ -10,10 +10,9 @@ import {
     Unique,
 } from "typeorm";
 
+import { ArticleEntity } from "@APP/articles/entities/article.entity";
 import { ParticipationStatus } from "@APP/common/enum/participation-status.enum";
-
-import { ArticleEntity } from "./article.entity";
-import { MemberEntity } from "./member.entity";
+import { MemberEntity } from "@APP/members/entities/member.entity";
 
 @Unique(["articleId", "memberId"])
 @Index(["status", "articleId"])
