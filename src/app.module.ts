@@ -1,7 +1,10 @@
+import { ClsPluginTransactional } from "@nestjs-cls/transactional";
+import { TransactionalAdapterTypeOrm } from "@nestjs-cls/transactional-adapter-typeorm";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { TypeOrmModule, getDataSourceToken } from "@nestjs/typeorm";
+import { ClsModule } from "nestjs-cls";
 import path from "path";
 
 import { TypeOrmModuleOptions } from "@APP/common/typeorm";
@@ -21,7 +24,17 @@ import { ParticipationsModule } from "./participations/participations.module";
             ],
             isGlobal: true,
         }),
-        TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
+
+        ClsModule.forRoot({
+            plugins: [
+                new ClsPluginTransactional({
+                    imports: [TypeOrmModule.forRootAsync(TypeOrmModuleOptions)],
+                    adapter: new TransactionalAdapterTypeOrm({
+                        dataSourceToken: getDataSourceToken(),
+                    }),
+                }),
+            ],
+        }),
         MembersModule,
         AuthModule,
         MailerModule.forRootAsync(EmailOptions),

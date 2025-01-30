@@ -1,3 +1,4 @@
+import { Transactional } from "@nestjs-cls/transactional";
 import { Injectable } from "@nestjs/common";
 
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
@@ -85,6 +86,7 @@ export class MembersService {
         return verifyCodeExists;
     }
 
+    @Transactional()
     async createMember(dto: RegisterMemberDto, verificationCode: string) {
         const savedVerificationCode =
             await this.verificationCodeRepository.saveVerificationCode(
