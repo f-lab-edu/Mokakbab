@@ -32,14 +32,14 @@ export class ParticipationsController {
         @Query("cursor", new ParseIntPipe()) cursor: number,
         @Query("limit", new ParseIntPipe()) limit: number,
     ) {
-        const participation =
-            await this.participationsService.getParticipationsByArticleId(
+        const [participation, article] = await Promise.all([
+            this.participationsService.getParticipationsByArticleId(
                 articleId,
                 cursor,
                 limit,
-            );
-
-        const article = await this.articlesService.findById(articleId);
+            ),
+            this.articlesService.findById(articleId),
+        ]);
 
         return {
             ...participation,
