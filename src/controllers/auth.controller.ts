@@ -1,5 +1,4 @@
 import { Body, Controller, Headers, Post, UseGuards } from "@nestjs/common";
-import { DataSource } from "typeorm";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
 import { IsPublicDecorator } from "@APP/common/decorators/is-public.decorator";
@@ -12,10 +11,7 @@ import { AuthService } from "@APP/services/auth.service";
 
 @Controller("auth")
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-        private readonly dataSource: DataSource,
-    ) {}
+    constructor(private readonly authService: AuthService) {}
 
     @IsPublicDecorator(IsPublicEnum.PUBLIC)
     @UseGuards(BasicTokenGuard)
@@ -30,26 +26,8 @@ export class AuthController {
 
     @IsPublicDecorator(IsPublicEnum.PUBLIC)
     @Post("sign-up")
-    async signUp(@Body() dto: RegisterMemberDto) {
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        try {
-            const result = await this.authService.registerByEmail(
-                dto,
-                queryRunner,
-            );
-
-            await queryRunner.commitTransaction();
-
-            return result;
-        } catch (error) {
-            await queryRunner.rollbackTransaction();
-            throw error;
-        } finally {
-            await queryRunner.release();
-        }
+    signUp(@Body() dto: RegisterMemberDto) {
+        return this.authService.registerByEmail(dto);
     }
 
     /**

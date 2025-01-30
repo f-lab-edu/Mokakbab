@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
-import { QueryRunner } from "typeorm";
 
 import {
     ENV_JWT_ACCESS_TOKEN_EXPIRATION,
@@ -81,7 +80,7 @@ export class AuthService {
         return this.signInMember(existMember);
     }
 
-    async registerByEmail(dto: RegisterMemberDto, queryRunner?: QueryRunner) {
+    async registerByEmail(dto: RegisterMemberDto) {
         const existMember = await this.membersService.existByEmail(dto.email);
 
         if (existMember) {
@@ -107,7 +106,6 @@ export class AuthService {
                 password: hashedPassword,
             },
             verificationCode,
-            queryRunner,
         );
 
         /**

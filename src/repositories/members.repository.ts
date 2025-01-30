@@ -59,7 +59,10 @@ export class MembersRepository extends Repository<MemberEntity> {
             .getOneOrFail();
     }
 
-    updateMember(memberId: number, member: Partial<MemberEntity>) {
-        return this.repository.update({ id: memberId }, { ...member });
+    updateMember(member: Partial<MemberEntity>) {
+        return this.repository.update(
+            { id: member.id },
+            { refreshTokenId: member.refreshTokenId },
+        );
     }
 }

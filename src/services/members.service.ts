@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { QueryRunner } from "typeorm";
 
 import { BusinessErrorException } from "@APP/common/exception/business-error.exception";
 import { MemberErrorCode } from "@APP/common/exception/error-code";
@@ -85,21 +84,15 @@ export class MembersService {
         return verifyCodeExists;
     }
 
-    async createMember(
-        dto: RegisterMemberDto,
-        verificationCode: string,
-        queryRunner?: QueryRunner,
-    ) {
+    async createMember(dto: RegisterMemberDto, verificationCode: string) {
         const savedVerificationCode =
             await this.verificationCodeRepository.saveVerificationCode(
                 verificationCode,
-                queryRunner,
             );
 
         const member = await this.membersRepository.createMember(
             dto,
             savedVerificationCode,
-            queryRunner,
         );
 
         return member;
@@ -152,7 +145,8 @@ export class MembersService {
         const savedRefreshToken =
             await this.refreshTokenRepository.saveRefreshToken(refreshToken);
 
-        return this.membersRepository.updateMember(memberId, {
+        return this.membersRepository.updateMember({
+            id: memberId,
             refreshTokenId: savedRefreshToken,
         });
     }

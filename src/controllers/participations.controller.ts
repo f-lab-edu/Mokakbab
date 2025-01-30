@@ -31,8 +31,6 @@ export class ParticipationsController {
         @Query("cursor", new ParseIntPipe()) cursor: number,
         @Query("limit", new ParseIntPipe()) limit: number,
     ) {
-        // 28.514ms
-        console.time("getParticipationsByArticle");
         const participation =
             await this.participationsService.getParticipationsByArticleId(
                 articleId,
@@ -42,38 +40,9 @@ export class ParticipationsController {
 
         const article = await this.articlesService.findById(articleId);
 
-        const article2 = await this.articlesService.findById(articleId);
-        console.timeEnd("getParticipationsByArticle");
         return {
             ...participation,
             article,
-            article2,
-        };
-    }
-
-    @UseGuards(TokenOnlyGuard)
-    @Get("articles2/:articleId")
-    async getParticipationsByArticle2(
-        @Param("articleId", new ParseIntPipe()) articleId: number,
-        @Query("cursor", new ParseIntPipe()) cursor: number,
-        @Query("limit", new ParseIntPipe()) limit: number,
-    ) {
-        // 8.43ms
-        console.time("getParticipationsByArticle2");
-        const [article, article2, participations] = await Promise.all([
-            this.articlesService.findById(articleId),
-            this.articlesService.findById(articleId),
-            this.participationsService.getParticipationsByArticleId(
-                articleId,
-                cursor,
-                limit,
-            ),
-        ]);
-        console.timeEnd("getParticipationsByArticle2");
-        return {
-            ...participations,
-            article,
-            article2,
         };
     }
 
