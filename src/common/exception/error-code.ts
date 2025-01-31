@@ -19,6 +19,10 @@ export const MemberErrorCode = {
         "2007",
         "인증 코드가 일치하지 않습니다",
     ),
+    REFRESH_TOKEN_NOT_FOUND: new ErrorCode(
+        "2008",
+        "Refresh 토큰이 존재하지 않습니다.",
+    ),
 };
 
 export const ArticleErrorCode = {

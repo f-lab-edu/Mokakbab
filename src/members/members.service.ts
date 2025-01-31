@@ -22,34 +22,19 @@ export class MembersService {
     ) {}
 
     findByEmail(email: string) {
-        return this.membersRepository.findOne({
-            where: {
-                email,
-            },
-        });
+        return this.membersRepository.findByEmail(email);
     }
 
     findById(memberId: number) {
-        return this.membersRepository.findOne({
-            where: {
-                id: memberId,
-            },
-        });
+        return this.membersRepository.findById(memberId);
     }
 
-    updateById(memberId: number, dto: UpdateMemberDto) {
-        return this.membersRepository.update(
-            {
-                id: memberId,
-            },
-            dto,
-        );
+    updateById(dto: UpdateMemberDto) {
+        return this.membersRepository.updateById(dto);
     }
 
     deleteById(memberId: number) {
-        return this.membersRepository.delete({
-            id: memberId,
-        });
+        return this.membersRepository.deleteById(memberId);
     }
 
     async verifyEmail(dto: VerifyEmailDto) {
@@ -57,17 +42,10 @@ export class MembersService {
 
         if (member?.isEmailVerified) return true;
 
-        const verifyCodeExists = await this.membersRepository.exists({
-            where: {
-                email: dto.email,
-                verificationCode: {
-                    code: dto.verificationCode,
-                },
-            },
-            relations: {
-                verificationCode: true,
-            },
-        });
+        const verifyCodeExists = await this.membersRepository.verifyCodeByEmail(
+            dto.email,
+            dto.verificationCode,
+        );
 
         if (!verifyCodeExists) {
             throw new BusinessErrorException(
@@ -75,14 +53,7 @@ export class MembersService {
             );
         }
 
-        await this.membersRepository.update(
-            {
-                email: dto.email,
-            },
-            {
-                isEmailVerified: true,
-            },
-        );
+        await this.membersRepository.updateEmailVerified(dto.email);
         return verifyCodeExists;
     }
 
@@ -106,34 +77,26 @@ export class MembersService {
     }
 
     findOneByEmail(email: string) {
-        return this.membersRepository
-            .createQueryBuilder("member")
-            .leftJoinAndSelect("member.refreshToken", "refreshToken")
-            .select(["member.id", "member.email", "refreshToken.token"])
-            .where("member.email = :email", { email })
-            .getOne();
+        return this.membersRepository.findMemberWithRefreshTokenByEmail(email);
     }
 
     async updateRefreshToken(memberId: number) {
-        const foundMember = await this.membersRepository.findOneOrFail({
-            where: {
-                id: memberId,
-            },
-            relations: {
-                refreshToken: true,
-            },
-        });
+        const { refreshTokenId } =
+            await this.membersRepository.findMemberWithRefreshTokenId(memberId);
 
-        return this.refreshTokenRepository.update(
-            {
-                id: foundMember.refreshToken!.id,
-            },
-            {
-                token: null,
-            },
+        if (!refreshTokenId) {
+            throw new BusinessErrorException(
+                MemberErrorCode.REFRESH_TOKEN_NOT_FOUND,
+            );
+        }
+
+        return this.refreshTokenRepository.updateRefreshToken(
+            refreshTokenId,
+            null,
         );
     }
 
+    @Transactional()
     async saveRefreshToken(memberId: number, refreshToken: string) {
         const { refreshTokenId } =
             await this.membersRepository.findMemberWithRefreshTokenId(memberId);
@@ -155,10 +118,7 @@ export class MembersService {
     }
 
     updateProfileImage(memberId: number, filename: string) {
-        return this.membersRepository.update(
-            { id: memberId },
-            { profileImage: filename },
-        );
+        return this.membersRepository.updateProfileImage(memberId, filename);
     }
 
     findBlacks(memberId: number) {
@@ -166,16 +126,10 @@ export class MembersService {
     }
 
     createBlack(blackerId: number, blackedId: number) {
-        return this.blackListRepository.save({
-            blackerId,
-            blackedId,
-        });
+        return this.blackListRepository.createBlack(blackerId, blackedId);
     }
 
     deleteBlack(blackerId: number, blackedId: number) {
-        return this.blackListRepository.delete({
-            blackerId,
-            blackedId,
-        });
+        return this.blackListRepository.deleteBlack(blackerId, blackedId);
     }
 }

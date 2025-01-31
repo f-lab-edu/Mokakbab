@@ -33,7 +33,7 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             extra: {
-                connectionLimit: 50,
+                connectionLimit: 20,
                 waitForConnections: true,
                 queueLimit: 0,
                 enableKeepAlive: true,

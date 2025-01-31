@@ -24,4 +24,18 @@ export class BlackListRepository extends Repository<BlackListEntity> {
             },
         });
     }
+
+    deleteBlack(blackerId: number, blackedId: number) {
+        return this.repository.delete({
+            blackerId,
+            blackedId,
+        });
+    }
+
+    createBlack(blackerId: number, blackedId: number) {
+        return this.repository.save({
+            blackerId,
+            blackedId,
+        });
+    }
 }

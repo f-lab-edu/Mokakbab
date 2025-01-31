@@ -90,7 +90,10 @@ export class MembersController {
             dto.password = hashedPassword;
         }
 
-        await this.membersService.updateById(memberId, dto);
+        await this.membersService.updateById({
+            id: memberId,
+            ...dto,
+        });
 
         return this.membersService.findById(memberId);
     }
