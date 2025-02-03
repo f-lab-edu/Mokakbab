@@ -38,11 +38,12 @@ export class ArticlesController {
     }
 
     @Post()
-    postArticle(
+    async postArticle(
         @Body() body: CreateArticleDto,
         @CurrentMemberDecorator("id") currentMemberId: number,
     ) {
-        return this.articlesService.createArticle(currentMemberId, body);
+        return (await this.articlesService.createArticle(currentMemberId, body))
+            .raw.insertId;
     }
 
     @Patch("upload-image")

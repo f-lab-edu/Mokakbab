@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { QueryRunner, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { CategoryEntity } from "../entities/category.entity";
 
@@ -13,9 +13,7 @@ export class CategoriesRepository extends Repository<CategoryEntity> {
         super(repository.target, repository.manager, repository.queryRunner);
     }
 
-    getRepository(qr?: QueryRunner) {
-        return qr
-            ? qr.manager.getRepository<CategoryEntity>(CategoryEntity)
-            : this.repository;
+    existsById(id: number) {
+        return this.repository.exists({ where: { id } });
     }
 }

@@ -71,7 +71,7 @@ export class ParticipationsRepository extends Repository<ParticipationEntity> {
             .into(ParticipationEntity)
             .updateEntity(false)
             .values({ articleId, memberId })
-            .useTransaction(false)
+            .useTransaction(true)
             .execute();
     }
 
