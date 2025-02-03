@@ -34,4 +34,55 @@ export class ParticipationsRepository extends Repository<ParticipationEntity> {
 
         return query.getRawMany();
     }
+
+    findAllParticipationsByMemberId(
+        memberId: number,
+        cursor: number,
+        limit: number,
+    ) {
+        const query = this.repository
+            .createQueryBuilder("participation")
+            .where(cursor ? "participation.id > :cursor" : "1=1", { cursor })
+            .andWhere("participation.memberId = :memberId", {
+                memberId,
+            })
+            .andWhere("participation.status = :status", {
+                status: ParticipationStatus.ACTIVE,
+            })
+            .orderBy("participation.id", "ASC")
+            .take(limit + 1);
+
+        return query.getRawMany();
+    }
+
+    findOneParticipationByParticipationId(
+        participationId: number,
+        currentMemberId: number,
+    ) {
+        return this.repository.findOne({
+            where: { id: participationId, memberId: currentMemberId },
+        });
+    }
+
+    createParticipation(articleId: number, memberId: number) {
+        return this.repository
+            .createQueryBuilder()
+            .insert()
+            .into(ParticipationEntity)
+            .updateEntity(false)
+            .values({ articleId, memberId })
+            .useTransaction(false)
+            .execute();
+    }
+
+    updateParticipation(
+        participationId: number,
+        memberId: number,
+        status: ParticipationStatus,
+    ) {
+        return this.repository.update(
+            { id: participationId, memberId },
+            { status },
+        );
+    }
 }
