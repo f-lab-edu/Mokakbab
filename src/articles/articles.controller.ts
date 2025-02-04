@@ -11,6 +11,7 @@ import {
     Query,
     UploadedFile,
     UseInterceptors,
+    ValidationPipe,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 
@@ -39,7 +40,7 @@ export class ArticlesController {
 
     @Post()
     async postArticle(
-        @Body() body: CreateArticleDto,
+        @Body(new ValidationPipe({ transform: true })) body: CreateArticleDto,
         @CurrentMemberDecorator("id") currentMemberId: number,
     ) {
         return (await this.articlesService.createArticle(currentMemberId, body))

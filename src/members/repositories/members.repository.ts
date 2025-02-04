@@ -58,7 +58,6 @@ export class MembersRepository extends Repository<MemberEntity> {
             .into(MemberEntity)
             .updateEntity(false)
             .values({ ...dto, verificationCode: { id: verificationCodeId } })
-            .useTransaction(false)
             .execute();
 
         return {

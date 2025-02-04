@@ -31,7 +31,6 @@ export class RefreshTokenRepository extends Repository<RefreshTokenEntity> {
             .into(RefreshTokenEntity)
             .updateEntity(false)
             .values({ token: refreshToken })
-            .useTransaction(false)
             .execute();
 
         return insertResult.raw.insertId;

@@ -33,9 +33,11 @@ export class BlackListRepository extends Repository<BlackListEntity> {
     }
 
     createBlack(blackerId: number, blackedId: number) {
-        return this.repository.save({
-            blackerId,
-            blackedId,
-        });
+        return this.repository
+            .createQueryBuilder()
+            .insert()
+            .into(BlackListEntity)
+            .values({ blackerId, blackedId })
+            .execute();
     }
 }

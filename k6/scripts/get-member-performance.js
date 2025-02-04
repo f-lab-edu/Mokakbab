@@ -7,9 +7,6 @@ const dataReceivedTrend = new Trend("data_received_size", true);
 const errorRate = new Rate("errors");
 const requestFailRate = new Rate("request_fails");
 
-/**
- * Promise.all 제거
- */
 export const options = {
     userAgent: __ENV.MY_USER_AGENT,
     //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
@@ -28,9 +25,9 @@ export const options = {
         http_req_duration: ["p(95)<2000"],
     },
     tags: {
-        testName: "no-participations-712",
+        testName: "members-1",
         testType: "spike",
-        component: "participations",
+        component: "members",
         version: "1.0",
     },
 };
@@ -39,28 +36,19 @@ export default function () {
     const BASE_URL = __ENV.BASE_URL || "http://localhost:4000";
     const ACCESS_TOKEN = __ENV.ACCESS_TOKEN || "access_token";
 
-    const cursors = [12001, 23000, 30000, 40000, 50000];
-    const cursor = cursors[Math.floor(Math.random() * cursors.length)];
-    const limit = 10;
-
-    const articleIds = [23640, 12714, 11621, 43514];
-
-    const participationsResponse = http.get(
-        `${BASE_URL}/participations/articles/${articleIds[Math.floor(Math.random() * articleIds.length)]}?cursor=${cursor}&limit=${limit}`,
-        {
-            headers: {
-                Authorization: `Bearer ${ACCESS_TOKEN}`,
-            },
-            tags: { name: "participations" },
+    const membersResponse = http.get(`${BASE_URL}/members/2`, {
+        headers: {
+            Authorization: `Bearer ${ACCESS_TOKEN}`,
         },
-    );
+        tags: { name: "members" },
+    });
 
-    if (participationsResponse.body)
-        dataReceivedTrend.add(participationsResponse.body.length);
+    if (membersResponse.body)
+        dataReceivedTrend.add(membersResponse.body.length);
 
     // 응답 상태 체크 및 에러율 기록
-    const isSuccessful = check(participationsResponse, {
-        "participations status is 200": (r) => r.status === 200,
+    const isSuccessful = check(membersResponse, {
+        "members status is 200": (r) => r.status === 200,
     });
 
     if (!isSuccessful) {
@@ -68,7 +56,7 @@ export default function () {
         requestFailRate.add(1);
     }
 
-    if (participationsResponse.status >= 400) {
+    if (membersResponse.status >= 400) {
         requestFailRate.add(1);
     }
 
