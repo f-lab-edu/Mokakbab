@@ -228,4 +228,8 @@ export class AuthService {
 
         return result;
     }
+
+    findMemberByEmail(email: string) {
+        return this.membersService.findByEmail(email);
+    }
 }

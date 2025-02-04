@@ -25,9 +25,9 @@ export const options = {
         http_req_duration: ["p(95)<2000"],
     },
     tags: {
-        testName: "articles-1",
+        testName: "create-article-2",
         testType: "spike",
-        component: "articles",
+        component: "create-article",
         version: "1.0",
     },
 };
@@ -36,13 +36,28 @@ export default function () {
     const BASE_URL = __ENV.BASE_URL || "http://localhost:4000";
     const ACCESS_TOKEN = __ENV.ACCESS_TOKEN || "access_token";
 
-    const articlesResponse = http.post(`${BASE_URL}/articles`, {
-        headers: {
-            Authorization: `Bearer ${ACCESS_TOKEN}`,
+    const randomValue = Math.random().toString(36).substring(2, 15);
+
+    const articlesResponse = http.post(
+        `${BASE_URL}/articles`,
+        JSON.stringify({
+            title: `서울 강서구 독서 모임 모집합니다 ${randomValue}`,
+            content: `매주 토요일 오후 2시에 우장산역 근처 카페에서 독서 모임을 진행합니다. 함께 책을 읽고 이야기 나누실 분들을 모집합니다. ${randomValue}`,
+            startTime: "2025-02-04T04:00:00.000Z",
+            endTime: "2025-02-04T13:00:00.000Z",
+            categoryId: 1,
+            regionId: 1,
+            districtId: 4,
+        }),
+        {
+            headers: {
+                Authorization: `Bearer ${ACCESS_TOKEN}`,
+                "Content-Type": "application/json",
+            },
+            timeout: "60s",
+            tags: { name: "articles" },
         },
-        timeout: "60s",
-        tags: { name: "articles" },
-    });
+    );
 
     if (articlesResponse.body)
         dataReceivedTrend.add(articlesResponse.body.length);
