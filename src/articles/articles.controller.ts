@@ -10,11 +10,14 @@ import {
     Put,
     Query,
     UploadedFile,
+    UseGuards,
     UseInterceptors,
+    ValidationPipe,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
+import { AccessTokenGuard } from "@APP/common/guards/access-token.guard";
 
 import { ArticlesService } from "./articles.service";
 import { CreateArticleDto } from "./dtos/create-article.dto";
@@ -37,12 +40,14 @@ export class ArticlesController {
         return this.articlesService.findById(articleId);
     }
 
+    @UseGuards(AccessTokenGuard)
     @Post()
-    postArticle(
-        @Body() body: CreateArticleDto,
+    async postArticle(
+        @Body(new ValidationPipe({ transform: true })) body: CreateArticleDto,
         @CurrentMemberDecorator("id") currentMemberId: number,
     ) {
-        return this.articlesService.createArticle(currentMemberId, body);
+        return (await this.articlesService.createArticle(currentMemberId, body))
+            .raw.insertId;
     }
 
     @Patch("upload-image")

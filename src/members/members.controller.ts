@@ -10,12 +10,14 @@ import {
     Patch,
     Post,
     UploadedFile,
+    UseGuards,
     UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import * as bcrypt from "bcrypt";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
+import { TokenOnlyGuard } from "@APP/common/guards/token-only.guard";
 
 import { CreateBlackListDto } from "./dtos/create-black-list.dto";
 import { UpdateMemberDto } from "./dtos/update-member.dto";
@@ -46,6 +48,7 @@ export class MembersController {
         return this.membersService.deleteBlack(currentMemberId, blackedId);
     }
 
+    @UseGuards(TokenOnlyGuard)
     @Get(":memberId")
     getMember(@Param("memberId", new ParseIntPipe()) memberId: number) {
         return this.membersService.findById(memberId);
@@ -90,7 +93,10 @@ export class MembersController {
             dto.password = hashedPassword;
         }
 
-        await this.membersService.updateById(memberId, dto);
+        await this.membersService.updateById({
+            id: memberId,
+            ...dto,
+        });
 
         return this.membersService.findById(memberId);
     }

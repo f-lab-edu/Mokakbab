@@ -58,27 +58,6 @@ export class BearerTokenGuard implements CanActivate {
     }
 }
 
-export class AccessTokenGuard extends BearerTokenGuard {
-    override async canActivate(context: ExecutionContext): Promise<boolean> {
-        await super.canActivate(context);
-
-        const req = context.switchToHttp().getRequest();
-
-        if (
-            req.isPublic === IsPublicEnum.PUBLIC ||
-            req.isPublic === IsPublicEnum.REFRESH
-        ) {
-            return true;
-        }
-
-        if (req.tokenType !== "access") {
-            throw new UnauthorizedException("Access Token이 아닙니다.");
-        }
-
-        return true;
-    }
-}
-
 export class RefreshTokenGuard extends BearerTokenGuard {
     override async canActivate(context: ExecutionContext): Promise<boolean> {
         await super.canActivate(context);

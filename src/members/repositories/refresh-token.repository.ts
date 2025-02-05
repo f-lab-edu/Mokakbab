@@ -13,7 +13,7 @@ export class RefreshTokenRepository extends Repository<RefreshTokenEntity> {
         super(repository.target, repository.manager, repository.queryRunner);
     }
 
-    updateRefreshToken(refreshTokenId: number, refreshToken: string) {
+    updateRefreshToken(refreshTokenId: number, refreshToken: string | null) {
         return this.repository.update(
             {
                 id: refreshTokenId,
@@ -31,7 +31,6 @@ export class RefreshTokenRepository extends Repository<RefreshTokenEntity> {
             .into(RefreshTokenEntity)
             .updateEntity(false)
             .values({ token: refreshToken })
-            .useTransaction(true)
             .execute();
 
         return insertResult.raw.insertId;

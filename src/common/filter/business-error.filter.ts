@@ -38,6 +38,7 @@ export class BusinessErrorFilter implements ExceptionFilter {
             case "3002":
             case "3003":
             case "4002":
+            case "2008":
                 status = 404;
                 break;
         }

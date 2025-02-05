@@ -63,19 +63,13 @@ export class ParticipationsService {
         cursor: number,
         limit: number,
     ) {
-        const query = this.participationsRepository
-            .createQueryBuilder("participation")
-            .where("participation.memberId = :memberId", {
-                memberId: currentMemberId,
-            })
-            .orderBy("participation.id", "ASC")
-            .take(limit + 1);
+        const participations =
+            await this.participationsRepository.findAllParticipationsByMemberId(
+                currentMemberId,
+                cursor,
+                limit,
+            );
 
-        if (cursor) {
-            query.andWhere("participation.id > :cursor", { cursor });
-        }
-
-        const participations = await query.getMany();
         const hasNextPage = participations.length > limit;
         const results = hasNextPage
             ? participations.slice(0, -1)
@@ -100,29 +94,30 @@ export class ParticipationsService {
     }
 
     getParticipation(participationId: number, currentMemberId: number) {
-        return this.participationsRepository.findOne({
-            where: { id: participationId, memberId: currentMemberId },
-        });
+        return this.participationsRepository.findOneParticipationByParticipationId(
+            participationId,
+            currentMemberId,
+        );
     }
 
     async createParticipation(
         currentMemberId: number,
         body: CreateParticipationDto,
     ) {
-        const participation = await this.participationsRepository.findOne({
-            where: {
-                memberId: currentMemberId,
-                articleId: body.articleId,
-            },
-        });
-
-        if (!participation) {
-            const newParticipation = this.createParticipationEntity(
+        const participation =
+            await this.participationsRepository.findOneParticipationByParticipationId(
+                body.articleId,
                 currentMemberId,
-                body,
             );
 
-            return this.participationsRepository.save(newParticipation);
+        if (!participation) {
+            const newParticipation =
+                await this.participationsRepository.createParticipation(
+                    body.articleId,
+                    currentMemberId,
+                );
+
+            return newParticipation.raw.insertId;
         }
 
         if (participation.status === ParticipationStatus.ACTIVE) {
@@ -132,31 +127,22 @@ export class ParticipationsService {
         }
 
         // 기존 참여 정보가 있고 CANCELLED 상태인 경우, update를 사용
-        return this.participationsRepository.save({
-            ...participation,
-            status: ParticipationStatus.ACTIVE,
-        });
-    }
-
-    private createParticipationEntity(
-        currentMemberId: number,
-        body: CreateParticipationDto,
-        status?: ParticipationStatus,
-    ) {
-        return this.participationsRepository.create({
-            memberId: currentMemberId,
-            ...body,
-            status,
-        });
+        return this.participationsRepository.updateParticipation(
+            participation.id,
+            currentMemberId,
+            ParticipationStatus.ACTIVE,
+        );
     }
 
     async deleteParticipation(
         participationId: number,
         currentMemberId: number,
     ) {
-        const participation = await this.participationsRepository.findOne({
-            where: { id: participationId, memberId: currentMemberId },
-        });
+        const participation =
+            await this.participationsRepository.findOneParticipationByParticipationId(
+                participationId,
+                currentMemberId,
+            );
 
         if (!participation) {
             throw new BusinessErrorException(
@@ -164,14 +150,10 @@ export class ParticipationsService {
             );
         }
 
-        return this.participationsRepository.update(
-            {
-                id: participationId,
-                memberId: currentMemberId,
-            },
-            {
-                status: ParticipationStatus.CANCELLED,
-            },
+        return this.participationsRepository.updateParticipation(
+            participationId,
+            currentMemberId,
+            ParticipationStatus.CANCELLED,
         );
     }
 }
