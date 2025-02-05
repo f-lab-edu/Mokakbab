@@ -97,17 +97,19 @@ export class MembersRepository extends Repository<MemberEntity> {
     }
 
     findById(memberId: number) {
-        return this.repository
-            .createQueryBuilder("member")
-            .select([
-                "member.id",
-                "member.email",
-                "member.name",
-                "member.nickname",
-                "member.profileImage",
-            ])
-            .where("member.id = :memberId", { memberId })
-            .getOne();
+        return this.repository.query(
+            `
+            SELECT 
+                member.id AS member_id,
+                member.name AS member_name,
+                member.nickname AS member_nickname,
+                member.email AS member_email,
+                member.profileImage AS member_profileImage
+            FROM member member
+            WHERE member.id = ?
+        `,
+            [memberId],
+        );
     }
 
     findMemberWithRefreshTokenByEmail(email: string) {

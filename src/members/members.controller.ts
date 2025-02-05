@@ -17,6 +17,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import * as bcrypt from "bcrypt";
 
 import { CurrentMemberDecorator } from "@APP/common/decorators/current-member.decorator";
+import { AccessTokenGuard } from "@APP/common/guards/access-token.guard";
 import { TokenOnlyGuard } from "@APP/common/guards/token-only.guard";
 
 import { CreateBlackListDto } from "./dtos/create-black-list.dto";
@@ -27,6 +28,7 @@ import { MembersService } from "./members.service";
 export class MembersController {
     constructor(private readonly membersService: MembersService) {}
 
+    @UseGuards(AccessTokenGuard)
     @Get("blacks")
     getBlacks(@CurrentMemberDecorator("id") currentMemberId: number) {
         return this.membersService.findBlacks(currentMemberId);

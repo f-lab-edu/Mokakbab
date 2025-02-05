@@ -16,19 +16,21 @@ export class ArticlesRepository extends Repository<ArticleEntity> {
     }
 
     findById(articleId: number) {
-        return this.repository
-            .createQueryBuilder("article")
-            .select([
-                "article.id",
-                "article.title",
-                "article.startTime",
-                "article.endTime",
-                "article.articleImage",
-                "article.createdAt",
-                "article.updatedAt",
-            ])
-            .where("article.id = :articleId", { articleId })
-            .getOne();
+        return this.repository.query(
+            `
+            SELECT 
+                article.id AS article_id,
+                article.title AS article_title,
+                article.startTime AS article_startTime,
+                article.endTime AS article_endTime,
+                article.articleImage AS article_articleImage,
+                article.createdAt AS article_createdAt,
+                article.updatedAt AS article_updatedAt
+            FROM articles article
+            WHERE article.id = ?
+        `,
+            [articleId],
+        );
     }
 
     findAllV1(currentMemberId: number, cursor: number, limit: number = 10) {

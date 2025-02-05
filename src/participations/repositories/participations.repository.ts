@@ -20,19 +20,24 @@ export class ParticipationsRepository extends Repository<ParticipationEntity> {
         cursor: number,
         limit: number,
     ) {
-        const query = this.repository
-            .createQueryBuilder("participation")
-            .where(cursor ? "participation.id > :cursor" : "1=1", { cursor })
-            .andWhere("participation.articleId = :articleId", {
-                articleId,
-            })
-            .andWhere("participation.status = :status", {
-                status: ParticipationStatus.ACTIVE,
-            })
-            .orderBy("participation.id", "ASC")
-            .limit(limit + 1);
-
-        return query.getRawMany();
+        return this.repository.query(
+            `
+                SELECT 
+                    participation.id AS participation_id,
+                    participation.memberId AS participation_memberId,
+                    participation.articleId AS participation_articleId,
+                    participation.status AS participation_status,
+                    participation.createdAt AS participation_createdAt
+                FROM participation
+                WHERE ${cursor ? "participation.id > ? AND" : ""} participation.articleId = ?
+                    AND participation.status = ?
+                ORDER BY participation.id ASC
+                LIMIT ?
+            `,
+            cursor
+                ? [cursor, articleId, ParticipationStatus.ACTIVE, limit + 1]
+                : [articleId, ParticipationStatus.ACTIVE, limit + 1],
+        );
     }
 
     findAllParticipationsByMemberId(

@@ -25,7 +25,7 @@ export const options = {
         http_req_duration: ["p(95)<2000"],
     },
     tags: {
-        testName: "members-1",
+        testName: "members-8",
         testType: "spike",
         component: "members",
         version: "1.0",

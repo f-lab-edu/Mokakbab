@@ -7,9 +7,6 @@ const dataReceivedTrend = new Trend("data_received_size", true);
 const errorRate = new Rate("errors");
 const requestFailRate = new Rate("request_fails");
 
-/**
- * Promise.all 제거
- */
 export const options = {
     userAgent: __ENV.MY_USER_AGENT,
     //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
@@ -28,7 +25,7 @@ export const options = {
         http_req_duration: ["p(95)<2000"],
     },
     tags: {
-        testName: "no-participations-712",
+        testName: "participations-21",
         testType: "spike",
         component: "participations",
         version: "1.0",
