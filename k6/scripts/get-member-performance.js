@@ -25,7 +25,7 @@ export const options = {
         http_req_duration: ["p(95)<2000"],
     },
     tags: {
-        testName: "members-8",
+        testName: "members-9",
         testType: "spike",
         component: "members",
         version: "1.0",
@@ -60,5 +60,5 @@ export default function () {
         requestFailRate.add(1);
     }
 
-    sleep(0.1);
+    sleep(0.05);
 }
