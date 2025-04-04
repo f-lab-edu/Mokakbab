@@ -7,8 +7,8 @@ import {
 import { Reflector } from "@nestjs/core";
 import * as bcrypt from "bcrypt";
 
-import { AuthService } from "@APP/services/auth.service";
-import { MembersService } from "@APP/services/members.service";
+import { AuthService } from "@APP/auth/auth.service";
+import { MembersService } from "@APP/members/members.service";
 
 import { IS_PUBLIC_KEY } from "../decorators/is-public.decorator";
 import { IsPublicEnum } from "../enum/is-public.enum";
