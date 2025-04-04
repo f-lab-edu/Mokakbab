@@ -141,21 +141,9 @@ export class ArticlesService {
 
     async createArticle(currentMemberId: number, body: CreateArticleDto) {
         const [category, district, region] = await Promise.all([
-            this.categoriesRepository.exists({
-                where: {
-                    id: body.categoryId,
-                },
-            }),
-            this.districtsRepository.exists({
-                where: {
-                    id: body.districtId,
-                },
-            }),
-            this.regionsRepository.exists({
-                where: {
-                    id: body.regionId,
-                },
-            }),
+            this.categoriesRepository.existsById(body.categoryId),
+            this.districtsRepository.existsById(body.districtId),
+            this.regionsRepository.existsById(body.regionId),
         ]);
 
         if (!category) {
@@ -168,9 +156,7 @@ export class ArticlesService {
             throw new BusinessErrorException(ArticleErrorCode.NOT_FOUND_REGION);
         }
 
-        return this.articlesRepository.save(
-            this.createArticleEntity(currentMemberId, body),
-        );
+        return this.articlesRepository.createArticle(body, currentMemberId);
     }
 
     async updateById(
@@ -178,9 +164,8 @@ export class ArticlesService {
         currentMemberId: number,
         body: UpdateArticleDto,
     ) {
-        const article = await this.articlesRepository.findOne({
-            where: { id: articleId },
-        });
+        const article =
+            await this.articlesRepository.findOneByArticleId(articleId);
 
         if (!article) {
             throw new BusinessErrorException(
@@ -194,22 +179,14 @@ export class ArticlesService {
             );
         }
 
-        await this.articlesRepository.update(
-            {
-                id: articleId,
-            },
-            body,
-        );
+        await this.articlesRepository.updateByArticleId(articleId, body);
 
-        return this.articlesRepository.findOne({
-            where: { id: articleId },
-        });
+        return this.articlesRepository.findOneByArticleId(articleId);
     }
 
     async deleteById(articleId: number, currentMemberId: number) {
-        const article = await this.articlesRepository.findOne({
-            where: { id: articleId },
-        });
+        const article =
+            await this.articlesRepository.findOneByArticleId(articleId);
 
         if (!article) {
             throw new BusinessErrorException(
@@ -223,29 +200,26 @@ export class ArticlesService {
             );
         }
 
-        return this.articlesRepository.delete(articleId);
-    }
-
-    private createArticleEntity(
-        currentMemberId: number,
-        body: CreateArticleDto,
-    ) {
-        return this.articlesRepository.create({
-            memberId: currentMemberId,
-            ...body,
-        });
+        return this.articlesRepository.deleteByArticleId(articleId);
     }
 
     async likeOrUnLike(memberId: number, articleId: number): Promise<boolean> {
-        const like = await this.articleLikesRepository.findOneBy({
-            memberId,
-            articleId,
-        });
+        const like =
+            await this.articleLikesRepository.existsByArticleIdAndMemberId(
+                articleId,
+                memberId,
+            );
 
         if (like) {
-            await this.articleLikesRepository.remove(like);
+            await this.articleLikesRepository.deleteArticleLike(
+                articleId,
+                memberId,
+            );
         } else {
-            await this.articleLikesRepository.save({ memberId, articleId });
+            await this.articleLikesRepository.createArticleLike(
+                articleId,
+                memberId,
+            );
         }
 
         return !like;

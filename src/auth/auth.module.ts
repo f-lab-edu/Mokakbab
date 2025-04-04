@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Global, Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { createSecretKey } from "crypto";
@@ -7,7 +7,6 @@ import {
     ENV_JWT_ACCESS_TOKEN_EXPIRATION,
     ENV_JWT_SECRET_KEY,
 } from "@APP/common/constants/env-keys.const";
-import { TokenOnlyGuard } from "@APP/common/guards/token-only.guard";
 import { MailsService } from "@APP/mails/mails.service";
 import { MembersModule } from "@APP/members/members.module";
 
@@ -38,7 +37,8 @@ import { AuthService } from "./auth.service";
         MembersModule,
     ],
     controllers: [AuthController],
-    providers: [AuthService, MailsService, TokenOnlyGuard],
-    exports: [AuthService, TokenOnlyGuard, MembersModule],
+    providers: [AuthService, MailsService],
+    exports: [AuthService],
 })
+@Global()
 export class AuthModule {}

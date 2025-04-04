@@ -20,7 +20,6 @@ export class VerificationCodeRepository extends Repository<VerificationCodeEntit
             .into(VerificationCodeEntity)
             .updateEntity(false)
             .values({ code })
-            .useTransaction(false)
             .execute();
 
         return insertResult.raw.insertId;

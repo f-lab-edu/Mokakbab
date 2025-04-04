@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { QueryRunner, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
+import { CreateArticleDto } from "../dtos/create-article.dto";
+import { UpdateArticleDto } from "../dtos/update-article.dto";
 import { ArticleEntity } from "../entities/article.entity";
 
 @Injectable()
@@ -11,12 +13,6 @@ export class ArticlesRepository extends Repository<ArticleEntity> {
         private readonly repository: Repository<ArticleEntity>,
     ) {
         super(repository.target, repository.manager, repository.queryRunner);
-    }
-
-    getRepository(qr?: QueryRunner) {
-        return qr
-            ? qr.manager.getRepository<ArticleEntity>(ArticleEntity)
-            : this.repository;
     }
 
     findById(articleId: number) {
@@ -161,5 +157,44 @@ export class ArticlesRepository extends Repository<ArticleEntity> {
                         pc.articleId === article.articleId,
                 )?.participantCount || 0,
         }));
+    }
+
+    createArticle(article: CreateArticleDto, memberId: number) {
+        return this.repository
+            .createQueryBuilder()
+            .insert()
+            .into(ArticleEntity)
+            .updateEntity(false)
+            .values({
+                memberId,
+                ...article,
+            })
+            .useTransaction(true)
+            .execute();
+    }
+
+    updateByArticleId(articleId: number, updateArticleDto: UpdateArticleDto) {
+        return this.repository.update(
+            {
+                id: articleId,
+            },
+            updateArticleDto,
+        );
+    }
+
+    findOneByArticleId(articleId: number) {
+        return this.repository.findOne({
+            select: {
+                id: true,
+                memberId: true,
+            },
+            where: {
+                id: articleId,
+            },
+        });
+    }
+
+    deleteByArticleId(articleId: number) {
+        return this.repository.delete(articleId);
     }
 }

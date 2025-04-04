@@ -1,7 +1,7 @@
-import { OmitType, PartialType } from "@nestjs/swagger";
+import { PartialType, PickType } from "@nestjs/swagger";
 
-import { RegisterMemberDto } from "./register-member.dto";
+import { MemberEntity } from "../entities/member.entity";
 
 export class UpdateMemberDto extends PartialType(
-    OmitType(RegisterMemberDto, ["email"]),
+    PickType(MemberEntity, ["id", "email", "name", "nickname", "password"]),
 ) {}

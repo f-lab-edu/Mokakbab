@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { QueryRunner, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { DistrictEntity } from "../entities/district.entity";
 
@@ -13,9 +13,7 @@ export class DistrictsRepository extends Repository<DistrictEntity> {
         super(repository.target, repository.manager, repository.queryRunner);
     }
 
-    getRepository(qr?: QueryRunner) {
-        return qr
-            ? qr.manager.getRepository<DistrictEntity>(DistrictEntity)
-            : this.repository;
+    existsById(id: number) {
+        return this.repository.exists({ where: { id } });
     }
 }
