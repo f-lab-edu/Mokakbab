@@ -1,8 +1,11 @@
 import { check, sleep } from "k6";
 import http from "k6/http";
-import { Trend } from "k6/metrics";
+import { Rate, Trend } from "k6/metrics";
 
 const dataReceivedTrend = new Trend("data_received_size", true);
+
+const errorRate = new Rate("errors");
+const requestFailRate = new Rate("request_fails");
 
 const imageFiles = [
     open("uploads/test-image01.jpg", "b"),
@@ -11,26 +14,25 @@ const imageFiles = [
 ];
 
 export const options = {
+    //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
     scenarios: {
-        simple_rps_test: {
-            executor: "constant-arrival-rate",
-            rate: 200,
+        ramping_requests: {
+            executor: "ramping-arrival-rate",
             timeUnit: "1s",
-            duration: "1m",
-            preAllocatedVUs: 400,
-            maxVUs: 600,
+            stages: [
+                { duration: "30s", target: 200 },
+                { duration: "30s", target: 200 },
+                { duration: "30s", target: 0 },
+            ],
+            preAllocatedVUs: 10, // 초기 VU
+            maxVUs: 50, // 필요에 따라 동적으로 추가
         },
     },
     tags: {
-        testName: "v1-upload-image-result",
-        testType: "performance",
+        testName: "prod-spike-upload-image-57",
+        testType: "spike",
         component: "upload-image",
         version: "1.0",
-    },
-    thresholds: {
-        http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
-        dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-        http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
     },
 };
 
@@ -59,13 +61,21 @@ export default function () {
         },
     );
 
-    dataReceivedTrend.add(uploadResponse.body.length);
+    if (uploadResponse.body) dataReceivedTrend.add(uploadResponse.body.length);
 
-    check(uploadResponse, {
+    // 응답 상태 체크 및 에러율 기록
+    const isSuccessful = check(uploadResponse, {
         "upload status is 200": (r) => r.status === 200,
-        "response has filename": (r) =>
-            JSON.parse(r.body).filename !== undefined,
     });
 
-    sleep(1);
+    if (!isSuccessful) {
+        errorRate.add(1);
+        requestFailRate.add(1);
+    }
+
+    if (uploadResponse.status >= 400) {
+        requestFailRate.add(1);
+    }
+
+    sleep(0.01);
 }

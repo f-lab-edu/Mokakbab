@@ -1,7 +1,12 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import {
+    TypeOrmModuleAsyncOptions,
+    TypeOrmModuleOptions as TypeOrmModuleOptionsType,
+} from "@nestjs/typeorm";
 import { PoolOptions } from "mysql2";
 import path from "path";
 import { LogLevel } from "typeorm";
+import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
 
 import {
     ENV_DB_DATABASE,
@@ -13,10 +18,12 @@ import {
     ENV_DB_USERNAME,
 } from "../constants/env-keys.const";
 
-export const TypeOrmModuleOptions = {
+export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
     imports: [ConfigModule],
     inject: [ConfigService],
-    useFactory: async (configService: ConfigService) => {
+    useFactory: async (
+        configService: ConfigService,
+    ): Promise<TypeOrmModuleOptionsType> => {
         const option = {
             type: configService.get(ENV_DB_TYPE) || "mysql",
             host: configService.get(ENV_DB_HOST) || "localhost",
@@ -27,12 +34,15 @@ export const TypeOrmModuleOptions = {
             entities: [path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             extra: {
-                connectionLimit: 500,
+                connectionLimit: 50,
                 waitForConnections: true,
                 queueLimit: 0,
                 enableKeepAlive: true,
                 keepAliveInitialDelay: 10000,
-            } as PoolOptions,
+                idleTimeout: 240000,
+            } satisfies PoolOptions,
+
+            maxQueryExecutionTime: 1000,
             // extra: {
             //     waitForConnections: true,
             //     connectionLimit: 200, // MySQL max_connections의 약 20%
@@ -44,9 +54,12 @@ export const TypeOrmModuleOptions = {
             // } as PoolOptions,
 
             ...(configService.get("NODE_ENV") === "development"
-                ? { retryAttempts: 10, logging: true }
+                ? {
+                      retryAttempts: 10,
+                      logging: ["query", "error", "warn"] as LogLevel[],
+                  }
                 : { logging: ["error", "warn"] as LogLevel[] }),
-        };
+        } satisfies MysqlConnectionOptions;
 
         return option;
     },

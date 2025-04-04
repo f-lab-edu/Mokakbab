@@ -1,69 +1,34 @@
 import { check, sleep } from "k6";
 import http from "k6/http";
-import { Trend } from "k6/metrics";
+import { Rate, Trend } from "k6/metrics";
 
 const dataReceivedTrend = new Trend("data_received_size", true);
-
-// export const options = {
-//     scenarios: {
-//         simple_rps_test: {
-//             /* 일정한 RPS(Request Per Second)를 유지하는 실행기 타입 */
-//             executor: "constant-arrival-rate",
-//             /* 초당 실행할 반복 횟수 */
-//             rate: 200,
-//             /* rate의 시간 단위 (1s, 1m, 1h 등) */
-//             timeUnit: "1s",
-//             /* 전체 테스트 실행 시간 */
-//             duration: "3m",
-//             /* 테스트 시작 시 미리 할당할 가상 사용자 수 */
-//             preAllocatedVUs: 300,
-//             /* 최대 가상 사용자 수 (필요시 추가 할당) */
-//             maxVUs: 400,
-//         },
-//     },
-//     // 태그 추가
-//     tags: {
-//         testName: "v2-articles-application3",
-//         testType: "performance",
-//         component: "articles",
-//         version: "2.0",
-//     },
-//     thresholds: {
-//         /* HTTP 요청 실패율이 5% 미만이어야 함 */
-//         http_req_failed: [{ threshold: "rate<0.05", abortOnFail: true }],
-//         /* 부하로 인한 요청 누락률이 5% 미만이어야 함 */
-//         dropped_iterations: [{ threshold: "rate<0.05", abortOnFail: true }],
-//         // /* 95%의 요청이 3초 이내에 완료되어야 함 */
-//         http_req_duration: [{ threshold: "p(95)<3000", abortOnFail: true }],
-//     },
-// };
+// 에러율 추적을 위한 메트릭 추가
+const errorRate = new Rate("errors");
+const requestFailRate = new Rate("request_fails");
 
 export const options = {
+    userAgent: __ENV.MY_USER_AGENT,
+    //discardResponseBodies: true, // 응답 본문을 무시 할 수 있는 옵션으로 `data_received` 크기가 너무 커서 아웃 바운드 요금 초과 방지
     scenarios: {
-        gradual_rps_test: {
-            executor: "ramping-arrival-rate",
-            startRate: 50, // 시작 RPS
-            timeUnit: "1s",
-            preAllocatedVUs: 800,
-            maxVUs: 1000,
+        spike_test: {
+            executor: "ramping-vus",
+            startVUs: 0,
             stages: [
-                { target: 100, duration: "30s" }, // 30초 동안 100 RPS로 증가
-                { target: 300, duration: "30s" }, // 30초 동안 300 RPS로 증가
-                { target: 500, duration: "1m" }, // 1분 동안 500 RPS 유지
-                { target: 0, duration: "30s" }, // 30초 동안 RPS를 0으로 감소
+                { duration: "2m", target: 500 }, // 1분 동안 VUs를 500으로 증가
+                { duration: "1m", target: 0 }, // 30초 동안 VUs를 0으로 감소
             ],
         },
     },
-    tags: {
-        testName: "v2-participations-application",
-        testType: "performance",
-        component: "participations",
-        version: "2.0",
-    },
     thresholds: {
-        http_req_failed: [{ threshold: "rate<0.05" }],
-        dropped_iterations: [{ threshold: "rate<0.05" }],
-        http_req_duration: [{ threshold: "p(95)<3000" }],
+        http_req_failed: ["rate<0.01"],
+        http_req_duration: ["p(95)<2000"],
+    },
+    tags: {
+        testName: "articles-v1-result",
+        testType: "spike",
+        component: "articles",
+        version: "1.0",
     },
 };
 
@@ -89,9 +54,19 @@ export default function () {
     if (articlesResponse.body)
         dataReceivedTrend.add(articlesResponse.body.length);
 
-    check(articlesResponse, {
+    // 응답 상태 체크 및 에러율 기록
+    const isSuccessful = check(articlesResponse, {
         "articles status is 200": (r) => r.status === 200,
     });
 
-    sleep(1);
+    if (!isSuccessful) {
+        errorRate.add(1);
+        requestFailRate.add(1);
+    }
+
+    if (articlesResponse.status >= 400) {
+        requestFailRate.add(1);
+    }
+
+    sleep(0.1);
 }

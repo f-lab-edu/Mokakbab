@@ -7,8 +7,8 @@ import {
 import { Reflector } from "@nestjs/core";
 import * as bcrypt from "bcrypt";
 
-import { AuthService } from "@APP/services/auth.service";
-import { MembersService } from "@APP/services/members.service";
+import { AuthService } from "@APP/auth/auth.service";
+import { MembersService } from "@APP/members/members.service";
 
 import { IS_PUBLIC_KEY } from "../decorators/is-public.decorator";
 import { IsPublicEnum } from "../enum/is-public.enum";
@@ -53,27 +53,6 @@ export class BearerTokenGuard implements CanActivate {
         request.member = member;
         request.tokenType = result.type;
         request.token = token;
-
-        return true;
-    }
-}
-
-export class AccessTokenGuard extends BearerTokenGuard {
-    override async canActivate(context: ExecutionContext): Promise<boolean> {
-        await super.canActivate(context);
-
-        const req = context.switchToHttp().getRequest();
-
-        if (
-            req.isPublic === IsPublicEnum.PUBLIC ||
-            req.isPublic === IsPublicEnum.REFRESH
-        ) {
-            return true;
-        }
-
-        if (req.tokenType !== "access") {
-            throw new UnauthorizedException("Access Token이 아닙니다.");
-        }
 
         return true;
     }

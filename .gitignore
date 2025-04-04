@@ -62,3 +62,8 @@ src/database/migrations/**
 
 data-source.ts
 src/database
+
+influxdb
+
+# 부하 테스트를 위한 쉘 스크립트
+spike.sh
