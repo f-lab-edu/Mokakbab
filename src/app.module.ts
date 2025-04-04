@@ -21,6 +21,7 @@ import { ParticipationsModule } from "./participations/participations.module";
             isGlobal: true,
         }),
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
+
         MembersModule,
         AuthModule,
         MailerModule.forRootAsync(EmailOptions),

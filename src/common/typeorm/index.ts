@@ -6,6 +6,7 @@ import {
 import { PoolOptions } from "mysql2";
 import path from "path";
 import { LogLevel } from "typeorm";
+import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
 
 import {
     ENV_DB_DATABASE,
@@ -58,7 +59,7 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
                       logging: ["query", "error", "warn"] as LogLevel[],
                   }
                 : { logging: ["error", "warn"] as LogLevel[] }),
-        };
+        } satisfies MysqlConnectionOptions;
 
         return option;
     },
