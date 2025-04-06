@@ -1,5 +1,5 @@
 <p align="center">
-  <div align="center"><img src="https://i.postimg.cc/Y9H8D4mX/88c510ba-dd30-4104-855e-18e1bef286a3.png" width="40%"/></div>
+  <div align="center"><img src="https://i.postimg.cc/Y9H8D4mX/88c510ba-dd30-4104-855e-18e1bef286a3.png" width="80%"/></div>
 </p>
 
 <p align="center">"모여서 각자 밥먹기(모각밥!)"<br> <span>당근마켓</span>의 동네생활의 동네 밥친구 구하기 기능만 구현한 프로젝트입니다.</p>
