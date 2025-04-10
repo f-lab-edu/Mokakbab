@@ -28,7 +28,7 @@
 
 ## 🥕 프로젝트 결과 리포트
 
-- [✨ V1 프로젝트 리포트](https://www.notion.so/V1-192135d46c8f803caaa6f10c2faeb4b2)
+- [✨ 프로젝트 리포트](https://curvy-wood-aa3.notion.site/1cf135d46c8f80eca2c6c2959bc57db3?pvs=4)
     - 데이터베이스 환경
     - 쿼리 패턴
     - 최종 결과
@@ -37,15 +37,11 @@
 
 ## 🥕 트러블 슈팅 (Troubleshooting)
 
-- [jsonwebtoken 사용과 문제](https://yokan.netlify.app/project/mokakbab/trouble-shooting/1)
-    - [📝 **블로그 포스트**](https://yokan.netlify.app/project/mokakbab/trouble-shooting/1)
-    - [📘 **노션 결과 리포트**](https://curvy-wood-aa3.notion.site/v1-1-API-180135d46c8f804abf2bd6be14255686?pvs=4)
-    - [**🔗 PR #72 이슈**](https://github.com/f-lab-edu/Mokakbab/pull/72)
-- [Bcrypt와 CPU Bound](jsonwebtoken 사용과 문제)
-- [TypeORM Seeding 성능 문제](jsonwebtoken 사용과 문제)
-- [TypeORM과 mysql 사용시 Insert 최적화](jsonwebtoken 사용과 문제)
-- [Typeorm의 findOne 메서드 사용시 중복 쿼리 문제](jsonwebtoken 사용과 문제)
-- [AWS와 S3 업로드시 CPU Bound](AWS와 S3 업로드시 CPU Bound)
+- [Aws와 S3 업로드시 Cpu Bound](https://yokan.netlify.app/project/mokakbab/trouble-shooting/6)
+- [Typeorm의 N+1와 findOne 메서드 사용시 중복 쿼리 문제](https://yokan.netlify.app/project/mokakbab/trouble-shooting/3)
+- [Typeorm과 Mysql 사용시 Insert 최적화](https://yokan.netlify.app/project/mokakbab/trouble-shooting/4)
+- [Jsonwebtoken 사용과 문제](https://yokan.netlify.app/project/mokakbab/trouble-shooting/1)
+- [Typeorm Seeding 성능 문제](https://yokan.netlify.app/project/mokakbab/trouble-shooting/2)
 
 ## 🥕 InfraStructure
 
